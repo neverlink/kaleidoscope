@@ -2,7 +2,7 @@
   "name": "kaleidoscope",
   "version": "1.0.0",
   "description": "swag",
-  "main": "main.js",
+  "main": "app/main.js",
   "scripts": {
     "start": "electron ."
   },

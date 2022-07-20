@@ -17,6 +17,7 @@ const createMainWindow = (fileURI) => {
     })
 
     mainWindow.loadFile(path.join(__dirname, 'index.html'))
+    mainWindow.webContents.openDevTools();
 
     mainWindow.on('close', function (event) {
         // prevent default
