@@ -1,7 +1,7 @@
-import { initializePlayer } from './playerHandler.js';
+import { createPlayer } from './playerHandler.js';
 
 const defineDropArea = () => {
-    const dropArea = document.getElementById("dropContainer");
+    const dropArea = document.querySelector("#dropContainer");
 
     const prevents = (evt) => evt.preventDefault();
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evtName => {
@@ -10,7 +10,7 @@ const defineDropArea = () => {
 
     const handleDrop = (evt) => {
         const file = [...evt.dataTransfer.files][0];
-        initializePlayer(file);
+        createPlayer(file);
     }
     dropArea.addEventListener("drop", handleDrop);
 }

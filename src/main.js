@@ -4,7 +4,6 @@ const path = require('path')
 const createMainWindow = (fileURI) => {
     const mainWindow = new BrowserWindow({
         center: true,
-        resizable: false,
         autoHideMenuBar: true,
         // titleBarStyle: 'hidden',
         icon: path.join(__dirname, 'swag.png'),
@@ -25,6 +24,7 @@ const createMainWindow = (fileURI) => {
     });
 
     ipcMain.on('resize-window', (event, width, height) => {
+        console.log(`Truly resizing to ${width} x ${height}`)
         mainWindow.setSize(width, height, true) // ask monyu to try this
     })
 

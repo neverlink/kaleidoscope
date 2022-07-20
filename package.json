@@ -4,7 +4,8 @@
   "description": "swag",
   "main": "app/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "swag": "electron . --file=C:\\Users\\chance\\Downloads\\j9HDYqoVc0tkJZ6p.mp4"
   },
   "keywords": [],
   "author": "neverlink",
