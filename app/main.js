@@ -2,7 +2,7 @@ const { app, ipcMain, BrowserWindow, Tray, Menu } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
-const preferences = JSON.parse(fs.readFileSync('app/preferences.json'));
+const preferences = JSON.parse(fs.readFileSync(path.join(__dirname, 'preferences.json')));
 
 const createMainWindow = (fileURI) => {
     const mainWindow = new BrowserWindow({
@@ -20,12 +20,12 @@ const createMainWindow = (fileURI) => {
         alwaysOnTop: preferences['alwaysOnTop'],
 
         icon: 'swag.png',
-        
+
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
             preload: path.join(__dirname, 'preload.js'),
-            additionalArguments: [preferences, fileURI]
+            additionalArguments: [JSON.stringify(preferences), fileURI]
         }
     })
 
@@ -65,6 +65,8 @@ const createTray = () => {
 }
 
 app.whenReady().then(() => {
+    console.log(`Main args: ${process.argv}`)
+    
     let fileURI = process.argv[2]
     createMainWindow(fileURI);
     createTray();

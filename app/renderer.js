@@ -2,12 +2,6 @@ import { createPlayer } from './playerHandler.js';
 
 const notify = async (msg) => {
     console.log(msg)
-    // let alertBox = document.querySelector('#alert-hidden');
-    // alertBox.innerHTML = msg;
-
-    // alertBox.id = 'alert-show';
-    // await new Promise(r => setTimeout(r, 2000));
-    // // alertBox.id = 'alert-hide';
 }
 
 const defineDropArea = () => {
@@ -20,13 +14,14 @@ const defineDropArea = () => {
 
     const handleDrop = (evt) => {
         const file = [...evt.dataTransfer.files][0];
-        createPlayer(file);
+        createPlayer(file.path);
     }
     dropArea.addEventListener("drop", handleDrop);
 }
 
 const initApp = () => {
     defineDropArea();
+    createPlayer();
 }
 
 document.addEventListener("DOMContentLoaded", initApp);

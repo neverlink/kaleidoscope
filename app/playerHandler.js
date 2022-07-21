@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron');
+const { argFileURI } = require('./preload.js');
 import { activatePlayer } from './videoController.js';
 
 function resizeWindow(width, height) {
@@ -7,23 +8,25 @@ function resizeWindow(width, height) {
 
 let activePlayers = []
 
-function createPlayer(file) {
-    const mimeType = file.type;
-    const fileType = mimeType.split('/')[0];
+function createPlayer(fileURI) {
+    fileURI = fileURI == null ? argFileURI : fileURI
 
-    if (fileType == 'video') {
+    let videoFormats = [ 'mp4', 'webm', 'mkv', 'ogg']
+    let audioFormats = [ 'mp3', 'wav', 'flac']
+
+    try { // if videoFormats.includes()
         if (activePlayers.length > 0) activePlayers.forEach((player) => player.destroy());
-        activePlayers.push(new VideoPlayer(file.path));
+        activePlayers.push(new VideoPlayer(fileURI));
+    
+        // This is generic and works for audio elements
+        Object.defineProperty(HTMLMediaElement.prototype, 'isPlaying', {
+            configurable: true, // else Uncaught TypeError: Cannot redefine property
+            get: function () {
+                return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
+            }
+        });
     }
-    else { alert(`${mimeType} is not supported!`); }
-
-    // This is generic and works for audio elements
-    Object.defineProperty(HTMLMediaElement.prototype, 'isPlaying', {
-        configurable: true, // else Uncaught TypeError: Cannot redefine property
-        get: function () {
-            return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
-        }
-    });
+    catch { alert('Unsupported file type!'); }
 }
 
 class VideoPlayer {
