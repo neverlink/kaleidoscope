@@ -1,4 +1,4 @@
-// import { createPlayer } from './playerHandler.js';
+// const playerHandler = require('./playerHandler')
 
 const getFileURI = () => {
     args = process.argv;
@@ -13,5 +13,6 @@ window.addEventListener('DOMContentLoaded', () => {
         console.log(`No starting URI provided!`);
         return
     }
-    // createPlayer(new File(fileURI));
+    // this does not work currently
+    // playerHandler.createPlayer(new File([''], fileURI));
 });

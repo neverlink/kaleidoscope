@@ -1,6 +1,7 @@
 const { ipcRenderer } = require('electron');
+import { activatePlayer } from './videoController.js';
 
-function resizeWindow (width, height) {
+function resizeWindow(width, height) {
     ipcRenderer.send('resize-window', width, height);
 }
 
@@ -14,24 +15,32 @@ function createPlayer(file) {
         if (activePlayers.length > 0) activePlayers.forEach((player) => player.destroy());
         activePlayers.push(new VideoPlayer(file.path));
     }
-    else
-    {
-        alert(`${mimeType} is not supported!`);
-    }
+    else { alert(`${mimeType} is not supported!`); }
+
+    // This is generic and works for audio elements
+    Object.defineProperty(HTMLMediaElement.prototype, 'isPlaying', {
+        configurable: true, // else Uncaught TypeError: Cannot redefine property
+        get: function () {
+            return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
+        }
+    });
 }
 
 class VideoPlayer {
     constructor(fileURI) {
         this.fileURI = fileURI;
-        this.player = this.createElement(this.fileURI);
+        this.domElement = this.createElement(this.fileURI);
+        document.querySelector('#container').appendChild(this.domElement);
+        activatePlayer(this);
     }
 
     createElement(fileURI) {
         const videoBlock = document.createElement('video');
 
+        videoBlock.src = fileURI;
+        videoBlock.volume = 0.5;
         videoBlock.loop = true;
         videoBlock.autoplay = true;
-        videoBlock.src = fileURI;
         videoBlock.id = `video${activePlayers.length}`
         videoBlock.oncontextmenu = function () { alert("insert pretty menu here") }
 
@@ -39,11 +48,10 @@ class VideoPlayer {
             resizeWindow(videoBlock.videoWidth, videoBlock.videoHeight);
         }, false);
 
-        document.querySelector('#container').appendChild(videoBlock);
         return videoBlock;
     }
 
-    destroy = () => this.player.remove();
+    destroy = () => this.domElement.remove();
 }
 
 export { createPlayer }

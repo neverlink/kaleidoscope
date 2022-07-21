@@ -1,0 +1,23 @@
+{
+    "initialWidth": 1280,
+    "initialHeight": 720,
+
+    "minWidth": 200,
+    "minHeight": 360,
+
+    "maxWidth": 2000,
+    "maxHeight": 2000,
+
+    "centerWindowOnLaunch": true,
+    "hideMenuBar": false,
+    "alwaysOnTop": false,
+
+    "autoSplitScreen": false,
+    "keepProportions": true,
+    "loopContent": true,
+    
+    "hotkeys": {
+        "playPause": "Space",
+        "mute": "KeyM"
+    }
+} 
