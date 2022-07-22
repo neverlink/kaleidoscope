@@ -1,5 +1,4 @@
 const { ipcRenderer } = require('electron');
-const { argFileURI } = require('./preload.js');
 import { activatePlayer } from './videoController.js';
 
 function resizeWindow(width, height) {
@@ -9,7 +8,7 @@ function resizeWindow(width, height) {
 let activePlayers = []
 
 function createPlayer(fileURI) {
-    fileURI = fileURI == null ? argFileURI : fileURI
+    if (fileURI == "none") { return }
 
     let videoFormats = [ 'mp4', 'webm', 'mkv', 'ogg']
     let audioFormats = [ 'mp3', 'wav', 'flac']

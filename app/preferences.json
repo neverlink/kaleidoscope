@@ -5,8 +5,8 @@
     "minWidth": 200,
     "minHeight": 360,
 
-    "maxWidth": 2000,
-    "maxHeight": 2000,
+    "maxWidth": 3000,
+    "maxHeight": 3000,
 
     "centerWindowOnLaunch": true,
     "hideMenuBar": false,

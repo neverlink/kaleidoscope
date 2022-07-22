@@ -2,9 +2,16 @@ const { app, ipcMain, BrowserWindow, Tray, Menu } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
-const preferences = JSON.parse(fs.readFileSync(path.join(__dirname, 'preferences.json')));
+const constructArgs = () => {
+    let preferences = JSON.parse(fs.readFileSync(path.join(__dirname, 'preferences.json')));
+    let filePath = process.argv.at(-1);
+    return [ preferences, filePath ]
+}
 
-const createMainWindow = (fileURI) => {
+const createMainWindow = (args) => {
+    preferences = args[0]
+    filePath = args[1]
+
     const mainWindow = new BrowserWindow({
         width: preferences['initialWidth'],
         height: preferences['initialHeight'],
@@ -12,8 +19,8 @@ const createMainWindow = (fileURI) => {
         minWidth: preferences['minWidth'],
         minHeight: preferences['minHeight'],
 
-        maxWidth: preferences['maxWidth'],
-        maxHeight: preferences['maxHeight'],
+        // maxWidth: preferences['maxWidth'],
+        // maxHeight: preferences['maxHeight'],
 
         center: preferences['centerWindowOnLaunch'],
         autoHideMenuBar: preferences['hideMenuBar'],
@@ -22,15 +29,15 @@ const createMainWindow = (fileURI) => {
         icon: 'swag.png',
 
         webPreferences: {
-            nodeIntegration: true,
+            nodeIntegration: true, 
             contextIsolation: false,
             preload: path.join(__dirname, 'preload.js'),
-            additionalArguments: [JSON.stringify(preferences), fileURI]
+            additionalArguments: [ JSON.stringify(preferences), filePath ]
         }
     })
 
     mainWindow.loadFile('app/index.html');
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 
     mainWindow.on('close', function (event) {
         // prevent default
@@ -65,10 +72,8 @@ const createTray = () => {
 }
 
 app.whenReady().then(() => {
-    console.log(`Main args: ${process.argv}`)
-    
-    let fileURI = process.argv[2]
-    createMainWindow(fileURI);
+    const args = constructArgs();
+    createMainWindow(args);
     createTray();
 
     app.on('window-all-closed', () => {

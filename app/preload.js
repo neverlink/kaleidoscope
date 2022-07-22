@@ -1,13 +1,11 @@
-const getFileURI = () => {
-    args = process.argv;
-    console.log(`Preload args: ${args}`)
+// const getFileURI = () => {
+//     console.log('In preload')
+//     console.log(process.argv)
+//     return process.argv;
+// }
 
-    fileURI = args[args.length - 2];
-    return fileURI;
-}
+// window.addEventListener('DOMContentLoaded', () => {
+//     //
+// })
 
-window.addEventListener('DOMContentLoaded', () => {
-    //
-})
-
-exports.argFileURI = getFileURI();
+// exports.argFileURI = getFileURI();

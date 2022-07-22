@@ -21,7 +21,7 @@ const defineDropArea = () => {
 
 const initApp = () => {
     defineDropArea();
-    createPlayer();
+    createPlayer(process.argv.at(-2));
 }
 
 document.addEventListener("DOMContentLoaded", initApp);
