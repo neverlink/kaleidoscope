@@ -2,6 +2,7 @@ const { ipcRenderer } = require('electron');
 import { activatePlayer } from './videoController.js';
 
 function resizeWindow(width, height) {
+    // if width/height is more than half the screen size then...
     ipcRenderer.send('resize-window', width, height);
 }
 

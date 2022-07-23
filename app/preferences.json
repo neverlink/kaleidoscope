@@ -1,4 +1,6 @@
 {
+    "allowOnlyOneInstance":   "false",
+
     "initialWidth": 1280,
     "initialHeight": 720,
 

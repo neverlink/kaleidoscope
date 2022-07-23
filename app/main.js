@@ -46,6 +46,7 @@ const createMainWindow = (args) => {
 
     ipcMain.on('resize-window', (event, width, height) => {
         mainWindow.setSize(width, height, true); // ask monyu to try this
+        mainWindow.center();
     })
 
     return mainWindow
