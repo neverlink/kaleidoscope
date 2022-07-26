@@ -1,11 +1,17 @@
-const { app, ipcMain, BrowserWindow, Tray, Menu } = require('electron');
+const { app, BrowserWindow, Menu, dialog, ipcMain, webContents } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
+const createMenu = require('./menuBar.js')
+const createTray = require('./tray.js')
+
 const constructArgs = () => {
-    let preferences = JSON.parse(fs.readFileSync(path.join(__dirname, 'preferences.json')));
-    let filePath = process.argv.at(-1);
-    return [ preferences, filePath ]
+    let preferences = JSON.parse(fs.readFileSync(path.join(__dirname, 'static/preferences.json')));
+    if (process.argv.length != 2)
+        filePath = process.argv.at(-1);
+    else
+        filePath = "none"
+    return [preferences, filePath]
 }
 
 const createMainWindow = (args) => {
@@ -28,22 +34,26 @@ const createMainWindow = (args) => {
 
         icon: 'swag.png',
 
+        frame: true,
+
         webPreferences: {
-            nodeIntegration: true, 
+            nodeIntegration: true,
             contextIsolation: false,
-            preload: path.join(__dirname, 'preload.js'),
-            additionalArguments: [ JSON.stringify(preferences), filePath ]
+            // preload: path.join(__dirname, 'preload.js'),
+            additionalArguments: [JSON.stringify(preferences), filePath]
         }
     })
 
-    mainWindow.loadFile('app/index.html');
-    // mainWindow.webContents.openDevTools();
+    mainWindow.loadFile('app/static/index.html');
+    mainWindow.webContents.openDevTools();
 
     mainWindow.on('close', function (event) {
         // prevent default
-        mainWindow.hide();
+        // mainWindow.hide();
+        app.quit();
     });
 
+    // change this to get size from renderer and resize
     ipcMain.on('resize-window', (event, width, height) => {
         mainWindow.setSize(width, height, true); // ask monyu to try this
         mainWindow.center();
@@ -52,30 +62,12 @@ const createMainWindow = (args) => {
     return mainWindow
 }
 
-const createTray = () => {
-    let tray = new Tray(path.join(__dirname, 'swag.png'));
-
-    const contextMenu = Menu.buildFromTemplate([
-        { label: 'About', type: 'normal', role: 'About' },
-        { label: 'test', type: 'separator' },
-        { label: 'Quit', type: 'normal', role: 'quit' }
-    ])
-
-    tray.setContextMenu(contextMenu);
-    tray.setToolTip('Kaleidoscope');
-    tray.setTitle('Kaleidoscope');
-
-    tray.on('click', () => {
-        console.log('not implemented');
-        //mainWindow.show()
-    })
-    return tray
-}
-
 app.whenReady().then(() => {
     const args = constructArgs();
-    createMainWindow(args);
-    createTray();
+    mainWindow = createMainWindow(args);
+
+    Menu.setApplicationMenu(createMenu(mainWindow));
+    // createTray(mainWindow);
 
     app.on('window-all-closed', () => {
         console.log('all windows closed');
@@ -85,4 +77,4 @@ app.whenReady().then(() => {
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
     })
-})
+});

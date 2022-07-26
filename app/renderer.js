@@ -1,8 +1,6 @@
-import { createPlayer } from './playerHandler.js';
+const { ipcRenderer } = require('electron');
+const playerHandler = require("./playerHandler.js");
 
-const notify = async (msg) => {
-    console.log(msg)
-}
 
 const defineDropArea = () => {
     const dropArea = document.querySelector("#dropContainer");
@@ -14,16 +12,33 @@ const defineDropArea = () => {
 
     const handleDrop = (evt) => {
         const file = [...evt.dataTransfer.files][0];
-        createPlayer(file.path);
+        playerHandler.createPlayer(file.path);
     }
     dropArea.addEventListener("drop", handleDrop);
 }
 
 const initApp = () => {
     defineDropArea();
-    createPlayer(process.argv.at(-2));
+
+    let fileURI = process.argv.at(-2);
+    if (fileURI != "none") { playerHandler.createPlayer(fileURI) }
+ 
+
+    // try playerHandler.commandPlayers
+    ipcRenderer.on('control-player', function (evt, action, amount) {
+        playerHandler.activePlayers.forEach((player) => {
+            switch (action) {
+                case 'toggleMute': player.toggleMute(); break;
+                case 'togglePause': player.togglePause(); break;
+                case 'stop': player.stop(); break;
+                case 'changeVolume': player.changeVolume(amount); break;
+                case 'changeSpeed': player.changeSpeed(amount); break;
+                case 'seekSeconds': player.seekSeconds(amount); break;
+                case 'togglePitchCorrection': player.togglePitchCorrection(); break;
+                default: console.log('unknown command ' + action); break;
+            }
+        });
+    });
 }
 
 document.addEventListener("DOMContentLoaded", initApp);
-
-export { notify }

@@ -1,8 +1,8 @@
 {
     "allowOnlyOneInstance":   "false",
 
-    "initialWidth": 1280,
-    "initialHeight": 720,
+    "initialWidth": 500,
+    "initialHeight": 500,
 
     "minWidth": 200,
     "minHeight": 360,
