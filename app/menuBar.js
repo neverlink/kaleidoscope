@@ -79,6 +79,23 @@ const createMenu = (windowTarget) => {
                     accelerator: 'Backspace',
                     click: () => playerAction('stop')
                 },
+                { type: 'separator' },
+                {
+                    label: 'Increase Volume',
+                    accelerator: 'Up',
+                    click: () => playerAction('changeVolume', +10)
+                },
+                {
+                    label: 'Decrease Volume',
+                    accelerator: 'Down',
+                    click: () => playerAction('changeVolume', -10)
+                },
+                {
+                    label: 'Mute',
+                    type: 'checkbox',
+                    accelerator: 'M',
+                    click: () => playerAction('toggleMute')
+                },
                 {
                     label: 'Seek Forwards',
                     accelerator: 'Right',
@@ -89,6 +106,7 @@ const createMenu = (windowTarget) => {
                     accelerator: 'Left',
                     click: () => playerAction('seekSeconds', -5)
                 },
+                { type: 'separator' },
                 {
                     label: 'Increase Rate',
                     accelerator: process.platform == 'darwin' ? 'Command+Left' : 'Ctrl+Up',
@@ -102,8 +120,10 @@ const createMenu = (windowTarget) => {
                 {
                     label: 'Pitch Correction',
                     type: 'checkbox',
+                    accelerator: process.platform == 'darwin' ? 'Command+?' : 'Ctrl+?',
                     click: () => playerAction('togglePitchCorrection')
                 },
+                { type: 'separator' },
                 { label: 'Filters...' }
             ]
         },

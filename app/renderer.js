@@ -5,13 +5,13 @@ const playerHandler = require("./playerHandler.js");
 const defineDropArea = () => {
     const dropArea = document.querySelector("#dropContainer");
 
-    const prevents = (evt) => evt.preventDefault();
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evtName => {
-        dropArea.addEventListener(evtName, prevents);
+    const prevents = (e) => e.preventDefault();
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eName => {
+        dropArea.addEventListener(eName, prevents);
     });
 
-    const handleDrop = (evt) => {
-        const file = [...evt.dataTransfer.files][0];
+    const handleDrop = (e) => {
+        const file = [...e.dataTransfer.files][0];
         playerHandler.createPlayer(file.path);
     }
     dropArea.addEventListener("drop", handleDrop);
@@ -19,13 +19,13 @@ const defineDropArea = () => {
 
 const initApp = () => {
     defineDropArea();
+    playerHandler.initialize();
 
     let fileURI = process.argv.at(-2);
-    if (fileURI != "none") { playerHandler.createPlayer(fileURI) }
+    if (fileURI != 'none' && fileURI != '.') { playerHandler.createPlayer(fileURI) }
  
-
     // try playerHandler.commandPlayers
-    ipcRenderer.on('control-player', function (evt, action, amount) {
+    ipcRenderer.on('control-player', function (e, action, amount) {
         playerHandler.activePlayers.forEach((player) => {
             switch (action) {
                 case 'toggleMute': player.toggleMute(); break;

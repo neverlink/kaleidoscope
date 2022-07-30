@@ -5,6 +5,11 @@ const resizeWindow = (width, height) => ipcRenderer.send('resize-window', width,
 class VideoPlayer {
     constructor(fileURI) {
         this.domElement = this.createElement(fileURI);
+        
+        this.domElement.addEventListener('loadedmetadata', () => {
+            resizeWindow(this.domElement.videoWidth, this.domElement.videoHeight);
+        }, false); // move outside this module to simplify splitscreen, use props as dimesions
+
         document.querySelector('#container').appendChild(this.domElement);
     }
 
@@ -16,7 +21,7 @@ class VideoPlayer {
 
     togglePitchCorrection = () => this.domElement.preservesPitch = !this.domElement.preservesPitch
 
-    changeVolume = (amount) => {
+    changeVolume(amount) {
         this.domElement.volume = (this.domElement.volume * 100 + amount) / 100;
         console.log(`Volume: ${this.domElement.volume}`);
     }
@@ -37,29 +42,24 @@ class VideoPlayer {
 
     createElement(fileURI) {
         const domElement = document.createElement('video');
-
+        
         const defaultProperties = {
             'src': fileURI,
             'volume': 0.5,
-            'loop': true,
             'autoplay': 'true',
-            'preservesPitch': false // THIS DEFAULT DOES NOT WORK
+            'loop': true
         }
-
+        
         for (const [property, value] of Object.entries(defaultProperties)) {
             domElement.setAttribute(property, value)
         }
-
+        
+        domElement.preservesPitch = false;
         domElement.oncontextmenu = function () { alert("insert pretty menu here") }
-
-        domElement.addEventListener('loadedmetadata', () => {
-            resizeWindow(domElement.videoWidth, domElement.videoHeight);
-        }, false);
-
         return domElement;
     }
 
-    destroy = () => this.domElement.remove();
+    destroy() { this.domElement.removeAttribute('src'); this.domElement.remove(); }
 }
 
 module.exports = {

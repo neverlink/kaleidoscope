@@ -7,10 +7,7 @@ const createTray = require('./tray.js')
 
 const constructArgs = () => {
     let preferences = JSON.parse(fs.readFileSync(path.join(__dirname, 'static/preferences.json')));
-    if (process.argv.length != 2)
-        filePath = process.argv.at(-1);
-    else
-        filePath = "none"
+    filePath = process.argv.length == 2 ? process.argv.at(-1) : "none"
     return [preferences, filePath]
 }
 
@@ -45,7 +42,7 @@ const createMainWindow = (args) => {
     })
 
     mainWindow.loadFile('app/static/index.html');
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 
     mainWindow.on('close', function (event) {
         // prevent default
