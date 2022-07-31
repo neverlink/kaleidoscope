@@ -1,4 +1,4 @@
-const { Menu, webContents } = require('electron');
+const { Menu, BrowserWindow } = require('electron');
 const playerHandler = require('./playerHandler.js');
 
 const createMenu = (windowTarget) => {
@@ -61,7 +61,6 @@ const createMenu = (windowTarget) => {
                     label: 'Developer Tools',
                     type: 'checkbox',
                     accelerator: 'F12',
-                    // accelerator: process.platform == 'darwin' ? 'Command+Shift+I' : 'Ctrl+Shift+I',
                     click: () => windowTarget.toggleDevTools()
                 }
             ]
@@ -96,15 +95,36 @@ const createMenu = (windowTarget) => {
                     accelerator: 'M',
                     click: () => playerAction('toggleMute')
                 },
+                { type: 'separator' },
+                {
+                    label: 'Jump to Start',
+                    accelerator: process.platform == 'darwin' ? 'Command+Left' : 'Ctrl+Left',
+                    click: () => playerAction('seek', 0)
+                },
+                {
+                    label: 'Jump to End',
+                    accelerator: process.platform == 'darwin' ? 'Command+Right' : 'Ctrl+Right',
+                    click: () => playerAction('seek', -1)
+                },
                 {
                     label: 'Seek Forwards',
-                    accelerator: 'Right',
-                    click: () => playerAction('seekSeconds', +5)
+                    accelerator: 'Shift+Right',
+                    click: () => playerAction('seek', +15)
                 },
                 {
                     label: 'Seek Backwards',
+                    accelerator: 'Shift+Left',
+                    click: () => playerAction('seek', -15)
+                },
+                {
+                    label: 'Peek Forwards',
+                    accelerator: 'Right',
+                    click: () => playerAction('seek', +2.5)
+                },
+                {
+                    label: 'Peek Backwards',
                     accelerator: 'Left',
-                    click: () => playerAction('seekSeconds', -5)
+                    click: () => playerAction('seek', -2.5)
                 },
                 { type: 'separator' },
                 {
@@ -120,7 +140,7 @@ const createMenu = (windowTarget) => {
                 {
                     label: 'Pitch Correction',
                     type: 'checkbox',
-                    accelerator: process.platform == 'darwin' ? 'Command+?' : 'Ctrl+?',
+                    accelerator: process.platform == 'darwin' ? 'Command+/' : 'Ctrl+/',
                     click: () => playerAction('togglePitchCorrection')
                 },
                 { type: 'separator' },
@@ -130,7 +150,22 @@ const createMenu = (windowTarget) => {
         {
             label: 'Help',
             submenu: [
-                { role: 'about' }
+                { role: 'about' },
+                {
+                    label: 'Hotkeys',
+                    accelerator: 'F1',
+                    click: () => {
+                        const aboutWindow = new BrowserWindow({
+                            width: 500,
+                            height: 400,
+                            center: true,
+                            autoHideMenuBar: true,
+                            alwaysOnTop: true,
+                            icon: 'swag.png'
+                        })
+                        aboutWindow.loadFile('app/static/about.html');
+                    }
+                }
             ]
         }
     ]);

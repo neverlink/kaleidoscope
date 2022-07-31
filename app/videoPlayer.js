@@ -5,11 +5,14 @@ const resizeWindow = (width, height) => ipcRenderer.send('resize-window', width,
 class VideoPlayer {
     constructor(fileURI) {
         this.domElement = this.createElement(fileURI);
-        
-        this.domElement.addEventListener('loadedmetadata', () => {
-            resizeWindow(this.domElement.videoWidth, this.domElement.videoHeight);
-        }, false); // move outside this module to simplify splitscreen, use props as dimesions
 
+        this.domElement.addEventListener('loadedmetadata', () => {
+            this.width = this.domElement.videoWidth;
+            this.height = this.domElement.videoHeight;
+            this.duration = this.domElement.duration;
+            resizeWindow(this.width, this.height);
+        }, false); // move outside this module to simplify splitscreen, use props as dimesions
+        
         document.querySelector('#container').appendChild(this.domElement);
     }
 
@@ -35,31 +38,33 @@ class VideoPlayer {
         console.log(`Rate: ${newRate}`);
     }
 
-    seekSeconds = (amount) => {
-        this.domElement.currentTime = (this.domElement.currentTime += amount).toFixed(2);
+    seek = (amount) => {
+        switch (amount) {
+            case 0: this.domElement.currentTime = 0; break;
+            case -1: this.domElement.currentTime = this.duration - 0.1; break;
+            default: this.domElement.currentTime = (this.domElement.currentTime += amount);
+        }
         console.log(`Skipped to: ${this.domElement.currentTime}`);
     }
 
     createElement(fileURI) {
         const domElement = document.createElement('video');
         
-        const defaultProperties = {
-            'src': fileURI,
-            'volume': 0.5,
-            'autoplay': 'true',
-            'loop': true
-        }
-        
-        for (const [property, value] of Object.entries(defaultProperties)) {
-            domElement.setAttribute(property, value)
-        }
-        
+        domElement.src = fileURI,
+        domElement.volume = 0.5,
+        domElement.autoplay = true,
+        domElement.loop = true        
         domElement.preservesPitch = false;
+
         domElement.oncontextmenu = function () { alert("insert pretty menu here") }
         return domElement;
     }
 
-    destroy() { this.domElement.removeAttribute('src'); this.domElement.remove(); }
+    destroy() { 
+        this.domElement.removeAttribute('src');
+        this.domElement.load();
+        this.domElement.remove();
+    }
 }
 
 module.exports = {

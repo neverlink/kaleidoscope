@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 const createMenu = require('./menuBar.js')
-const createTray = require('./tray.js')
+// const createTray = require('./tray.js')
 
 const constructArgs = () => {
     let preferences = JSON.parse(fs.readFileSync(path.join(__dirname, 'static/preferences.json')));

@@ -28,6 +28,8 @@ function createPlayer(fileURI) {
     newPlayer.domElement.addEventListener('wheel', function(e) {
         e.deltaY >= 0 ? newPlayer.changeVolume(-10) : newPlayer.changeVolume(+10);
     });
+
+    newPlayer.domElement.addEventListener('click', () => newPlayer.togglePause());
 }
 
 function initialize() {

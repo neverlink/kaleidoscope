@@ -33,9 +33,9 @@ const initApp = () => {
                 case 'stop': player.stop(); break;
                 case 'changeVolume': player.changeVolume(amount); break;
                 case 'changeSpeed': player.changeSpeed(amount); break;
-                case 'seekSeconds': player.seekSeconds(amount); break;
+                case 'seek': player.seek(amount); break;
                 case 'togglePitchCorrection': player.togglePitchCorrection(); break;
-                default: console.log('unknown command ' + action); break;
+                default: console.log('Unknown action ' + action); break;
             }
         });
     });
