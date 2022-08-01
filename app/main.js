@@ -42,7 +42,7 @@ const createMainWindow = (args) => {
     })
 
     mainWindow.loadFile('app/static/index.html');
-    // mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
 
     mainWindow.on('close', function (event) {
         // prevent default

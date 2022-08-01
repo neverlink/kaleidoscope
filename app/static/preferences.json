@@ -10,7 +10,7 @@
     "maxWidth": 3000,
     "maxHeight": 3000,
 
-    "centerWindowOnLaunch": true,
+    "centerWindowOnLaunch": false,
     "hideMenuBar": false,
     "alwaysOnTop": false,
 

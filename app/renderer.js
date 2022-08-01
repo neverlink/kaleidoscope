@@ -1,4 +1,3 @@
-const { ipcRenderer } = require('electron');
 const playerHandler = require("./playerHandler.js");
 
 const defineDropArea = () => {
@@ -19,25 +18,6 @@ const defineDropArea = () => {
 const initApp = () => {
     defineDropArea();
     playerHandler.initialize();
-
-    let fileURI = process.argv.at(-2);
-    if (fileURI != 'none' && fileURI != '.') { playerHandler.createPlayer(fileURI) }
- 
-    // try playerHandler.commandPlayers
-    ipcRenderer.on('control-player', function (e, action, amount) {
-        playerHandler.activePlayers.forEach((player) => {
-            switch (action) {
-                case 'toggleMute': player.toggleMute(); break;
-                case 'togglePause': player.togglePause(); break;
-                case 'stop': player.stop(); break;
-                case 'changeVolume': player.changeVolume(amount); break;
-                case 'changeSpeed': player.changeSpeed(amount); break;
-                case 'seek': player.seek(amount); break;
-                case 'togglePitchCorrection': player.togglePitchCorrection(); break;
-                default: console.log('Unknown action ' + action); break;
-            }
-        });
-    });
 }
 
 document.addEventListener("DOMContentLoaded", initApp);

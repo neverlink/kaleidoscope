@@ -1,8 +1,7 @@
 const { dialog, Menu, BrowserWindow } = require('electron');
-const playerHandler = require('./playerHandler.js');
+// const playerHandler = require('./playerHandler.js');
 
 const createMenu = (windowTarget) => {
-
     // console.log(playerHandler.getFocusedPlayer())
     const playerAction = (action, value) => windowTarget.webContents.send('control-player', action, value)
 
@@ -135,12 +134,12 @@ const createMenu = (windowTarget) => {
                 {
                     label: 'Increase Rate',
                     accelerator: process.platform == 'darwin' ? 'Command+Left' : 'Ctrl+Up',
-                    click: () => playerAction('changeSpeed', +10)
+                    click: () => playerAction('changeSpeed', +1)
                 },
                 {
                     label: 'Decrease Rate',
                     accelerator: process.platform == 'darwin' ? 'Command+Down' : 'Ctrl+Down',
-                    click: () => playerAction('changeSpeed', -10)
+                    click: () => playerAction('changeSpeed', -1)
                 },
                 { type: 'separator' },
             ]
@@ -157,8 +156,8 @@ const createMenu = (windowTarget) => {
                 {
                     label: 'Splitscreen',
                     type: 'checkbox',
-                    accelerator: process.platform == 'darwin' ? 'Command+/' : 'Ctrl+/',
-                    click: () => playerAction('togglePitchCorrection')
+                    // accelerator: process.platform == 'darwin' ? 'Command+/' : 'Ctrl+/',
+                    // click: () => 
                 },
                 { 
                     label: 'Filters...',
@@ -171,6 +170,12 @@ const createMenu = (windowTarget) => {
                         },
                         {
                             label: 'Hue Shift'
+                        },
+                        {
+                            label: 'Flip'
+                        },
+                        {
+                            label: 'Rotate'
                         }
                     ]
                 }
