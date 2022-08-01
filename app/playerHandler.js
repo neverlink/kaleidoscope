@@ -1,33 +1,20 @@
 const { VideoPlayer } = require('./videoPlayer.js');
 
-const activePlayers = [] // replace this with mediaGroup
+const activePlayers = [];
+
+// const getActivePlayers = () => document.querySelectorAll('audio, video');
 
 // function commandPlayers(method) {
-//     playerHandler.activePlayers.forEach((player) => {
-//         player.method
-//     });
-// }
-
-// function getFocusedPlayer() { // currently this returns a domElement, not a VideoPlayer
-//     document.addEventListener('mousemove', e => {
-//         x = document.elementFromPoint(e.clientX, e.clientY)
-//         console.log(x)
-//         return x
-//     }, { passive: true, once: true }) // once might screw stuff up
+//     players = getActivePlayers();
 // }
 
 function createPlayer(fileURI) {
     if (activePlayers.length > 0) activePlayers.forEach((player) => {
         player.destroy();
-        activePlayers.pop();
-    }); // if SplitScreen disabled
-
-    let newPlayer = new VideoPlayer(fileURI)
-    activePlayers.push(newPlayer);
-    
-    newPlayer.domElement.addEventListener('wheel', function(e) {
-        e.deltaY >= 0 ? newPlayer.changeVolume(-10) : newPlayer.changeVolume(+10);
     });
+
+    let newPlayer = new VideoPlayer(fileURI);
+    activePlayers.push(newPlayer);
 
     newPlayer.domElement.addEventListener('click', () => newPlayer.togglePause());
 }
@@ -42,13 +29,21 @@ function initialize() {
             keepPlaying ? this.play() : this.pause();
         }
     });
-}
 
+    document.addEventListener('wheel', function(e) {
+        let player = document.elementFromPoint(e.clientX, e.clientY);
+
+        if (e.deltaY < 0 && player.volume < 1) {
+            player.volume = (player.volume * 100 + 10) / 100;
+        } else if (e.deltaY > 0 && player.volume > 0) {
+            player.volume = (player.volume * 100 - 10) / 100;
+        } else return
+        console.log(`Volume: ${player.volume}`);
+    });
+}
 
 module.exports = {
     initialize,
     createPlayer,
-    activePlayers,
-    // getFocusedPlayer,
-    // commandPlayers
+    activePlayers
 }

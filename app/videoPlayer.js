@@ -25,7 +25,9 @@ class VideoPlayer {
     togglePitchCorrection = () => this.domElement.preservesPitch = !this.domElement.preservesPitch
 
     changeVolume(amount) {
-        this.domElement.volume = (this.domElement.volume * 100 + amount) / 100;
+        let newVolume = (this.domElement.volume * 100 + amount) / 100;
+        if (newVolume < 0 || newVolume > 1) return;
+        this.domElement.volume = newVolume
         console.log(`Volume: ${this.domElement.volume}`);
     }
 

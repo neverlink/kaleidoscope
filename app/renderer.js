@@ -1,7 +1,6 @@
 const { ipcRenderer } = require('electron');
 const playerHandler = require("./playerHandler.js");
 
-
 const defineDropArea = () => {
     const dropArea = document.querySelector("#dropContainer");
 

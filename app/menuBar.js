@@ -1,4 +1,4 @@
-const { Menu, BrowserWindow } = require('electron');
+const { dialog, Menu, BrowserWindow } = require('electron');
 const playerHandler = require('./playerHandler.js');
 
 const createMenu = (windowTarget) => {
@@ -31,6 +31,11 @@ const createMenu = (windowTarget) => {
                     click() {
                         //
                     }
+                },
+                { type: 'separator' },
+                {
+                    label: 'Open File Location',
+                    click: () => windowTarget.setAlwaysOnTop(!windowTarget.isAlwaysOnTop())
                 },
                 { type: 'separator' },
                 { label: 'Exit', role: 'Quit', accelerator: 'Ctrl+W' } // add darwin
@@ -66,7 +71,7 @@ const createMenu = (windowTarget) => {
             ]
         },
         {
-            label: 'Player',
+            label: 'Controls',
             submenu: [
                 {
                     label: 'Play/Pause',
@@ -137,14 +142,38 @@ const createMenu = (windowTarget) => {
                     accelerator: process.platform == 'darwin' ? 'Command+Down' : 'Ctrl+Down',
                     click: () => playerAction('changeSpeed', -10)
                 },
+                { type: 'separator' },
+            ]
+        },
+        {
+            label: 'Player',
+            submenu: [
                 {
                     label: 'Pitch Correction',
                     type: 'checkbox',
                     accelerator: process.platform == 'darwin' ? 'Command+/' : 'Ctrl+/',
                     click: () => playerAction('togglePitchCorrection')
                 },
-                { type: 'separator' },
-                { label: 'Filters...' }
+                {
+                    label: 'Splitscreen',
+                    type: 'checkbox',
+                    accelerator: process.platform == 'darwin' ? 'Command+/' : 'Ctrl+/',
+                    click: () => playerAction('togglePitchCorrection')
+                },
+                { 
+                    label: 'Filters...',
+                    submenu: [
+                        {
+                            label: 'Invert'
+                        },
+                        {
+                            label: 'Greyscale'
+                        },
+                        {
+                            label: 'Hue Shift'
+                        }
+                    ]
+                }
             ]
         },
         {

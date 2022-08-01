@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, dialog, ipcMain, webContents } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -29,7 +29,7 @@ const createMainWindow = (args) => {
         autoHideMenuBar: preferences['hideMenuBar'],
         alwaysOnTop: preferences['alwaysOnTop'],
 
-        icon: 'swag.png',
+        icon: path.join(__dirname, 'static/icon.png'),
 
         frame: true,
 
