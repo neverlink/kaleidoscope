@@ -4,8 +4,8 @@ const defineDropArea = () => {
     const dropArea = document.querySelector("#dropContainer");
 
     const prevents = (e) => e.preventDefault();
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eName => {
-        dropArea.addEventListener(eName, prevents);
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
+        dropArea.addEventListener(e, prevents);
     });
 
     const handleDrop = (e) => {

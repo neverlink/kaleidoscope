@@ -1,7 +1,3 @@
-const { ipcRenderer } = require('electron')
-
-const resizeWindow = (width, height) => ipcRenderer.send('resize-window', width, height);
-
 function setControls() {
     Object.defineProperty(HTMLMediaElement.prototype, 'isPlaying', {
         configurable: true, // else Uncaught TypeError: Cannot redefine property
@@ -73,17 +69,18 @@ function spawnElement(fileURI) {
     node.autoplay = true,
     node.loop = true        
     node.preservesPitch = false;
+    node.className = 'player keep-proportions';
 
-    node.addEventListener('loadedmetadata', () => resizeWindow(node.videoWidth, node.videoHeight));
     node.addEventListener('click', () => node.togglePause());
+    node.oncontextmenu = function () { 'insert pretty menu here'}
     
-    node.oncontextmenu = function () { alert("insert pretty menu here") }
-
-    document.querySelector('#container').appendChild(node);
-    return node
+    document.querySelector('div#player-container').appendChild(node);
+    return node;
 }
 
 module.exports.create = (fileURI) => {
-    spawnElement(fileURI);
+    node = spawnElement(fileURI);
     setControls();
+    console.log('Player created for ' + fileURI)
+    return node;
 }

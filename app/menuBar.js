@@ -1,8 +1,6 @@
 const { dialog, Menu, BrowserWindow } = require('electron');
-// const playerHandler = require('./playerHandler.js');
 
 const createMenu = (windowTarget) => {
-    // console.log(playerHandler.getFocusedPlayer())
     const playerAction = (action, value) => windowTarget.webContents.send('control-player', action, value)
 
     const menuTemplate = ([
@@ -11,6 +9,7 @@ const createMenu = (windowTarget) => {
             submenu: [
                 {
                     label: 'Open File...',
+                    accelerator: process.platform == 'darwin' ? 'Command+O' : 'Ctrl+O',
                     click() {
                         dialog.showOpenDialog({
                             properties: ['openFile'], filters: [
@@ -19,7 +18,10 @@ const createMenu = (windowTarget) => {
                                 { name: 'All Files', extensions: ['*'] }
                             ]
                         }).then(result => {
-                            console.log(result);
+                            windowTarget.webContents.executeJavaScript('console.log(window)')
+                            if (!result['canceled']) {
+                                // windowTarget.webContents.send('create-player', result['filePaths'][0])
+                            }
                         }).catch(err => {
                             dialog.showErrorBox('Error', err)
                         });
@@ -37,7 +39,11 @@ const createMenu = (windowTarget) => {
                     click: () => windowTarget.setAlwaysOnTop(!windowTarget.isAlwaysOnTop())
                 },
                 { type: 'separator' },
-                { label: 'Exit', role: 'Quit', accelerator: 'Ctrl+W' } // add darwin
+                {
+                    label: 'Exit',
+                    role: 'Quit',
+                    accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q'
+                }
             ]
         },
         {
@@ -48,10 +54,21 @@ const createMenu = (windowTarget) => {
                     type: 'checkbox',
                     click: () => windowTarget.setAlwaysOnTop(!windowTarget.isAlwaysOnTop())
                 },
-                { label: 'Keep Aspect Ratio' },
-                { label: 'Show Title Bar' },
                 {
-                    label: 'Frameless (dysfunctional)',
+                    label: 'Keep Aspect Ratio',
+                    type: 'checkbox',
+                    checked: true,
+                    click: () => console.log('WIP')
+                },
+                {
+                    label: 'Title Bar',
+                    type: 'checkbox',
+                    checked: true,
+                    accelerator: 'F2',
+                    click: () => windowTarget.setMenuBarVisibility(!windowTarget.isMenuBarVisible())
+                },
+                {
+                    label: 'Frameless (WIP)',
                     type: 'checkbox',
                     accelerator: 'F10',
                 },
@@ -154,12 +171,11 @@ const createMenu = (windowTarget) => {
                     click: () => playerAction('togglePitchCorrection')
                 },
                 {
-                    label: 'Splitscreen',
-                    type: 'checkbox',
-                    // accelerator: process.platform == 'darwin' ? 'Command+/' : 'Ctrl+/',
+                    label: 'Add Screen',
+                    accelerator: process.platform == 'darwin' ? 'Command+T' : 'Ctrl+T',
                     // click: () => 
                 },
-                { 
+                {
                     label: 'Filters...',
                     submenu: [
                         {
@@ -195,7 +211,7 @@ const createMenu = (windowTarget) => {
                             center: true,
                             autoHideMenuBar: true,
                             alwaysOnTop: true,
-                            icon: 'swag.png'
+                            icon: 'swag.png' // change this
                         })
                         aboutWindow.loadFile('app/static/about.html');
                     }

@@ -1,7 +1,12 @@
 const { ipcRenderer } = require('electron');
-const player = require('./player.js');
+const mediaPlayer = require('./player.js');
 
 const getActivePlayers = () => document.querySelectorAll('audio, video');
+
+const resizeWindow = (width, height) => {
+    console.log(`Resizing to ${width} x ${height}`)
+    ipcRenderer.send('resize-window', width, height)
+};
 
 function commandPlayers(action, amount) {
     getActivePlayers().forEach((player) => {
@@ -19,21 +24,25 @@ function commandPlayers(action, amount) {
 }
 
 function createPlayer(fileURI) {
-    activePlayers = getActivePlayers();
-    if (activePlayers.length > 0) activePlayers.forEach((player) => {
-        player.destroy();
-    });
-
-    player.create(fileURI);
-}
-
-function initialize() {
-    let fileURI = process.argv.at(-2);
-    if (fileURI != 'none' && fileURI != '.') { 
-        createPlayer(fileURI)
+    if (fileURI == 'none' || fileURI == '.') {
+        console.log('Invalid file URI provided!')
+        return
     }
 
-    document.addEventListener('wheel', function(e) {
+    newPlayer = mediaPlayer.create(fileURI);
+
+    node.addEventListener('loadedmetadata', () => {
+        if (getActivePlayers().length == 1) {
+            resizeWindow(newPlayer.videoWidth, newPlayer.videoHeight);
+            console.log(`Body: ${newPlayer.width} x ${newPlayer.height}`);
+        }
+    });
+}
+function initialize() {
+    let fileURI = process.argv.at(-2);
+    createPlayer(fileURI);
+
+    document.addEventListener('wheel', function (e) {
         let player = document.elementFromPoint(e.clientX, e.clientY);
 
         if (e.deltaY < 0 && player.volume < 1) {
@@ -45,8 +54,8 @@ function initialize() {
         console.log(`Volume: ${player.volume}`);
     });
 
-    ipcRenderer.on('control-player', function (e, action, amount) {
-        commandPlayers(action, amount)
+    ipcRenderer.on('control-player', function (e, action, value) {
+        commandPlayers(action, value)
     });
 }
 

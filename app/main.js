@@ -22,8 +22,8 @@ const createMainWindow = (args) => {
         minWidth: preferences['minWidth'],
         minHeight: preferences['minHeight'],
 
-        // maxWidth: preferences['maxWidth'],
-        // maxHeight: preferences['maxHeight'],
+        maxWidth: preferences['maxWidth'],
+        maxHeight: preferences['maxHeight'],
 
         center: preferences['centerWindowOnLaunch'],
         autoHideMenuBar: preferences['hideMenuBar'],
@@ -31,17 +31,17 @@ const createMainWindow = (args) => {
 
         icon: path.join(__dirname, 'static/icon.png'),
 
-        frame: true,
+        frame: true, // for now
 
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            // preload: path.join(__dirname, 'preload.js'),
             additionalArguments: [JSON.stringify(preferences), filePath]
         }
     })
 
     mainWindow.loadFile('app/static/index.html');
+    mainWindow.setBackgroundColor('#111') 
     mainWindow.webContents.openDevTools();
 
     mainWindow.on('close', function (event) {
@@ -50,9 +50,8 @@ const createMainWindow = (args) => {
         app.quit();
     });
 
-    // change this to get size from renderer and resize
     ipcMain.on('resize-window', (event, width, height) => {
-        mainWindow.setSize(width, height, true); // ask monyu to try this
+        mainWindow.setSize(width, height);
         mainWindow.center();
     })
 
