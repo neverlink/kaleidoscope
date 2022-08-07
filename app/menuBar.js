@@ -1,37 +1,37 @@
 const { dialog, Menu, BrowserWindow } = require('electron');
 
 const createMenu = (windowTarget) => {
-    const playerAction = (action, value) => windowTarget.webContents.send('control-player', action, value)
+    const createPlayers = (action, fileURI) => windowTarget.webContents.send('create-players', action, fileURI);
+    const destroyPlayer = (action) => windowTarget.webContents.send('destroy-player', action);
+    const restorePlayer = (action) => windowTarget.webContents.send('restore-player', action);
+    const commandPlayers = (action, value) => windowTarget.webContents.send('command-players', action, value);
 
     const menuTemplate = ([
         {
             label: 'File',
             submenu: [
                 {
-                    label: 'Open File...',
+                    label: 'Open...',
                     accelerator: process.platform == 'darwin' ? 'Command+O' : 'Ctrl+O',
                     click() {
                         dialog.showOpenDialog({
-                            properties: ['openFile'], filters: [
+                            properties: [
+                                'openFiles', 'multiSelections'
+                            ],
+                            filters: [
                                 { name: 'Video Files', extensions: ['mp4', 'avi', 'mkv', 'webm'] },
                                 { name: 'Audio Files', extensions: ['mp3', 'wav', 'ogg', 'flac'] },
                                 { name: 'All Files', extensions: ['*'] }
                             ]
                         }).then(result => {
-                            windowTarget.webContents.executeJavaScript('console.log(window)')
                             if (!result['canceled']) {
-                                // windowTarget.webContents.send('create-player', result['filePaths'][0])
+                                createPlayers(result['filePaths']);
                             }
-                        }).catch(err => {
-                            dialog.showErrorBox('Error', err)
                         });
                     }
                 },
                 {
                     label: 'Open URL...',
-                    click() {
-                        //
-                    }
                 },
                 { type: 'separator' },
                 {
@@ -52,13 +52,15 @@ const createMenu = (windowTarget) => {
                 {
                     label: 'Always on Top',
                     type: 'checkbox',
-                    click: () => windowTarget.setAlwaysOnTop(!windowTarget.isAlwaysOnTop())
+                    click: () => {
+                        windowTarget.setAlwaysOnTop(!windowTarget.isAlwaysOnTop());
+                    }
                 },
                 {
                     label: 'Keep Aspect Ratio',
                     type: 'checkbox',
                     checked: true,
-                    click: () => console.log('WIP')
+                    click: () => commandPlayers('toggleAspectRatio')
                 },
                 {
                     label: 'Title Bar',
@@ -92,71 +94,71 @@ const createMenu = (windowTarget) => {
                 {
                     label: 'Play/Pause',
                     accelerator: 'Space',
-                    click: () => playerAction('togglePause')
+                    click: () => commandPlayers('togglePause')
                 },
                 {
                     label: 'Stop',
                     accelerator: 'Backspace',
-                    click: () => playerAction('stop')
+                    click: () => commandPlayers('stop')
                 },
                 { type: 'separator' },
                 {
                     label: 'Increase Volume',
                     accelerator: 'Up',
-                    click: () => playerAction('changeVolume', +10)
+                    click: () => commandPlayers('changeVolume', +10)
                 },
                 {
                     label: 'Decrease Volume',
                     accelerator: 'Down',
-                    click: () => playerAction('changeVolume', -10)
+                    click: () => commandPlayers('changeVolume', -10)
                 },
                 {
                     label: 'Mute',
                     type: 'checkbox',
                     accelerator: 'M',
-                    click: () => playerAction('toggleMute')
+                    click: () => commandPlayers('toggleMute')
                 },
                 { type: 'separator' },
                 {
                     label: 'Jump to Start',
                     accelerator: process.platform == 'darwin' ? 'Command+Left' : 'Ctrl+Left',
-                    click: () => playerAction('seek', 0)
+                    click: () => commandPlayers('seek', 0)
                 },
                 {
                     label: 'Jump to End',
                     accelerator: process.platform == 'darwin' ? 'Command+Right' : 'Ctrl+Right',
-                    click: () => playerAction('seek', -1)
+                    click: () => commandPlayers('seek', -1)
                 },
                 {
                     label: 'Seek Forwards',
                     accelerator: 'Shift+Right',
-                    click: () => playerAction('seek', +15)
+                    click: () => commandPlayers('seek', +15)
                 },
                 {
                     label: 'Seek Backwards',
                     accelerator: 'Shift+Left',
-                    click: () => playerAction('seek', -15)
+                    click: () => commandPlayers('seek', -15)
                 },
                 {
                     label: 'Peek Forwards',
                     accelerator: 'Right',
-                    click: () => playerAction('seek', +2.5)
+                    click: () => commandPlayers('seek', +2.5)
                 },
                 {
                     label: 'Peek Backwards',
                     accelerator: 'Left',
-                    click: () => playerAction('seek', -2.5)
+                    click: () => commandPlayers('seek', -2.5)
                 },
                 { type: 'separator' },
                 {
                     label: 'Increase Rate',
                     accelerator: process.platform == 'darwin' ? 'Command+Left' : 'Ctrl+Up',
-                    click: () => playerAction('changeSpeed', +1)
+                    click: () => commandPlayers('changeSpeed', +1)
                 },
                 {
                     label: 'Decrease Rate',
                     accelerator: process.platform == 'darwin' ? 'Command+Down' : 'Ctrl+Down',
-                    click: () => playerAction('changeSpeed', -1)
+                    click: () => commandPlayers('changeSpeed', -1)
                 },
                 { type: 'separator' },
             ]
@@ -165,17 +167,29 @@ const createMenu = (windowTarget) => {
             label: 'Player',
             submenu: [
                 {
-                    label: 'Pitch Correction',
-                    type: 'checkbox',
-                    accelerator: process.platform == 'darwin' ? 'Command+/' : 'Ctrl+/',
-                    click: () => playerAction('togglePitchCorrection')
-                },
-                {
-                    label: 'Add Screen',
+                    label: 'Add Player',
                     accelerator: process.platform == 'darwin' ? 'Command+T' : 'Ctrl+T',
                     // click: () => 
                 },
                 {
+                    label: 'Close Player',
+                    accelerator: process.platform == 'darwin' ? 'Command+W' : 'Ctrl+W',
+                    click: () => destroyPlayer()
+                },
+                {
+                    label: 'Restore Player',
+                    accelerator: process.platform == 'darwin' ? 'Command+Shift+T' : 'Ctrl+Shift+T',
+                    click: () => restorePlayer()
+                },
+                { type: 'separator' },
+                {
+                    label: 'Pitch Correction',
+                    type: 'checkbox',
+                    accelerator: process.platform == 'darwin' ? 'Command+/' : 'Ctrl+/',
+                    click: () => commandPlayers('togglePitchCorrection')
+                },
+                {
+                    // Open window with sliders for each filter
                     label: 'Filters...',
                     submenu: [
                         {

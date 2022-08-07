@@ -1,7 +1,7 @@
 const { ipcRenderer } = require('electron');
 const mediaPlayer = require('./player.js');
 
-const getActivePlayers = () => document.querySelectorAll('audio, video');
+const getActivePlayers = () => Array.from(document.querySelectorAll('audio, video'));
 
 const resizeWindow = (width, height) => {
     console.log(`Resizing to ${width} x ${height}`)
@@ -18,49 +18,71 @@ function commandPlayers(action, amount) {
             case 'changeSpeed': player.changeSpeed(amount); break;
             case 'seek': player.seek(amount); break;
             case 'togglePitchCorrection': player.togglePitchCorrection(); break;
-            default: console.log('Unknown action ' + action); break;
+            case 'toggleAspectRatio': player.toggleAspectRatio(); break;
+            default: break;
         }
     });
 }
 
-function createPlayer(fileURI) {
-    if (fileURI == 'none' || fileURI == '.') {
-        console.log('Invalid file URI provided!')
+function createPlayers(fileURIs) {
+    if (fileURIs == 'none' || fileURIs == '.') {
+        console.log('No file URI provided!')
         return
     }
 
-    newPlayer = mediaPlayer.create(fileURI);
-
-    node.addEventListener('loadedmetadata', () => {
-        if (getActivePlayers().length == 1) {
-            resizeWindow(newPlayer.videoWidth, newPlayer.videoHeight);
-            console.log(`Body: ${newPlayer.width} x ${newPlayer.height}`);
-        }
+    fileURIs.forEach((fileURI) => {
+        newPlayer = mediaPlayer.create(fileURI);
+        newPlayer.addEventListener('loadedmetadata', () => {
+            if (getActivePlayers().length == 1) {
+                resizeWindow(newPlayer.videoWidth, newPlayer.videoHeight);
+            }
+            console.log(`Body: ${document.body.scrollWidth} x ${document.body.scrollHeight}`);
+        });
     });
 }
+
 function initialize() {
-    let fileURI = process.argv.at(-2);
-    createPlayer(fileURI);
+    let startURI = process.argv.at(-2);
+    createPlayers(startURI);
+
+    let focusedPlayer = null;
+    document.addEventListener('mousemove', function (e) {
+        focusedPlayer = document.elementFromPoint(e.clientX, e.clientY)
+    });
+
+    let destroyedPlayerSrc = null;
 
     document.addEventListener('wheel', function (e) {
-        let player = document.elementFromPoint(e.clientX, e.clientY);
-
+        let player = focusedPlayer;
         if (e.deltaY < 0 && player.volume < 1) {
             player.volume = (player.volume * 100 + 10) / 100;
         } else if (e.deltaY > 0 && player.volume > 0) {
             player.volume = (player.volume * 100 - 10) / 100;
         } else return
-
         console.log(`Volume: ${player.volume}`);
     });
 
-    ipcRenderer.on('control-player', function (e, action, value) {
+    ipcRenderer.on('create-players', function (e, fileURIs) {
+        createPlayers(fileURIs);
+    });
+
+    ipcRenderer.on('command-players', function (e, action, value) {
         commandPlayers(action, value)
+    });
+
+    ipcRenderer.on('destroy-player', function (e, player) {
+        destroyedPlayerSrc = focusedPlayer.destroy();
+        // no players left? reply to main with quit
+    });
+
+    ipcRenderer.on('restore-player', function (e, player) {
+        if (destroyedPlayerSrc != null)
+            createPlayers([destroyedPlayerSrc]);
     });
 }
 
 module.exports = {
     initialize,
-    createPlayer,
+    createPlayers,
     commandPlayers
 }

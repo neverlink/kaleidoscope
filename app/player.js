@@ -1,6 +1,6 @@
 function setControls() {
     Object.defineProperty(HTMLMediaElement.prototype, 'isPlaying', {
-        configurable: true, // else Uncaught TypeError: Cannot redefine property
+        configurable: true,
         get: function () {
             return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
         },
@@ -9,22 +9,22 @@ function setControls() {
         }
     });
 
-    HTMLMediaElement.prototype.toggleMute = function() {
+    HTMLMediaElement.prototype.toggleMute = function () {
         this.muted = !this.muted;
         this.muted ? console.log('Muted') : console.log('Unmuted')
     }
-    
-    HTMLMediaElement.prototype.togglePause = function() {
+
+    HTMLMediaElement.prototype.togglePause = function () {
         this.isPlaying = !this.isPlaying;
         this.isPlaying ? console.log('Paused') : console.log('Resumed')
     }
-    
-    HTMLMediaElement.prototype.togglePitchCorrection = function() {
+
+    HTMLMediaElement.prototype.togglePitchCorrection = function () {
         this.preservesPitch = !this.preservesPitch
         this.preservesPitch ? console.log('Pitch correction: Enabled') : console.log('Pitch correction: Disabled')
     }
 
-    HTMLMediaElement.prototype.changeVolume = function(amount) {
+    HTMLMediaElement.prototype.changeVolume = function (amount) {
         let newVolume = (this.volume * 100 + amount) / 100;
         if (newVolume < 0 || newVolume > 1) return;
         this.volume = newVolume
@@ -40,7 +40,7 @@ function setControls() {
         console.log(`Rate: ${newRate}`);
     }
 
-    HTMLMediaElement.prototype.stop = function() {
+    HTMLMediaElement.prototype.stop = function () {
         this.currentTime = 0;
         this.pause();
     }
@@ -54,26 +54,38 @@ function setControls() {
         console.log(`Skipped to: ${this.currentTime.toFixed(2)}`);
     }
 
+    HTMLMediaElement.prototype.toggleAspectRatio = function () {
+        if (this.classList.contains('keep-proportions')) {
+            this.classList.remove('keep-proportions');
+            this.classList.add('ignore-proportions');
+        } else {
+            this.classList.remove('ignore-proportions');
+            this.classList.add('keep-proportions');
+        }
+    }
+
     HTMLMediaElement.prototype.destroy = function (amount) {
+        let oldSrc = this.src;
         this.removeAttribute('src');
         this.load();
         this.remove();
+        return oldSrc;
     }
 }
 
 function spawnElement(fileURI) {
     const node = document.createElement('video');
-    
-    node.src = fileURI,
-    node.volume = 0.5,
-    node.autoplay = true,
-    node.loop = true        
+
+    node.src = fileURI;
+    node.volume = 0.5;
+    node.autoplay = true;
+    node.loop = true;
     node.preservesPitch = false;
     node.className = 'player keep-proportions';
 
     node.addEventListener('click', () => node.togglePause());
-    node.oncontextmenu = function () { 'insert pretty menu here'}
-    
+    node.oncontextmenu = function () { 'insert pretty menu here' }
+
     document.querySelector('div#player-container').appendChild(node);
     return node;
 }
