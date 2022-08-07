@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "ubuntu";
+    src: url("ubuntu-font/Ubuntu-R.ttf");
+}
+
 * {
     /* this screws with click/scroll controls, frameless only */
     /* user-select: none; */
@@ -11,7 +16,26 @@ body {
     background-color: #111;
 }
 
+#splash-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#splash-logo {
+    width: 125px;
+    height: 125px;
+}
+
+.splash-notice {
+    font-family: "ubuntu", "Arial";
+    color: rgb(190, 190, 190);
+}
+
 #player-container {
+    width: 100vw;
+    height: 100vh;
     display: flex;
 }
 

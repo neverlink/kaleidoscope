@@ -38,6 +38,7 @@ function createPlayers(fileURIs) {
             }
             console.log(`Body: ${document.body.scrollWidth} x ${document.body.scrollHeight}`);
         });
+        document.title += ' - ' + newPlayer.src.substring(newPlayer.src.lastIndexOf('/') + 1)
     });
 }
 
