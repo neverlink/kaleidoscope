@@ -11,7 +11,7 @@ const defineDropArea = () => {
     const handleDrop = (e) => {
         let files = [...e.dataTransfer.files];
         let filePaths = files.map(file => file['path']);
-        playerHandler.createPlayers(filePaths);
+        playerHandler.createPlayers(filePaths, true);
     }
     dropArea.addEventListener("drop", handleDrop);
 }

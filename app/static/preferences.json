@@ -4,8 +4,8 @@
     "initialWidth": 500,
     "initialHeight": 500,
 
-    "minWidth": 200,
-    "minHeight": 360,
+    "minWidth": 500,
+    "minHeight": 500,
 
     "maxWidth": 3000,
     "maxHeight": 3000,

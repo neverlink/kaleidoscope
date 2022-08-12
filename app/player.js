@@ -83,6 +83,11 @@ function spawnElement(fileURI) {
     node.preservesPitch = false;
     node.className = 'player keep-proportions';
 
+    node.addEventListener('loadedmetadata', () => {
+        node.width = node.videoWidth;
+        node.height = node.videoHeight;
+    }, { once: true });
+
     node.addEventListener('click', () => node.togglePause());
     node.oncontextmenu = function () { 'insert pretty menu here' }
 

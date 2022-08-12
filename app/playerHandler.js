@@ -3,10 +3,33 @@ const mediaPlayer = require('./player.js');
 
 const getActivePlayers = () => Array.from(document.querySelectorAll('audio, video'));
 
-const resizeWindow = (width, height) => {
+const resizeWindow = () => {
+    let container = document.querySelector('div#player-container');
+    
+    let width = 0;
+    let height = 0;
+
+    getActivePlayers().forEach((player) => {
+        if (player.width > width && player.height > height) {
+            width = player.width;
+            height = player.height;
+        }
+    });
+
+    if (width == 0 || height == 0)
+        return
+
     console.log(`Resizing to ${width} x ${height}`)
     ipcRenderer.send('resize-window', width, height)
 };
+
+const updateTitle = () => {
+    let newTitle = 'Kaleidoscope'
+    getActivePlayers().forEach((player) => {
+        newTitle += ' - ' + player.src.substring(player.src.lastIndexOf('/') + 1)
+    });
+    document.title = newTitle;
+}
 
 function commandPlayers(action, amount) {
     getActivePlayers().forEach((player) => {
@@ -19,26 +42,27 @@ function commandPlayers(action, amount) {
             case 'seek': player.seek(amount); break;
             case 'togglePitchCorrection': player.togglePitchCorrection(); break;
             case 'toggleAspectRatio': player.toggleAspectRatio(); break;
+            case 'destroy': player.destroy(); break;
             default: break;
         }
     });
 }
 
-function createPlayers(fileURIs) {
+function createPlayers(fileURIs, destroyRest=false) {
     if (fileURIs == 'none' || fileURIs == '.') {
         console.log('No file URI provided!')
         return
     }
 
+    if (destroyRest) commandPlayers('destroy');
+
     fileURIs.forEach((fileURI) => {
         newPlayer = mediaPlayer.create(fileURI);
-        newPlayer.addEventListener('loadedmetadata', () => {
-            if (getActivePlayers().length == 1) {
-                resizeWindow(newPlayer.videoWidth, newPlayer.videoHeight);
-            }
-            console.log(`Body: ${document.body.scrollWidth} x ${document.body.scrollHeight}`);
-        });
-        document.title += ' - ' + newPlayer.src.substring(newPlayer.src.lastIndexOf('/') + 1)
+    });
+    
+    newPlayer.addEventListener('loadedmetadata', () => {
+        resizeWindow();
+        updateTitle();
     });
 }
 
@@ -72,8 +96,12 @@ function initialize() {
     });
 
     ipcRenderer.on('destroy-player', function (e, player) {
-        destroyedPlayerSrc = focusedPlayer.destroy();
-        // no players left? reply to main with quit
+        // todo: kill app on 0 players
+        if (getActivePlayers().length > 0){
+            destroyedPlayerSrc = focusedPlayer.destroy();
+            resizeWindow();
+            updateTitle();
+        }
     });
 
     ipcRenderer.on('restore-player', function (e, player) {

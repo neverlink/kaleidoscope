@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, ipcMain } = require('electron');
+const { app, screen, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -19,8 +19,8 @@ const createMainWindow = (args) => {
         width: preferences['initialWidth'],
         height: preferences['initialHeight'],
 
-        minWidth: preferences['minWidth'],
-        minHeight: preferences['minHeight'],
+        // minWidth: preferences['minWidth'],
+        // minHeight: preferences['minHeight'],
 
         maxWidth: preferences['maxWidth'],
         maxHeight: preferences['maxHeight'],
@@ -45,13 +45,27 @@ const createMainWindow = (args) => {
     mainWindow.webContents.openDevTools();
 
     mainWindow.on('close', function (event) {
-        // prevent default
-        // mainWindow.hide();
         app.quit();
     });
 
-    ipcMain.on('resize-window', (event, width, height) => {
-        mainWindow.setSize(width, height);
+    ipcMain.on('quit', (event) => {
+        app.quit();
+    })
+    
+    ipcMain.on('resize-window', (event, newWidth, newHeight) => {
+        console.log(mainWindow.webContents.getOwnerBrowserWindow().getBounds());
+
+        let display = screen.getPrimaryDisplay();
+        let screenX = parseInt(display['size']['width'] * display['scaleFactor']);
+        let screenY = parseInt(display['size']['height'] * display['scaleFactor']);
+
+        let windowSize = mainWindow.getSize()
+        windowX = windowSize[0];
+        windowY = windowSize[1];
+
+        // logic to change splitscreen direction
+
+        mainWindow.setSize(newWidth, newHeight);
         mainWindow.center();
     })
 
