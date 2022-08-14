@@ -65,7 +65,7 @@ audio, video {
 
 .glass-component {
     background-color: var(--player-background-color);
-    backdrop-filter: blur(--player-blur-amount);
+    backdrop-filter: blur(var(--player-blur-amount));
     border-radius: var(--player-roundness-amount);
     box-shadow: 0px 0px 30px 0px var(--player-background-color);
 }
@@ -82,6 +82,8 @@ div#player-controls {
     gap: 20px;
     
     padding: 0px 25px;
+
+    z-index: 999;
 
     opacity: 0;
     transition: opacity .7s;
