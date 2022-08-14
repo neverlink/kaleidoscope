@@ -15,7 +15,21 @@
     <p class="splash-notice">Drop your media files here!</p>
     <p class="splash-notice">Kaleidoscope v0.1 Pre-Alpha</p>
   </div> -->
-  <div id="player-container"></div>
+
+  <div id="player-container">
+    <div id="player-controls" class="glass-component">
+      <img id="gui-toggle-pause" src="fontawesome/pause.svg">
+      <input id="gui-progress-bar" type="range" value="50" max="100">
+      <div id="gui-timestamp">00:00</div>
+      <div id="gui-volume-controls">
+        <img id="gui-volume-icon" src="fontawesome/volume-high.svg">
+        <div id="gui-volume-slider-container" class="glass-component">
+          <input id="gui-volume-slider" type="range" value="50" max="100">
+        </div>
+      </div>
+      <img id="gui-toggle-fullscreen" src="fontawesome/expand.svg">
+    </div>
+  </div>
 </body>
 
 <script defer>

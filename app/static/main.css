@@ -1,8 +1,16 @@
+:root {
+    --player-background-color: rgba(0, 0, 0, 0.5);
+    --player-roundness-amount: 20px;
+    --player-blur-amount: 10px;
+}
 
 * {
     /* this screws with click/scroll controls, frameless only */
     /* user-select: none; */
     /* -webkit-app-region: drag; */
+    font-family: "ubuntu", "Arial";
+    color: white;
+    box-sizing: border-box;
 }
 
 @font-face {
@@ -14,14 +22,13 @@ body {
     margin: 0;
     height: 100vh;
     overflow: hidden;
-    background-color: #111;
+    /* background-color: #111; */
 }
 
 #splash-container {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     display: flex;
-    flex-wrap: wrap;
 }
 
 #splash-logo {
@@ -29,12 +36,12 @@ body {
     height: 125px;
 }
 
-.splash-notice {
+/* .splash-notice {
     font-family: "ubuntu", "Arial";
     color: rgb(190, 190, 190);
-}
+} */
 
-#player-container {
+div#player-container {
     width: 100%;
     height: 100%;
     display: flex;
@@ -54,4 +61,92 @@ audio, video {
 
 .ignore-proportions {
     object-fit: fill;
+}
+
+.glass-component {
+    background-color: var(--player-background-color);
+    backdrop-filter: blur(--player-blur-amount);
+    border-radius: var(--player-roundness-amount);
+    box-shadow: 0px 0px 30px 0px var(--player-background-color);
+}
+
+div#player-controls {
+    width: 90%;
+    height: 50px;
+
+    position: absolute;
+    bottom: 20px;
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    
+    padding: 0px 25px;
+
+    opacity: 0;
+    transition: opacity .7s;
+}
+
+div#player-controls:hover {
+    opacity: 1;
+}
+
+div#player-controls img {
+    height: 22px;
+    width: 22px;
+    filter: invert(100%);
+    mix-blend-mode: difference;
+}
+
+/* div#player-controls input[type=range] {
+    appearance: none;   
+    outline: none;
+    background: rgb(30, 30, 30);
+    border-radius: var(--player-roundness-amount);
+}
+
+div#player-controls input[type=range]::-webkit-slider-thumb {
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background-color: rgb(255, 255, 255);
+}
+
+div#player-controls input[type=range]::-webkit-slider-runnable-track {
+    appearance: none;
+    background: rgb(0, 80, 255);
+} */
+
+#gui-progress-bar {
+    height: 30%;
+    width: 100%;
+}
+
+#gui-volume-controls {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+}
+
+#gui-volume-slider-container {
+    width: 45px;
+    height: 150px;
+
+    position: absolute;
+    bottom: 60px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    transition: opacity .7s;
+}
+
+#gui-volume-slider-container:hover, #gui-volume-icon:hover ~ #gui-volume-slider-container{
+    opacity: 1;
+}
+
+#gui-volume-slider {
+    transform: rotate(-90deg);
 }
