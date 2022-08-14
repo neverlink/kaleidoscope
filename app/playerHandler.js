@@ -4,8 +4,6 @@ const mediaPlayer = require('./player.js');
 const getActivePlayers = () => Array.from(document.querySelectorAll('audio, video'));
 
 const resizeWindow = () => {
-    let container = document.querySelector('div#player-container');
-    
     let width = 0;
     let height = 0;
 
@@ -38,8 +36,10 @@ function commandPlayers(action, amount) {
             case 'togglePause': player.togglePause(); break;
             case 'stop': player.stop(); break;
             case 'changeVolume': player.changeVolume(amount); break;
+            case 'replaceVolume': player.changeVolume(amount, true); break;
             case 'changeSpeed': player.changeSpeed(amount); break;
             case 'seek': player.seek(amount); break;
+            case 'seekToPercentage': player.currentTime = (player.duration * amount) / 100; break;
             case 'togglePitchCorrection': player.togglePitchCorrection(); break;
             case 'toggleAspectRatio': player.toggleAspectRatio(); break;
             case 'destroy': player.destroy(); break;

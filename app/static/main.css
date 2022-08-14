@@ -112,7 +112,7 @@ div#player-controls img {
     height: 22px;
     width: 22px;
     filter: invert(100%);
-    mix-blend-mode: difference;
+    /* mix-blend-mode: difference; */
 }
 
 /* div#player-controls input[type=range] {

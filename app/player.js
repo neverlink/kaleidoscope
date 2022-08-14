@@ -11,10 +11,13 @@ function setControls() {
 
     HTMLMediaElement.prototype.toggleMute = function () {
         this.muted = !this.muted;
-        if (this.muted)
+        if (this.muted) {
             iconSrc = 'fontawesome/volume-xmark.svg';
-        else
+            document.querySelector('#gui-volume-slider-container').style.display = 'none';
+        } else {
             iconSrc = 'fontawesome/volume-high.svg'
+            document.querySelector('#gui-volume-slider-container').style.display = 'inherit';
+        }
         document.querySelector('#gui-volume-icon').src = iconSrc;
     }
 
@@ -32,9 +35,14 @@ function setControls() {
         this.preservesPitch ? console.log('Pitch correction: Enabled') : console.log('Pitch correction: Disabled')
     }
 
-    HTMLMediaElement.prototype.changeVolume = function (amount) {
-        let newVolume = (Math.trunc(this.volume * 100) + amount) / 100;
-        
+    HTMLMediaElement.prototype.changeVolume = function (amount, absolute) {
+        if (absolute)
+            newVolume = amount / 100;
+        else
+             newVolume = (Math.trunc(this.volume * 100) + amount) / 100;
+
+        console.log(newVolume);
+    
         if (newVolume < 0 || newVolume > 1)
             return;
         else
@@ -47,7 +55,9 @@ function setControls() {
         } else {
             iconSrc = 'fontawesome/volume-xmark.svg';
         }
+
         document.querySelector('#gui-volume-icon').src = iconSrc;
+        document.querySelector('#gui-volume-slider').value = newVolume * 100;
     }
 
     HTMLMediaElement.prototype.changeSpeed = function (amount) {
@@ -107,7 +117,7 @@ function setEvents(node) {
         document.querySelector('#gui-progress-bar')
         .value = Math.trunc(node.currentTime / node.duration * 100);
 
-        let seconds = Math.round(node.currentTime);
+        let seconds = Math.round(node.currentTime % 60);
         let minutes = Math.trunc(node.currentTime / 60);
 
         document.querySelector('#gui-timestamp')

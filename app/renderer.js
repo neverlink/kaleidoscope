@@ -1,4 +1,5 @@
 const playerHandler = require("./playerHandler.js");
+const playerUI = require("./playerUI.js")
 
 const defineDropArea = () => {
     const dropArea = document.querySelector("#dropContainer");
@@ -19,6 +20,7 @@ const defineDropArea = () => {
 const initApp = () => {
     defineDropArea();
     playerHandler.initialize();
+    playerUI.initialize();
 }
 
 document.addEventListener("DOMContentLoaded", initApp);
