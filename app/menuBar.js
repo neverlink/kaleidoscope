@@ -105,12 +105,12 @@ const createMenu = (windowTarget) => {
                 {
                     label: 'Increase Volume',
                     accelerator: 'Up',
-                    click: () => commandPlayers('changeVolume', +10)
+                    click: () => commandPlayers('changeVolume', +5)
                 },
                 {
                     label: 'Decrease Volume',
                     accelerator: 'Down',
-                    click: () => commandPlayers('changeVolume', -10)
+                    click: () => commandPlayers('changeVolume', -5)
                 },
                 {
                     label: 'Mute',

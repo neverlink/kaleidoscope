@@ -11,12 +11,20 @@ function setControls() {
 
     HTMLMediaElement.prototype.toggleMute = function () {
         this.muted = !this.muted;
-        this.muted ? console.log('Muted') : console.log('Unmuted')
+        if (this.muted)
+            iconSrc = 'fontawesome/volume-xmark.svg';
+        else
+            iconSrc = 'fontawesome/volume-high.svg'
+        document.querySelector('#gui-volume-icon').src = iconSrc;
     }
 
     HTMLMediaElement.prototype.togglePause = function () {
         this.isPlaying = !this.isPlaying;
-        this.isPlaying ? console.log('Paused') : console.log('Resumed')
+        if (this.isPlaying)
+            iconSrc = 'fontawesome/pause.svg';
+        else
+            iconSrc = 'fontawesome/play.svg';
+        document.querySelector('#gui-toggle-pause').src = iconSrc;
     }
 
     HTMLMediaElement.prototype.togglePitchCorrection = function () {
@@ -25,10 +33,21 @@ function setControls() {
     }
 
     HTMLMediaElement.prototype.changeVolume = function (amount) {
-        let newVolume = (this.volume * 100 + amount) / 100;
-        if (newVolume < 0 || newVolume > 1) return;
-        this.volume = newVolume
-        console.log(`Volume: ${this.volume}`);
+        let newVolume = (Math.trunc(this.volume * 100) + amount) / 100;
+        
+        if (newVolume < 0 || newVolume > 1)
+            return;
+        else
+            this.volume = newVolume;
+        
+        if (newVolume >= 0.5) {
+            iconSrc = 'fontawesome/volume-high.svg';
+        } else if (newVolume > 0) {
+            iconSrc = 'fontawesome/volume-low.svg';
+        } else {
+            iconSrc = 'fontawesome/volume-xmark.svg';
+        }
+        document.querySelector('#gui-volume-icon').src = iconSrc;
     }
 
     HTMLMediaElement.prototype.changeSpeed = function (amount) {
@@ -43,6 +62,7 @@ function setControls() {
     HTMLMediaElement.prototype.stop = function () {
         this.currentTime = 0;
         this.pause();
+        document.querySelector('#gui-toggle-pause').src = 'fontawesome/play.svg';;
     }
 
     HTMLMediaElement.prototype.seek = function (amount) {
@@ -73,6 +93,32 @@ function setControls() {
     }
 }
 
+function setEvents(node) {
+    node.addEventListener('loadedmetadata', () => {
+        node.width = node.videoWidth;
+        node.height = node.videoHeight;
+    }, { once: true });
+
+    node.addEventListener('click', () => {
+        node.togglePause()
+    });
+
+    node.addEventListener('timeupdate', () => {
+        document.querySelector('#gui-progress-bar')
+        .value = Math.trunc(node.currentTime / node.duration * 100);
+
+        let seconds = Math.round(node.currentTime);
+        let minutes = Math.trunc(node.currentTime / 60);
+
+        document.querySelector('#gui-timestamp')
+            .innerHTML = String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
+    });
+
+    node.oncontextmenu = function () {
+        alert('insert pretty menu here');
+    }
+}
+
 function spawnElement(fileURI) {
     const node = document.createElement('video');
 
@@ -83,21 +129,16 @@ function spawnElement(fileURI) {
     node.preservesPitch = false;
     node.className = 'player keep-proportions';
 
-    node.addEventListener('loadedmetadata', () => {
-        node.width = node.videoWidth;
-        node.height = node.videoHeight;
-    }, { once: true });
-
-    node.addEventListener('click', () => node.togglePause());
-    node.oncontextmenu = function () { 'insert pretty menu here' }
-
     document.querySelector('div#player-container').appendChild(node);
     return node;
 }
 
 module.exports.create = (fileURI) => {
-    node = spawnElement(fileURI);
-    setControls();
+    let node = spawnElement(fileURI);
+
+    setControls(); //move this somewhere to trigger on window load
+    setEvents(node);
+
     console.log('Player created for ' + fileURI)
     return node;
 }

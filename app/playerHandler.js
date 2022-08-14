@@ -80,11 +80,10 @@ function initialize() {
     document.addEventListener('wheel', function (e) {
         let player = focusedPlayer;
         if (e.deltaY < 0 && player.volume < 1) {
-            player.volume = (player.volume * 100 + 10) / 100;
+            player.changeVolume(+5);
         } else if (e.deltaY > 0 && player.volume > 0) {
-            player.volume = (player.volume * 100 - 10) / 100;
-        } else return
-        console.log(`Volume: ${player.volume}`);
+            player.changeVolume(-5);
+        }
     });
 
     ipcRenderer.on('create-players', function (e, fileURIs) {
@@ -92,15 +91,16 @@ function initialize() {
     });
 
     ipcRenderer.on('command-players', function (e, action, value) {
-        commandPlayers(action, value)
+        commandPlayers(action, value);
     });
 
     ipcRenderer.on('destroy-player', function (e, player) {
-        // todo: kill app on 0 players
         if (getActivePlayers().length > 0){
             destroyedPlayerSrc = focusedPlayer.destroy();
             resizeWindow();
             updateTitle();
+        } else {
+            // todo: kill app on 0 players
         }
     });
 
