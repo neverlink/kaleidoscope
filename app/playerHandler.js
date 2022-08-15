@@ -24,7 +24,7 @@ const resizeWindow = () => {
 const updateTitle = () => {
     let newTitle = 'Kaleidoscope'
     getActivePlayers().forEach((player) => {
-        newTitle += ' - ' + player.src.substring(player.src.lastIndexOf('/') + 1)
+        newTitle += ' - ' + decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1));
     });
     document.title = newTitle;
 }
@@ -55,6 +55,10 @@ function createPlayers(fileURIs, destroyRest=false) {
     }
 
     if (destroyRest) commandPlayers('destroy');
+
+    if (typeof(fileURIs) === "string") {
+        fileURIs = [ fileURIs ]
+    }
 
     fileURIs.forEach((fileURI) => {
         newPlayer = mediaPlayer.create(fileURI);
