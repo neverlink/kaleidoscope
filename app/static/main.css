@@ -55,7 +55,7 @@ body {
     color: rgb(190, 190, 190);
 }
 
-div#player-container {
+#player-container {
     width: 100%;
     height: 100%;
 
@@ -87,7 +87,6 @@ audio, video {
 
 #player-controls {
     height: 50px;
-    width: 70%;
 
     box-sizing: border-box;
 

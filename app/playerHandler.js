@@ -48,7 +48,7 @@ function commandPlayers(action, amount) {
     });
 }
 
-function createPlayers(fileURIs, destroyRest=false) {
+function createPlayers(fileURIs, destroyRest = false) {
     if (fileURIs == 'none' || fileURIs == '.') {
         console.log('No file URI provided!')
         return
@@ -56,14 +56,14 @@ function createPlayers(fileURIs, destroyRest=false) {
 
     if (destroyRest) commandPlayers('destroy');
 
-    if (typeof(fileURIs) === "string") {
-        fileURIs = [ fileURIs ]
+    if (typeof (fileURIs) === "string") {
+        fileURIs = [fileURIs]
     }
 
     fileURIs.forEach((fileURI) => {
         newPlayer = mediaPlayer.create(fileURI);
     });
-    
+
     newPlayer.addEventListener('loadedmetadata', () => {
         resizeWindow();
         updateTitle();
@@ -71,6 +71,21 @@ function createPlayers(fileURIs, destroyRest=false) {
 
     if (getActivePlayers().length > 1) {
         document.querySelector('#gui-progress-bar').style.display = 'none';
+        document.querySelector('#gui-timestamp').style.display = 'none';
+    }
+}
+
+function destroyPlayer(player, destroyRest=false) {
+    let playerCount = getActivePlayers().length;
+
+    if (playerCount <= 1) {
+        ipcRenderer.send('quit-app');
+    } else {
+        destroyedPlayerSrc = player.destroy();
+        resizeWindow();
+        updateTitle();
+        document.querySelector('#gui-progress-bar').style.display = 'revert';
+        document.querySelector('#gui-timestamp').style.display = 'revert';
     }
 }
 
@@ -100,17 +115,11 @@ function initialize() {
         commandPlayers(action, value);
     });
 
-    ipcRenderer.on('destroy-player', function (e, player) {
-        if (getActivePlayers().length <= 1){
-            ipcRenderer.send('quit-app');
-        } else {
-            destroyedPlayerSrc = focusedPlayer.destroy();
-            resizeWindow();
-            updateTitle();
-        }
+    ipcRenderer.on('destroy-player', function (e) {
+        destroyPlayer(focusedPlayer);
     });
 
-    ipcRenderer.on('restore-player', function (e, player) {
+    ipcRenderer.on('restore-player', function (e) {
         if (destroyedPlayerSrc != null)
             createPlayers(destroyedPlayerSrc);
     });
