@@ -39,8 +39,8 @@ const createMainWindow = (args) => {
             additionalArguments: [JSON.stringify(preferences), filePath]
         }
     })
-    
-    mainWindow.webContents.openDevTools();
+
+    // mainWindow.webContents.openDevTools();
 
     mainWindow.setBackgroundColor('#111');
     mainWindow.loadFile('app/static/index.html');
@@ -49,41 +49,60 @@ const createMainWindow = (args) => {
 }
 
 const setEvents = () => {
+    const appLocked = app.requestSingleInstanceLock();
+
+    if (!appLocked) {
+        app.quit();
+    } else {
+        app.on('second-instance', (event, args) => {
+            fileURI = args.at(-1);
+            mainWindow.webContents.send('create-players', fileURI, true);
+            if (mainWindow.isMinimized()) {
+                mainWindow.restore();
+            }
+            mainWindow.focus();
+        });
+    }
+
     ipcMain.on('resize-window', (event, newWidth, newHeight) => {
         console.log('resizing really');
-        
+
         console.log(mainWindow.webContents.getOwnerBrowserWindow().getBounds());
-        
+
         let display = screen.getPrimaryDisplay();
         let screenX = parseInt(display['size']['width'] * display['scaleFactor']);
         let screenY = parseInt(display['size']['height'] * display['scaleFactor']);
-        
+
         let windowSize = mainWindow.getSize()
         windowX = windowSize[0];
         windowY = windowSize[1];
 
         // logic to change splitscreen direction
-        
+
         mainWindow.setSize(newWidth, newHeight);
         mainWindow.center();
     });
-    
+
     ipcMain.on('quit-app', (event) => {
         app.quit();
     });
 
-    app.on('window-all-closed', () => {
-        app.quit(); // remove this later
-    });
+    // app.on('window-all-closed', () => {
+    //     app.quit();
+    // });
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
     });
 }
 
-app.whenReady().then(() => {
+const main = () => {
     const args = constructArgs();
     mainWindow = createMainWindow(args);
     Menu.setApplicationMenu(createMenu(mainWindow));
     setEvents();
+}
+
+app.whenReady().then(() => {
+    main();
 });

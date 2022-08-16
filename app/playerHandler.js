@@ -92,8 +92,8 @@ function initialize() {
         }
     });
 
-    ipcRenderer.on('create-players', function (e, fileURIs) {
-        createPlayers(fileURIs);
+    ipcRenderer.on('create-players', function (e, fileURIs, destroyRest) {
+        createPlayers(fileURIs, destroyRest);
     });
 
     ipcRenderer.on('command-players', function (e, action, value) {
