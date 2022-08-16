@@ -5,6 +5,7 @@ const createMenu = (windowTarget) => {
     const destroyPlayer = (action) => windowTarget.webContents.send('destroy-player', action);
     const restorePlayer = (action) => windowTarget.webContents.send('restore-player', action);
     const commandPlayers = (action, value) => windowTarget.webContents.send('command-players', action, value);
+    const toggleAspectRatio = (action) => windowTarget.webContents.send('toggle-aspect-ratio', action);
 
     const menuTemplate = ([
         {
@@ -60,7 +61,7 @@ const createMenu = (windowTarget) => {
                     label: 'Keep Aspect Ratio',
                     type: 'checkbox',
                     checked: true,
-                    click: () => commandPlayers('toggleAspectRatio')
+                    click: () => toggleAspectRatio()
                 },
                 {
                     label: 'Title Bar',
@@ -105,12 +106,12 @@ const createMenu = (windowTarget) => {
                 {
                     label: 'Increase Volume',
                     accelerator: 'Up',
-                    click: () => commandPlayers('changeVolume', +5)
+                    click: () => commandPlayers('adjustVolume', +5)
                 },
                 {
                     label: 'Decrease Volume',
                     accelerator: 'Down',
-                    click: () => commandPlayers('changeVolume', -5)
+                    click: () => commandPlayers('adjustVolume', -5)
                 },
                 {
                     label: 'Mute',
@@ -153,12 +154,12 @@ const createMenu = (windowTarget) => {
                 {
                     label: 'Increase Rate',
                     accelerator: process.platform == 'darwin' ? 'Command+Left' : 'Ctrl+Up',
-                    click: () => commandPlayers('changeSpeed', +1)
+                    click: () => commandPlayers('adjustRate', +1)
                 },
                 {
                     label: 'Decrease Rate',
                     accelerator: process.platform == 'darwin' ? 'Command+Down' : 'Ctrl+Down',
-                    click: () => commandPlayers('changeSpeed', -1)
+                    click: () => commandPlayers('adjustRate', -1)
                 },
                 { type: 'separator' },
             ]

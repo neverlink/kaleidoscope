@@ -1,7 +1,41 @@
-const { ipcRenderer, ipcMain } = require('electron');
+const { ipcRenderer } = require('electron');
 const mediaPlayer = require('./player.js');
 
 const getActivePlayers = () => Array.from(document.querySelectorAll('audio, video'));
+
+function commandPlayers(action, amount) {
+    switch (action) {
+        case 'toggleAspectRatio': toggleAspectratio(); break;
+        default: break;
+    }
+
+    getActivePlayers().forEach((player) => {
+        switch (action) {
+            case 'toggleMute': player.toggleMute(); break;
+            case 'togglePause': player.togglePause(); break;
+            case 'stop': player.stop(); break;
+            case 'adjustVolume': player.adjustVolume(amount); break;
+            case 'replaceVolume': player.adjustVolume(amount, true); break;
+            case 'adjustRate': player.changeSpeed(amount); break;
+            case 'seek': player.seek(amount); break;
+            case 'seekToPercentage': player.currentTime = (player.duration * amount) / 100; break;
+            case 'togglePitchCorrection': player.togglePitchCorrection(); break;
+            default: break;
+        }
+    });
+}
+
+function toggleAspectRatio() {
+    let pageRoot = document.querySelector(':root');
+    let rootStyle = getComputedStyle(pageRoot);
+
+    if (rootStyle.getPropertyValue('--player-aspect-ratio') == 'contain')
+        style = 'fill';
+    else
+        style = 'contain'
+        
+    pageRoot.style.setProperty('--player-aspect-ratio', style);
+}
 
 const resizeWindow = () => {
     let width = 0;
@@ -29,50 +63,19 @@ const updateTitle = () => {
     document.title = newTitle;
 }
 
-function commandPlayers(action, amount) {
-    switch (action) {
-        case 'toggleAspectRatio': toggleAspectratio(); break;
-        default: break;
-    }
-
-
-    getActivePlayers().forEach((player) => {
-        switch (action) {
-            case 'toggleMute': player.toggleMute(); break;
-            case 'togglePause': player.togglePause(); break;
-            case 'stop': player.stop(); break;
-            case 'changeVolume': player.changeVolume(amount); break;
-            case 'replaceVolume': player.changeVolume(amount, true); break;
-            case 'changeSpeed': player.changeSpeed(amount); break;
-            case 'seek': player.seek(amount); break;
-            case 'seekToPercentage': player.currentTime = (player.duration * amount) / 100; break;
-            case 'togglePitchCorrection': player.togglePitchCorrection(); break;
-             // player.toggleAspectRatio(); break;
-            case 'destroy': player.destroy(); break;
-            default: break;
-        }
-    });
-}
-
-function toggleAspectRatio() {
-    document.querySelector('')
-}
-
 function createPlayers(fileURIs, destroyRest = false) {
     if (fileURIs == 'none' || fileURIs == '.') {
-        console.log('No file URI provided!')
         return
     }
 
-    if (destroyRest) commandPlayers('destroy');
+    if (destroyRest)
+        commandPlayers('destroy');
 
-    if (typeof (fileURIs) === "string") {
+    if (typeof (fileURIs) === "string")
         fileURIs = [fileURIs]
-    }
 
-    fileURIs.forEach((fileURI) => {
-        newPlayer = mediaPlayer.create(fileURI);
-    });
+    fileURIs.forEach((fileURI) =>
+        newPlayer = mediaPlayer.create(fileURI));
 
     newPlayer.addEventListener('loadedmetadata', () => {
         resizeWindow();
@@ -91,7 +94,8 @@ function destroyPlayer(player, destroyRest=false) {
     if (playerCount <= 1) {
         ipcRenderer.send('quit-app');
     } else {
-        destroyedPlayerSrc = player.destroy();
+        lastDestroyedSrc = player.unload();
+        player.remove();
         resizeWindow();
         updateTitle();
         document.querySelector('#gui-progress-bar').style.display = 'revert';
@@ -106,17 +110,20 @@ function initialize() {
     let focusedPlayer = null;
     document.addEventListener('mousemove', function (e) {
         focusedPlayer = document
-                        .elementsFromPoint(e.clientX, e.clientY)
-                        .find(el => el.localName == 'video');
+            .elementsFromPoint(e.clientX, e.clientY)
+            .find(el => el.localName == 'video');
     });
 
     document.addEventListener('wheel', function (e) {
         let player = focusedPlayer;
-        if (e.deltaY < 0 && player.volume < 1) {
-            player.changeVolume(+5);
-        } else if (e.deltaY > 0 && player.volume > 0) {
-            player.changeVolume(-5);
-        }
+        if (e.deltaY < 0 && player.volume < 1)
+            player.adjustVolume(+5);
+        else if (e.deltaY > 0 && player.volume > 0)
+            player.adjustVolume(-5);
+    });
+
+    ipcRenderer.on('toggle-aspect-ratio', function (e) {
+        toggleAspectRatio();
     });
 
     ipcRenderer.on('create-players', function (e, fileURIs, destroyRest) {
@@ -132,8 +139,8 @@ function initialize() {
     });
 
     ipcRenderer.on('restore-player', function (e) {
-        if (destroyedPlayerSrc != null)
-            createPlayers(destroyedPlayerSrc);
+        if (lastDestroyedSrc != null)
+            createPlayers(lastDestroyedSrc);
     });
 }
 

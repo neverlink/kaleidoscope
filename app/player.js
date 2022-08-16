@@ -32,44 +32,41 @@ function setControls() {
 
     HTMLMediaElement.prototype.togglePitchCorrection = function () {
         this.preservesPitch = !this.preservesPitch
-        this.preservesPitch ? console.log('Pitch correction: Enabled') : console.log('Pitch correction: Disabled')
     }
 
-    HTMLMediaElement.prototype.changeVolume = function (amount, absolute) {
+    HTMLMediaElement.prototype.adjustVolume = function (amount, absolute) {
         if (absolute)
             newVolume = amount / 100;
         else
-             newVolume = (Math.trunc(this.volume * 100) + amount) / 100;
+            newVolume = (Math.trunc(this.volume * 100) + amount) / 100;
 
         if (newVolume < 0 || newVolume > 1)
             return;
         else
             this.volume = newVolume;
         
-        if (newVolume >= 0.5) {
+        if (newVolume >= 0.5)
             iconSrc = 'fontawesome/volume-high.svg';
-        } else if (newVolume > 0) {
+        else if (newVolume > 0)
             iconSrc = 'fontawesome/volume-low.svg';
-        } else {
+        else
             iconSrc = 'fontawesome/volume-xmark.svg';
-        }
 
         document.querySelector('#gui-volume-icon').src = iconSrc;
         document.querySelector('#gui-volume-slider').value = newVolume * 100;
     }
 
-    HTMLMediaElement.prototype.changeSpeed = function (amount) {
+    HTMLMediaElement.prototype.adjustRate = function (amount) {
         let newRate = (this.playbackRate * 10 + amount) / 10;
         if (newRate > 0 && newRate <= 16)
             this.playbackRate = newRate
         else
             return
-        console.log(`Rate: ${newRate}`);
     }
 
     HTMLMediaElement.prototype.stop = function () {
-        this.currentTime = 0;
         this.pause();
+        this.currentTime = 0;
         document.querySelector('#gui-toggle-pause').src = 'fontawesome/play.svg';;
     }
 
@@ -81,21 +78,10 @@ function setControls() {
         }
     }
 
-    HTMLMediaElement.prototype.toggleAspectRatio = function () {
-        if (this.classList.contains('keep-proportions')) {
-            this.classList.remove('keep-proportions');
-            this.classList.add('ignore-proportions');
-        } else {
-            this.classList.remove('ignore-proportions');
-            this.classList.add('keep-proportions');
-        }
-    }
-
-    HTMLMediaElement.prototype.destroy = function (amount) {
+    HTMLMediaElement.prototype.unload = function (amount) {
         let oldSrc = this.src;
         this.removeAttribute('src');
         this.load();
-        this.remove();
         return oldSrc;
     }
 }
@@ -131,21 +117,16 @@ function spawnElement(fileURI) {
 
     node.src = fileURI;
     node.volume = 0.5;
-    node.autoplay = true;
     node.loop = true;
+    node.autoplay = true;
     node.preservesPitch = false;
-    node.className = 'player keep-proportions';
-
-    document.querySelector('div#player-container').appendChild(node);
-    return node;
+    
+    return document.querySelector('div#player-container').appendChild(node);;
 }
 
 module.exports.create = (fileURI) => {
     let node = spawnElement(fileURI);
-
-    setControls(); //move this somewhere to trigger on window load
+    setControls(); // Move this to trigger only once
     setEvents(node);
-
-    console.log('Player created for ' + fileURI)
     return node;
 }
