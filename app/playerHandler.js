@@ -30,6 +30,12 @@ const updateTitle = () => {
 }
 
 function commandPlayers(action, amount) {
+    switch (action) {
+        case 'toggleAspectRatio': toggleAspectratio(); break;
+        default: break;
+    }
+
+
     getActivePlayers().forEach((player) => {
         switch (action) {
             case 'toggleMute': player.toggleMute(); break;
@@ -41,11 +47,15 @@ function commandPlayers(action, amount) {
             case 'seek': player.seek(amount); break;
             case 'seekToPercentage': player.currentTime = (player.duration * amount) / 100; break;
             case 'togglePitchCorrection': player.togglePitchCorrection(); break;
-            case 'toggleAspectRatio': player.toggleAspectRatio(); break;
+             // player.toggleAspectRatio(); break;
             case 'destroy': player.destroy(); break;
             default: break;
         }
     });
+}
+
+function toggleAspectRatio() {
+    document.querySelector('')
 }
 
 function createPlayers(fileURIs, destroyRest = false) {
@@ -95,7 +105,9 @@ function initialize() {
 
     let focusedPlayer = null;
     document.addEventListener('mousemove', function (e) {
-        focusedPlayer = document.elementFromPoint(e.clientX, e.clientY)
+        focusedPlayer = document
+                        .elementsFromPoint(e.clientX, e.clientY)
+                        .find(el => el.localName == 'video');
     });
 
     document.addEventListener('wheel', function (e) {

@@ -87,6 +87,7 @@ audio, video {
 
 #player-controls {
     height: 50px;
+    width: 80vw;
 
     box-sizing: border-box;
 
