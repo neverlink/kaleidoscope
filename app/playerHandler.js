@@ -1,4 +1,4 @@
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, ipcMain } = require('electron');
 const mediaPlayer = require('./player.js');
 
 const getActivePlayers = () => Array.from(document.querySelectorAll('audio, video'));
@@ -68,6 +68,10 @@ function createPlayers(fileURIs, destroyRest=false) {
         resizeWindow();
         updateTitle();
     });
+
+    if (getActivePlayers().length > 1) {
+        document.querySelector('#gui-progress-bar').style.display = 'none';
+    }
 }
 
 function initialize() {
@@ -78,8 +82,6 @@ function initialize() {
     document.addEventListener('mousemove', function (e) {
         focusedPlayer = document.elementFromPoint(e.clientX, e.clientY)
     });
-
-    let destroyedPlayerSrc = null;
 
     document.addEventListener('wheel', function (e) {
         let player = focusedPlayer;
@@ -99,18 +101,18 @@ function initialize() {
     });
 
     ipcRenderer.on('destroy-player', function (e, player) {
-        if (getActivePlayers().length > 0){
+        if (getActivePlayers().length <= 1){
+            ipcRenderer.send('quit-app');
+        } else {
             destroyedPlayerSrc = focusedPlayer.destroy();
             resizeWindow();
             updateTitle();
-        } else {
-            // todo: kill app on 0 players
         }
     });
 
     ipcRenderer.on('restore-player', function (e, player) {
         if (destroyedPlayerSrc != null)
-            createPlayers([destroyedPlayerSrc]);
+            createPlayers(destroyedPlayerSrc);
     });
 }
 

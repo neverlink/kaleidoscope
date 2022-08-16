@@ -41,8 +41,6 @@ function setControls() {
         else
              newVolume = (Math.trunc(this.volume * 100) + amount) / 100;
 
-        console.log(newVolume);
-    
         if (newVolume < 0 || newVolume > 1)
             return;
         else
@@ -81,7 +79,6 @@ function setControls() {
             case -1: this.currentTime = this.duration - 0.1; break;
             default: this.currentTime = this.currentTime += amount;
         }
-        console.log(`Skipped to: ${this.currentTime.toFixed(2)}`);
     }
 
     HTMLMediaElement.prototype.toggleAspectRatio = function () {
@@ -115,7 +112,7 @@ function setEvents(node) {
 
     node.addEventListener('timeupdate', () => {
         document.querySelector('#gui-progress-bar')
-        .value = Math.trunc(node.currentTime / node.duration * 100);
+            .value = Math.trunc(node.currentTime / node.duration * 100);
 
         let seconds = Math.round(node.currentTime % 60);
         let minutes = Math.trunc(node.currentTime / 60);

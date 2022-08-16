@@ -21,12 +21,10 @@ function initialize() {
 
     let fullscreenToggler = document.querySelector('#gui-toggle-fullscreen')
     fullscreenToggler.addEventListener('click', () => {
-        if (document.fullscreenElement) {
-            console.log('exiting');
+        if (document.fullscreenElement)
             document.exitFullscreen();
-        } else {
+        else
             document.querySelector('#player-container').requestFullscreen();
-        }
     });
 }
 

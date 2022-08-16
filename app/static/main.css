@@ -2,6 +2,7 @@
     --player-background-color: rgba(0, 0, 0, 0.5);
     --player-roundness-amount: 20px;
     --player-blur-amount: 10px;
+    --player-accent-color: powderblue;
 }
 
 * {
@@ -84,9 +85,9 @@ audio, video {
     box-shadow: 0px 0px 30px 0px var(--player-background-color);
 }
 
-div#player-controls {
-    width: 90%;
+#player-controls {
     height: 50px;
+    width: 70%;
 
     box-sizing: border-box;
 
@@ -95,6 +96,7 @@ div#player-controls {
 
     display: flex;
     align-items: center;
+    justify-content: space-around;
     gap: 20px;
     
     padding: 0px 25px;
@@ -105,35 +107,24 @@ div#player-controls {
     transition: opacity .7s;
 }
 
-body:hover div#player-controls {
+body:hover #player-controls {
     opacity: 1;
 }
 
-div#player-controls img {
+#player-controls img {
     height: 22px;
     width: 22px;
     filter: invert(100%);
-    /* mix-blend-mode: difference; */
 }
 
-/* div#player-controls input[type=range] {
-    appearance: none;   
+#player-controls input[type=range] {
+    accent-color: var(--player-accent-color);
     outline: none;
-    background: rgb(30, 30, 30);
-    border-radius: var(--player-roundness-amount);
 }
 
-div#player-controls input[type=range]::-webkit-slider-thumb {
-    appearance: none;
-    width: 15px;
-    height: 15px;
-    background-color: rgb(255, 255, 255);
+#player-controls input[type=range]::-webkit-slider-thumb {
+    opacity: 0;
 }
-
-div#player-controls input[type=range]::-webkit-slider-runnable-track {
-    appearance: none;
-    background: rgb(0, 80, 255);
-} */
 
 #gui-progress-bar {
     height: 30%;
