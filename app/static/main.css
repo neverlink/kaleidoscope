@@ -80,7 +80,7 @@ audio, video {
 
 #player-controls {
     height: 50px;
-    width: 80vw;
+    max-width: 80vw;
 
     box-sizing: border-box;
 
@@ -121,7 +121,8 @@ body:hover #player-controls {
 
 #gui-progress-bar {
     height: 30%;
-    width: 100%;
+    width: 100vw;
+    min-width: 0;
 }
 
 #gui-volume-controls {

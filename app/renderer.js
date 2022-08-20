@@ -1,5 +1,5 @@
 const playerHandler = require("./playerHandler.js");
-const playerUI = require("./playerUI.js")
+const playerUI = require("./playerUI.js");
 
 const defineDropArea = () => {
     const dropArea = document.querySelector("#dropContainer");
@@ -12,7 +12,7 @@ const defineDropArea = () => {
     const handleDrop = (e) => {
         let files = [...e.dataTransfer.files];
         let filePaths = files.map(file => file['path']);
-        playerHandler.createPlayers(filePaths, true);
+        playerHandler.replacePlayer(filePaths);
     }
     dropArea.addEventListener("drop", handleDrop);
 }

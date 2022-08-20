@@ -1,31 +1,33 @@
 const { ipcRenderer } = require('electron');
+const { updateWindowState } = require('./playerUI.js');
 const mediaPlayer = require('./player.js');
+const playerUtils = require('./playerUtils.js');
 
-const getActivePlayers = () => Array.from(document.querySelectorAll('audio, video'));
+// Can't move this out because of lastDestroyedSrc
+const setIpcEvents = () => {
+    ipcRenderer.on('toggle-aspect-ratio', function (e) {
+        toggleAspectRatio();
+    });
 
-function commandPlayers(action, amount) {
-    switch (action) {
-        case 'toggleAspectRatio': toggleAspectratio(); break;
-        default: break;
-    }
+    ipcRenderer.on('create-players', function (e, fileURIs, destroyRest) {
+        replacePlayer(fileURIs);
+    });
 
-    getActivePlayers().forEach((player) => {
-        switch (action) {
-            case 'toggleMute': player.toggleMute(); break;
-            case 'togglePause': player.togglePause(); break;
-            case 'stop': player.stop(); break;
-            case 'adjustVolume': player.adjustVolume(amount); break;
-            case 'replaceVolume': player.adjustVolume(amount, true); break;
-            case 'adjustRate': player.changeSpeed(amount); break;
-            case 'seek': player.seek(amount); break;
-            case 'seekToPercentage': player.currentTime = (player.duration * amount) / 100; break;
-            case 'togglePitchCorrection': player.togglePitchCorrection(); break;
-            default: break;
-        }
+    ipcRenderer.on('command-players', function (e, action, value) {
+        playerUtils.commandPlayers(action, value);
+    });
+
+    ipcRenderer.on('destroy-player', function (e) {
+        destroyPlayer(playerUtils.getFocusedPlayer());
+    });
+
+    ipcRenderer.on('restore-player', function (e) {
+        if (lastDestroyedSrc != null)
+            createPlayers(lastDestroyedSrc);
     });
 }
 
-function toggleAspectRatio() {
+const toggleAspectRatio = () => {
     let pageRoot = document.querySelector(':root');
     let rootStyle = getComputedStyle(pageRoot);
 
@@ -37,115 +39,49 @@ function toggleAspectRatio() {
     pageRoot.style.setProperty('--player-aspect-ratio', style);
 }
 
-const resizeWindow = () => {
-    let width = 0;
-    let height = 0;
-
-    getActivePlayers().forEach((player) => {
-        if (player.width > width && player.height > height) {
-            width = player.width;
-            height = player.height;
-        }
-    });
-
-    if (width == 0 || height == 0)
-        return
-
-    console.log(`Resizing to ${width} x ${height}`)
-    ipcRenderer.send('resize-window', width, height)
-};
-
-const updateTitle = () => {
-    let newTitle = 'Kaleidoscope'
-    getActivePlayers().forEach((player) => {
-        newTitle += ' - ' + decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1));
-    });
-    document.title = newTitle;
+const replacePlayer = (fileURIs) => {
+    playerUtils.getActivePlayers().forEach(p => destroyPlayer(p));
+    createPlayers(fileURIs);
 }
 
-function createPlayers(fileURIs, destroyRest = false) {
-    if (fileURIs == 'none' || fileURIs == '.') {
+const createPlayers = (fileURIs) => {
+    if (fileURIs == 'none' || fileURIs == '.')
         return
-    }
 
-    if (destroyRest)
-        commandPlayers('destroy');
-
-    if (typeof (fileURIs) === "string")
+    if (typeof (fileURIs) === "string") {
         fileURIs = [fileURIs]
+    }
 
     fileURIs.forEach((fileURI) =>
         newPlayer = mediaPlayer.create(fileURI));
 
     newPlayer.addEventListener('loadedmetadata', () => {
-        resizeWindow();
-        updateTitle();
+        updateWindowState();
     });
-
-    if (getActivePlayers().length > 1) {
-        document.querySelector('#gui-progress-bar').style.display = 'none';
-        document.querySelector('#gui-timestamp').style.display = 'none';
-    }
 }
 
-function destroyPlayer(player, destroyRest=false) {
-    let playerCount = getActivePlayers().length;
+const destroyPlayer = (player) => {
+    let playerCount = playerUtils.getActivePlayers().length;
 
-    if (playerCount <= 1) {
+    if (playerCount < 1)
         ipcRenderer.send('quit-app');
-    } else {
-        lastDestroyedSrc = player.unload();
-        player.remove();
-        resizeWindow();
-        updateTitle();
-        document.querySelector('#gui-progress-bar').style.display = 'revert';
-        document.querySelector('#gui-timestamp').style.display = 'revert';
-    }
+        
+    lastDestroyedSrc = player.unload();
+    player.remove();
+    updateWindowState();
 }
 
-function initialize() {
+const initialize = () => {
     let startURI = process.argv.at(-2);
-    createPlayers(startURI);
-
-    let focusedPlayer = null;
-    document.addEventListener('mousemove', function (e) {
-        focusedPlayer = document
-            .elementsFromPoint(e.clientX, e.clientY)
-            .find(el => el.localName == 'video');
-    });
-
-    document.addEventListener('wheel', function (e) {
-        let player = focusedPlayer;
-        if (e.deltaY < 0 && player.volume < 1)
-            player.adjustVolume(+5);
-        else if (e.deltaY > 0 && player.volume > 0)
-            player.adjustVolume(-5);
-    });
-
-    ipcRenderer.on('toggle-aspect-ratio', function (e) {
-        toggleAspectRatio();
-    });
-
-    ipcRenderer.on('create-players', function (e, fileURIs, destroyRest) {
-        createPlayers(fileURIs, destroyRest);
-    });
-
-    ipcRenderer.on('command-players', function (e, action, value) {
-        commandPlayers(action, value);
-    });
-
-    ipcRenderer.on('destroy-player', function (e) {
-        destroyPlayer(focusedPlayer);
-    });
-
-    ipcRenderer.on('restore-player', function (e) {
-        if (lastDestroyedSrc != null)
-            createPlayers(lastDestroyedSrc);
-    });
+    replacePlayer(startURI);
+    updateWindowState();
+    setIpcEvents();
 }
 
 module.exports = {
     initialize,
+    replacePlayer,
     createPlayers,
-    commandPlayers
+    destroyPlayer,
+    toggleAspectRatio
 }

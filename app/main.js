@@ -1,9 +1,7 @@
-const { app, screen, BrowserWindow, Menu, ipcMain } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain } = require('electron');
+const createMenu = require('./menuBar.js');
 const path = require('path');
 const fs = require('fs');
-
-const createMenu = require('./menuBar.js');
-// const createTray = require('./tray.js')
 
 const constructArgs = () => {
     let preferences = JSON.parse(fs.readFileSync(path.join(__dirname, 'static/preferences.json')));
@@ -40,7 +38,7 @@ const createMainWindow = (args) => {
         }
     })
 
-    // mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
 
     mainWindow.setBackgroundColor('#111');
     mainWindow.loadFile('app/static/index.html');
@@ -48,7 +46,7 @@ const createMainWindow = (args) => {
     return mainWindow
 }
 
-const setEvents = () => {
+const setIpcEvents = () => {
     const appLocked = app.requestSingleInstanceLock();
 
     if (!appLocked) {
@@ -56,7 +54,7 @@ const setEvents = () => {
     } else {
         app.on('second-instance', (event, args) => {
             fileURI = args.at(-1);
-            mainWindow.webContents.send('create-players', fileURI, true);
+            mainWindow.webContents.send('create-players', fileURI);
             if (mainWindow.isMinimized()) {
                 mainWindow.restore();
             }
@@ -65,20 +63,6 @@ const setEvents = () => {
     }
 
     ipcMain.on('resize-window', (event, newWidth, newHeight) => {
-        console.log('resizing really');
-
-        console.log(mainWindow.webContents.getOwnerBrowserWindow().getBounds());
-
-        let display = screen.getPrimaryDisplay();
-        let screenX = parseInt(display['size']['width'] * display['scaleFactor']);
-        let screenY = parseInt(display['size']['height'] * display['scaleFactor']);
-
-        let windowSize = mainWindow.getSize()
-        windowX = windowSize[0];
-        windowY = windowSize[1];
-
-        // logic to change splitscreen direction
-
         mainWindow.setSize(newWidth, newHeight);
         mainWindow.center();
     });
@@ -86,10 +70,6 @@ const setEvents = () => {
     ipcMain.on('quit-app', (event) => {
         app.quit();
     });
-
-    // app.on('window-all-closed', () => {
-    //     app.quit();
-    // });
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
@@ -100,7 +80,7 @@ const main = () => {
     const args = constructArgs();
     mainWindow = createMainWindow(args);
     Menu.setApplicationMenu(createMenu(mainWindow));
-    setEvents();
+    setIpcEvents();
 }
 
 app.whenReady().then(() => {

@@ -1,4 +1,4 @@
-function setControls() {
+const setControls = () => {
     Object.defineProperty(HTMLMediaElement.prototype, 'isPlaying', {
         configurable: true,
         get: function () {
@@ -73,7 +73,7 @@ function setControls() {
     HTMLMediaElement.prototype.seek = function (amount) {
         switch (amount) {
             case 0: this.currentTime = 0; break;
-            case -1: this.currentTime = this.duration - 0.1; break;
+            case -1: this.currentTime = this.duration - 0.1; this.pause(); break;
             default: this.currentTime = this.currentTime += amount;
         }
     }
@@ -86,7 +86,7 @@ function setControls() {
     }
 }
 
-function setEvents(node) {
+const setEvents = (node) => {
     node.addEventListener('loadedmetadata', () => {
         node.width = node.videoWidth;
         node.height = node.videoHeight;
@@ -96,25 +96,41 @@ function setEvents(node) {
         node.togglePause()
     });
 
-    node.addEventListener('timeupdate', () => {
-        document.querySelector('#gui-progress-bar')
-            .value = Math.trunc(node.currentTime / node.duration * 100);
-
-        let seconds = Math.round(node.currentTime % 60);
-        let minutes = Math.trunc(node.currentTime / 60);
-
-        document.querySelector('#gui-timestamp')
-            .innerHTML = String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
+    node.addEventListener('wheel', function (e) {
+        if (e.deltaY < 0 && node.volume < 1)
+            node.adjustVolume(+5);
+        else if (e.deltaY > 0 && node.volume > 0)
+            node.adjustVolume(-5);
     });
 
-    node.oncontextmenu = function () {
-        alert('insert pretty menu here');
-    }
+    let updateUI = null;
+    node.addEventListener('playing', () => {
+        // Show playing animaion
+        if (typeof updateUI == null) return;
+        updateUI = setInterval(() => {
+            if (node.currentTime >= node.duration - 0.10)
+                node.currentTime = 0;
+
+            document.querySelector('#gui-progress-bar')
+                .value = Math.trunc(node.currentTime / node.duration * 100);
+    
+            let seconds = Math.round(node.currentTime % 60);
+            let minutes = Math.trunc(node.currentTime / 60);
+    
+            document.querySelector('#gui-timestamp')
+                .innerHTML = String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
+        });
+    });
+
+    node.addEventListener('pause', () => {
+        clearInterval(updateUI);
+        updateUI = null;
+    });
 }
 
-function spawnElement(fileURI) {
+const spawnElement = (fileURI) => {
     const node = document.createElement('video');
-
+    
     node.src = fileURI;
     node.volume = 0.5;
     node.loop = true;
