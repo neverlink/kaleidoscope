@@ -6,7 +6,7 @@
 An electron-based video player. Highly WIP
 
 ### Features
-1. Basic media controls
-2. Speed control
-3. Pitch correction toggle
-4. Splitscreen
+- Splitscreen
+- Seamless Looping
+- Speed control
+- Pitch correction toggle
