@@ -13,7 +13,7 @@ const createMainWindow = (args) => {
     preferences = args[0];
     filePath = args[1];
 
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: preferences['initialWidth'],
         height: preferences['initialHeight'],
 
@@ -29,7 +29,7 @@ const createMainWindow = (args) => {
 
         icon: path.join(__dirname, 'static/icon.png'),
 
-        frame: true, // for now
+        frame: false, // for now
 
         webPreferences: {
             nodeIntegration: true,
@@ -38,7 +38,7 @@ const createMainWindow = (args) => {
         }
     })
 
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 
     mainWindow.setBackgroundColor('#111');
     mainWindow.loadFile('app/static/index.html');
@@ -67,6 +67,14 @@ const setIpcEvents = () => {
         mainWindow.center();
     });
 
+    ipcMain.on('minimize-app', (event) => {
+        mainWindow.minimize();
+    });
+
+    ipcMain.on('maximize-app', (event) => {
+        mainWindow.isMaximized() ? mainWindow.restore() : mainWindow.maximize();
+    });
+
     ipcMain.on('quit-app', (event) => {
         app.quit();
     });
@@ -78,7 +86,7 @@ const setIpcEvents = () => {
 
 const main = () => {
     const args = constructArgs();
-    mainWindow = createMainWindow(args);
+    createMainWindow(args);
     Menu.setApplicationMenu(createMenu(mainWindow));
     setIpcEvents();
 }

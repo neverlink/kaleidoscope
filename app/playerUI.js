@@ -34,49 +34,49 @@ const updateWindowState = () => {
     updateTitle(activePlayers);
 
     if (activePlayers.length == 0) {
-        document.querySelector('#splash-container').style.display = 'flex';
-        document.querySelector('#player-controls').style.display = 'none';
+        document.querySelector('#splashContainer').style.display = 'flex';
+        document.querySelector('#playerControls').style.display = 'none';
     } else {
-        document.querySelector('#splash-container').style.display = 'none';
-        document.querySelector('#player-controls').style.display = 'flex';
+        document.querySelector('#splashContainer').style.display = 'none';
+        document.querySelector('#playerControls').style.display = 'flex';
     }
 
     if (activePlayers.length == 1) {
-        document.querySelector('#gui-progress-bar').style.display = 'initial';
-        document.querySelector('#gui-timestamp').style.display = 'initial';
+        document.querySelector('#guiProgressBar').style.display = 'initial';
+        document.querySelector('#guiTimestamp').style.display = 'initial';
     }
     
     if (activePlayers.length >= 2) {
-        document.querySelector('#gui-progress-bar').style.display = 'none';
-        document.querySelector('#gui-timestamp').style.display = 'none';
+        document.querySelector('#guiProgressBar').style.display = 'none';
+        document.querySelector('#guiTimestamp').style.display = 'none';
     }
 }
 
 const initialize = () => {
-    document.querySelector('#gui-toggle-pause').addEventListener('click', () => {
+    document.querySelector('#guitogglePause').addEventListener('click', () => {
         playerUtils.commandPlayers('togglePause');
     });
 
-    let progressBar = document.querySelector('#gui-progress-bar')
+    let progressBar = document.querySelector('#guiProgressBar')
     progressBar.addEventListener('input', () => {
         playerUtils.commandPlayers('seekToPercentage', progressBar.valueAsNumber);
     });
 
-    document.querySelector('#gui-volume-icon').addEventListener('click', () => {
+    document.querySelector('#guiVolumeIcon').addEventListener('click', () => {
         playerUtils.commandPlayers('toggleMute');
     });
 
-    let volumeSlider = document.querySelector('#gui-volume-slider')
+    let volumeSlider = document.querySelector('#gui-VolumeSlider')
     volumeSlider.addEventListener('input', () => {
         playerUtils.commandPlayers('replaceVolume', volumeSlider.valueAsNumber);
     });
 
-    let fullscreenToggler = document.querySelector('#gui-toggle-fullscreen')
+    let fullscreenToggler = document.querySelector('#guiToggleFullscreen')
     fullscreenToggler.addEventListener('click', () => {
         if (document.fullscreenElement)
             document.exitFullscreen();
         else
-            document.querySelector('#player-container').requestFullscreen();
+            document.querySelector('#playerContainer').requestFullscreen();
     });
 }
 

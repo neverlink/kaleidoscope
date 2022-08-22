@@ -13,12 +13,12 @@ const setControls = () => {
         this.muted = !this.muted;
         if (this.muted) {
             iconSrc = 'fontawesome/volume-xmark.svg';
-            document.querySelector('#gui-volume-slider-container').style.display = 'none';
+            document.querySelector('#guiVolumeSliderContainer').style.display = 'none';
         } else {
             iconSrc = 'fontawesome/volume-high.svg'
-            document.querySelector('#gui-volume-slider-container').style.display = 'inherit';
+            document.querySelector('#guiVolumeSliderContainer').style.display = 'inherit';
         }
-        document.querySelector('#gui-volume-icon').src = iconSrc;
+        document.querySelector('#guiVolumeIcon').src = iconSrc;
     }
 
     HTMLMediaElement.prototype.togglePause = function () {
@@ -27,7 +27,7 @@ const setControls = () => {
             iconSrc = 'fontawesome/pause.svg';
         else
             iconSrc = 'fontawesome/play.svg';
-        document.querySelector('#gui-toggle-pause').src = iconSrc;
+        document.querySelector('#guitogglePause').src = iconSrc;
     }
 
     HTMLMediaElement.prototype.togglePitchCorrection = function () {
@@ -52,8 +52,8 @@ const setControls = () => {
         else
             iconSrc = 'fontawesome/volume-xmark.svg';
 
-        document.querySelector('#gui-volume-icon').src = iconSrc;
-        document.querySelector('#gui-volume-slider').value = newVolume * 100;
+        document.querySelector('#guiVolumeIcon').src = iconSrc;
+        document.querySelector('#gui-VolumeSlider').value = newVolume * 100;
     }
 
     HTMLMediaElement.prototype.adjustRate = function (amount) {
@@ -67,7 +67,7 @@ const setControls = () => {
     HTMLMediaElement.prototype.stop = function () {
         this.pause();
         this.currentTime = 0;
-        document.querySelector('#gui-toggle-pause').src = 'fontawesome/play.svg';;
+        document.querySelector('#guitogglePause').src = 'fontawesome/play.svg';;
     }
 
     HTMLMediaElement.prototype.seek = function (amount) {
@@ -103,21 +103,27 @@ const setEvents = (node) => {
             node.adjustVolume(-5);
     });
 
-    let updateUI = null;
+    let getFpsCount;
+    let updateUI;
     node.addEventListener('playing', () => {
+        getFpsCount = setTimeout(() => {
+            console.log(node.webkitDecodedFrameCount);
+            clearTimeout(getFpsCount);
+        }, 1000);
+
         // Show playing animaion
         if (typeof updateUI == null) return;
         updateUI = setInterval(() => {
             if (node.currentTime >= node.duration - 0.10)
                 node.currentTime = 0;
 
-            document.querySelector('#gui-progress-bar')
+            document.querySelector('#guiProgressBar')
                 .value = Math.trunc(node.currentTime / node.duration * 100);
     
             let seconds = Math.round(node.currentTime % 60);
             let minutes = Math.trunc(node.currentTime / 60);
     
-            document.querySelector('#gui-timestamp')
+            document.querySelector('#guiTimestamp')
                 .innerHTML = String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
         });
     });
@@ -137,7 +143,7 @@ const spawnElement = (fileURI) => {
     node.autoplay = true;
     node.preservesPitch = false;
     
-    return document.querySelector('div#player-container').appendChild(node);;
+    return document.querySelector('div#playerContainer').appendChild(node);;
 }
 
 module.exports.create = (fileURI) => {

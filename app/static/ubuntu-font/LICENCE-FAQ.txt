@@ -11,7 +11,7 @@
    many type designers and writing systems. For the [1]Ubuntu Font Family,
    the process has been guided with the type foundry Dalton Maag setting
    the project up with firm stylistic foundation covering several
-   left-to-right scripts: Latin, Greek and Cyrillic; and right-to-left
+   left-toRight scripts: Latin, Greek and Cyrillic; and right-toLeft
    scripts: Arabic and Hebrew (due in 2011).
 
    With this starting point the community will, under the supervision of
