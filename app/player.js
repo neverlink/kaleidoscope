@@ -44,7 +44,7 @@ const setControls = () => {
             return;
         else
             this.volume = newVolume;
-        
+
         if (newVolume >= 0.5)
             iconSrc = 'fontawesome/volume-high.svg';
         else if (newVolume > 0)
@@ -67,7 +67,8 @@ const setControls = () => {
     HTMLMediaElement.prototype.stop = function () {
         this.pause();
         this.currentTime = 0;
-        document.querySelector('#guitogglePause').src = 'fontawesome/play.svg';;
+        document.querySelector('#guitogglePause').src = 'fontawesome/play.svg';
+        updatePlayerUI(this);
     }
 
     HTMLMediaElement.prototype.seek = function (amount) {
@@ -76,13 +77,40 @@ const setControls = () => {
             case -1: this.currentTime = this.duration - 0.1; this.pause(); break;
             default: this.currentTime = this.currentTime += amount;
         }
+        updatePlayerUI(this);
+    }
+
+    HTMLMediaElement.prototype.stepFrames = function (amount) {
+        console.log(amount);
+        console.log(1/this.frameRate);
+        this.currentTime += amount * (1 / this.frameRate);
+        updatePlayerUI(this);
     }
 
     HTMLMediaElement.prototype.unload = function (amount) {
         let oldSrc = this.src;
         this.removeAttribute('src');
         this.load();
+        clearAllIntervals();
         return oldSrc;
+    }
+}
+
+const updatePlayerUI = (node) => {
+    document.querySelector('#guiProgressBar')
+        .value = Math.trunc(node.currentTime / node.duration * 100);
+
+    let seconds = Math.round(node.currentTime % 60);
+    let minutes = Math.trunc(node.currentTime / 60);
+
+    document.querySelector('#guiTimestamp')
+        .innerHTML = String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
+}
+
+const clearAllIntervals = () => {
+    const lastIntervalId = window.setInterval(function () { }, Number.MAX_SAFE_INTEGER);
+    for (let i = 1; i <= lastIntervalId; i++) {
+        window.clearInterval(i);
     }
 }
 
@@ -96,6 +124,13 @@ const setEvents = (node) => {
         node.togglePause()
     });
 
+    node.addEventListener('dblclick', () => {
+        if (document.fullscreenElement)
+            document.exitFullscreen();
+        else
+            playerContainer.requestFullscreen();
+    });
+
     node.addEventListener('wheel', function (e) {
         if (e.deltaY < 0 && node.volume < 1)
             node.adjustVolume(+5);
@@ -103,52 +138,59 @@ const setEvents = (node) => {
             node.adjustVolume(-5);
     });
 
-    let getFpsCount;
-    let updateUI;
     node.addEventListener('playing', () => {
-        getFpsCount = setTimeout(() => {
-            console.log(node.webkitDecodedFrameCount);
-            clearTimeout(getFpsCount);
+        let getFpsCount = setInterval(() => {
+            if (node.currentTime >= 1) {
+                node.frameRate = Math.trunc(node.webkitDecodedFrameCount / node.currentTime) - 1;
+                clearInterval(getFpsCount);
+            }
         }, 1000);
+    }, { once: true });
 
-        // Show playing animaion
-        if (typeof updateUI == null) return;
-        updateUI = setInterval(() => {
+    node.addEventListener('playing', () => {
+        setInterval(() => {
             if (node.currentTime >= node.duration - 0.10)
                 node.currentTime = 0;
-
-            document.querySelector('#guiProgressBar')
-                .value = Math.trunc(node.currentTime / node.duration * 100);
-    
-            let seconds = Math.round(node.currentTime % 60);
-            let minutes = Math.trunc(node.currentTime / 60);
-    
-            document.querySelector('#guiTimestamp')
-                .innerHTML = String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
+            updatePlayerUI(node);
         });
     });
 
     node.addEventListener('pause', () => {
-        clearInterval(updateUI);
-        updateUI = null;
+        clearAllIntervals();
     });
 }
 
-const spawnElement = (fileURI) => {
-    const node = document.createElement('video');
-    
+const setProperties = (node, fileURI) => {
     node.src = fileURI;
     node.volume = 0.5;
     node.loop = true;
     node.autoplay = true;
     node.preservesPitch = false;
-    
+    node.frameRate = 30;
+}
+
+const spawnVideo = () => {
+    const node = document.createElement('video');
     return document.querySelector('div#playerContainer').appendChild(node);;
 }
 
 module.exports.create = (fileURI) => {
-    let node = spawnElement(fileURI);
-    setControls(); // Move this to trigger only once
+    let fileExtension = fileURI.substring(fileURI.lastIndexOf('.') + 1);
+    let audioContainers = ['mp3', 'ogg', 'wav', 'flac'];
+    let videoContainers = ['mp4', 'mov', 'ogv', 'webm'];
+
+    let node = null;
+
+    if (audioContainers.includes(fileExtension)) {
+        alert('Audio is not supported yet!')
+    } else if (videoContainers.includes(fileExtension)) {
+        node = spawnVideo(fileURI);
+    } else {
+        alert('Unsupported filetype!')
+    }
+
+    setProperties(node, fileURI);
     setEvents(node);
+    setControls(node);
     return node;
 }

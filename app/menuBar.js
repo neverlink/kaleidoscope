@@ -150,6 +150,16 @@ const createMenu = (windowTarget) => {
                     accelerator: 'Left',
                     click: () => commandPlayers('seek', -2.5)
                 },
+                {
+                    label: 'Next Frame',
+                    accelerator: '.',
+                    click: () => commandPlayers('stepFrames', +1)
+                },
+                {
+                    label: 'Previous Frame',
+                    accelerator: ',',
+                    click: () => commandPlayers('stepFrames', -1)
+                },
                 { type: 'separator' },
                 {
                     label: 'Increase Rate',

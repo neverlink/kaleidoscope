@@ -25,6 +25,7 @@ const commandPlayers = (action, amount) => {
             case 'adjustRate': player.adjustRate(amount); break;
             case 'seek': player.seek(amount); break;
             case 'seekToPercentage': player.currentTime = (player.duration * amount) / 100; break;
+            case 'stepFrames': player.stepFrames(amount); break;
             case 'togglePitchCorrection': player.togglePitchCorrection(); break;
             default: break;
         }

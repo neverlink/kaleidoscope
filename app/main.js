@@ -29,7 +29,7 @@ const createMainWindow = (args) => {
 
         icon: path.join(__dirname, 'static/icon.png'),
 
-        frame: false, // for now
+        frame: true, // for now
 
         webPreferences: {
             nodeIntegration: true,
@@ -68,11 +68,15 @@ const setIpcEvents = () => {
     });
 
     ipcMain.on('minimize-app', (event) => {
-        mainWindow.minimize();
+        BrowserWindow.getFocusedWindow().minimize();
     });
 
     ipcMain.on('maximize-app', (event) => {
-        mainWindow.isMaximized() ? mainWindow.restore() : mainWindow.maximize();
+        currentWindow = BrowserWindow.getFocusedWindow();
+        if (currentWindow.isMaximized())
+            currentWindow.restore()
+        else
+            currentWindow.maximize();
     });
 
     ipcMain.on('quit-app', (event) => {

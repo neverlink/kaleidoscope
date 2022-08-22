@@ -45,7 +45,7 @@ const updateWindowState = () => {
         document.querySelector('#guiProgressBar').style.display = 'initial';
         document.querySelector('#guiTimestamp').style.display = 'initial';
     }
-    
+
     if (activePlayers.length >= 2) {
         document.querySelector('#guiProgressBar').style.display = 'none';
         document.querySelector('#guiTimestamp').style.display = 'none';
