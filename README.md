@@ -9,4 +9,5 @@ An electron-based video player. Highly WIP
 - Splitscreen
 - Seamless Looping
 - Speed control
+- Frame by frame viewing
 - Pitch correction toggle
