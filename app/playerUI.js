@@ -20,11 +20,13 @@ const resizeWindow = (activePlayers) => {
 };
 
 const updateTitle = (activePlayers) => {
-    let newTitle = 'Kaleidoscope'
+    let newTitle = '';
+    let videoTitles = [];
     activePlayers.forEach((player) => {
-        newTitle += ' - ' + decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1));
+        videoTitles.push(decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1)));
     });
-    document.title = newTitle;
+    document.title = 'Kaleidoscope';
+    titleBarTitle.innerHTML = videoTitles.join(' | ');
 }
 
 const updateWindowState = () => {

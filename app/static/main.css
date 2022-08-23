@@ -22,12 +22,6 @@ body {
     background-color: #111;
 }
 
-/* button {
-    appearance: none;
-    filter: invert(100%);
-    height: 100%;
-} */
-
 #titleBar {
     height: 30px;
 
@@ -49,7 +43,7 @@ body {
 }
 
 #titleBarLeft {
-
+    width: 100px;
 }
 
 #titleBarLeft > button#titleBarMenuBtn {
@@ -74,6 +68,7 @@ body {
 }
 
 #titleBarRight {
+    width: 100px;
     height: 100%;
     display: flex;
     gap: 10px;
