@@ -175,7 +175,7 @@ const spawnVideo = () => {
 module.exports.create = (fileURI) => {
     let fileExtension = fileURI.substring(fileURI.lastIndexOf('.') + 1);
     let audioContainers = ['mp3', 'ogg', 'wav', 'flac'];
-    let videoContainers = ['mp4', 'mov', 'ogv', 'webm'];
+    let videoContainers = ['mp4', 'mov', 'mkv', 'ogv', 'webm'];
 
     let node = null;
 

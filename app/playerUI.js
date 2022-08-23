@@ -16,11 +16,10 @@ const resizeWindow = (activePlayers) => {
         return
 
     console.log(`Resizing to ${width} x ${height}`)
-    ipcRenderer.send('resize-window', width, height)
+    ipcRenderer.send('resize-window', width, height + 30)
 };
 
 const updateTitle = (activePlayers) => {
-    let newTitle = '';
     let videoTitles = [];
     activePlayers.forEach((player) => {
         videoTitles.push(decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1)));

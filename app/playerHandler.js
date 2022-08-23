@@ -8,7 +8,7 @@ const setIpcEvents = () => {
         toggleAspectRatio();
     });
 
-    ipcRenderer.on('create-players', function (e, fileURIs, destroyRest) {
+    ipcRenderer.on('create-players', function (e, fileURIs) {
         replacePlayer(fileURIs);
     });
 
@@ -21,8 +21,10 @@ const setIpcEvents = () => {
     });
 
     ipcRenderer.on('restore-player', function (e) {
-        if (lastDestroyedSrc != null)
-            createPlayers(lastDestroyedSrc);
+        if (destroyedPlayers.length) {
+            createPlayers(destroyedPlayers.pop());
+            playerUtils.commandPlayers('seek', 0)
+        }
     });
 }
 
@@ -65,7 +67,7 @@ const destroyPlayer = (player) => {
     if (playerCount < 1)
         ipcRenderer.send('quit-app');
         
-    lastDestroyedSrc = player.unload();
+    destroyedPlayers.push(player.unload());
     player.remove();
     updateWindowState();
 }
@@ -75,6 +77,7 @@ const initialize = () => {
     replacePlayer(startURI);
     updateWindowState();
     setIpcEvents();
+    window.destroyedPlayers = [];
 }
 
 module.exports = {

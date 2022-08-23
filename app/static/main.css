@@ -31,8 +31,6 @@ body {
     
     background: rgb(45,45,45);
     padding: 0px 10px;
-
-
 }
 
 #titleBar button {
@@ -55,7 +53,7 @@ body {
     height: 100%;
 
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
 
     user-select: none;
