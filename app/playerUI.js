@@ -34,49 +34,46 @@ const updateWindowState = () => {
     updateTitle(activePlayers);
 
     if (activePlayers.length == 0) {
-        document.querySelector('#splashContainer').style.display = 'flex';
-        document.querySelector('#playerControls').style.display = 'none';
+        splashContainer.style.display = 'flex';
+        playerControls.style.display = 'none';
     } else {
-        document.querySelector('#splashContainer').style.display = 'none';
-        document.querySelector('#playerControls').style.display = 'flex';
+        splashContainer.style.display = 'none';
+        playerControls.style.display = 'flex';
     }
 
     if (activePlayers.length == 1) {
-        document.querySelector('#guiProgressBar').style.display = 'initial';
-        document.querySelector('#guiTimestamp').style.display = 'initial';
+        guiProgressBar.style.display = 'initial';
+        guiTimestamp.style.display = 'initial';
     }
 
     if (activePlayers.length >= 2) {
-        document.querySelector('#guiProgressBar').style.display = 'none';
-        document.querySelector('#guiTimestamp').style.display = 'none';
+        guiProgressBar.style.display = 'none';
+        guiTimestamp.style.display = 'none';
     }
 }
 
 const initialize = () => {
-    document.querySelector('#guitogglePause').addEventListener('click', () => {
+    guiTogglePause.addEventListener('click', () => {
         playerUtils.commandPlayers('togglePause');
     });
 
-    let progressBar = document.querySelector('#guiProgressBar')
-    progressBar.addEventListener('input', () => {
-        playerUtils.commandPlayers('seekToPercentage', progressBar.valueAsNumber);
+    guiProgressBar.addEventListener('input', () => {
+        playerUtils.commandPlayers('seekToPercentage', guiProgressBar.valueAsNumber);
     });
 
-    document.querySelector('#guiVolumeIcon').addEventListener('click', () => {
+    guiVolumeIcon.addEventListener('click', () => {
         playerUtils.commandPlayers('toggleMute');
     });
 
-    let volumeSlider = document.querySelector('#gui-VolumeSlider')
-    volumeSlider.addEventListener('input', () => {
-        playerUtils.commandPlayers('replaceVolume', volumeSlider.valueAsNumber);
+    guiVolumeSlider.addEventListener('input', () => {
+        playerUtils.commandPlayers('replaceVolume', guiVolumeSlider.valueAsNumber);
     });
 
-    let fullscreenToggler = document.querySelector('#guiToggleFullscreen')
-    fullscreenToggler.addEventListener('click', () => {
+    guiToggleFullscreen.addEventListener('click', () => {
         if (document.fullscreenElement)
             document.exitFullscreen();
         else
-            document.querySelector('#playerContainer').requestFullscreen();
+            playerContainer.requestFullscreen();
     });
 }
 

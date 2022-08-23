@@ -29,7 +29,7 @@ const createMainWindow = (args) => {
 
         icon: path.join(__dirname, 'static/icon.png'),
 
-        frame: true, // for now
+        frame: false,
 
         webPreferences: {
             nodeIntegration: true,

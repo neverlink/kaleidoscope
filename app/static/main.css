@@ -221,6 +221,6 @@ body:hover #playerControls {
     opacity: 1;
 }
 
-#gui-VolumeSlider {
+#guiVolumeSlider {
     transform: rotate(-90deg);
 }

@@ -3,7 +3,7 @@ const playerHandler = require("./playerHandler.js");
 const playerUI = require("./playerUI.js");
 
 const defineDropArea = () => {
-    const dropArea = document.querySelector("#dropContainer");
+    const dropArea = dropContainer;
 
     const prevents = (e) => e.preventDefault();
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {

@@ -3,7 +3,6 @@ const { updateWindowState } = require('./playerUI.js');
 const mediaPlayer = require('./player.js');
 const playerUtils = require('./playerUtils.js');
 
-// Can't move this out because of lastDestroyedSrc
 const setIpcEvents = () => {
     ipcRenderer.on('toggle-aspect-ratio', function (e) {
         toggleAspectRatio();

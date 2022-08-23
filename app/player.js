@@ -13,12 +13,12 @@ const setControls = () => {
         this.muted = !this.muted;
         if (this.muted) {
             iconSrc = 'fontawesome/volume-xmark.svg';
-            document.querySelector('#guiVolumeSliderContainer').style.display = 'none';
+            guiVolumeSliderContainer.style.display = 'none';
         } else {
             iconSrc = 'fontawesome/volume-high.svg'
-            document.querySelector('#guiVolumeSliderContainer').style.display = 'inherit';
+            guiVolumeSliderContainer.style.display = 'inherit';
         }
-        document.querySelector('#guiVolumeIcon').src = iconSrc;
+        guiVolumeIcon.src = iconSrc;
     }
 
     HTMLMediaElement.prototype.togglePause = function () {
@@ -27,7 +27,7 @@ const setControls = () => {
             iconSrc = 'fontawesome/pause.svg';
         else
             iconSrc = 'fontawesome/play.svg';
-        document.querySelector('#guitogglePause').src = iconSrc;
+        guiTogglePause.src = iconSrc;
     }
 
     HTMLMediaElement.prototype.togglePitchCorrection = function () {
@@ -52,8 +52,8 @@ const setControls = () => {
         else
             iconSrc = 'fontawesome/volume-xmark.svg';
 
-        document.querySelector('#guiVolumeIcon').src = iconSrc;
-        document.querySelector('#gui-VolumeSlider').value = newVolume * 100;
+        guiVolumeIcon.src = iconSrc;
+        guiVolumeSlider.value = newVolume * 100;
     }
 
     HTMLMediaElement.prototype.adjustRate = function (amount) {
@@ -67,7 +67,7 @@ const setControls = () => {
     HTMLMediaElement.prototype.stop = function () {
         this.pause();
         this.currentTime = 0;
-        document.querySelector('#guitogglePause').src = 'fontawesome/play.svg';
+        guiTogglePause.src = 'fontawesome/play.svg';
         updatePlayerUI(this);
     }
 
@@ -97,14 +97,12 @@ const setControls = () => {
 }
 
 const updatePlayerUI = (node) => {
-    document.querySelector('#guiProgressBar')
-        .value = Math.trunc(node.currentTime / node.duration * 100);
+    guiProgressBar.value = Math.trunc(node.currentTime / node.duration * 100);
 
     let seconds = Math.round(node.currentTime % 60);
     let minutes = Math.trunc(node.currentTime / 60);
 
-    document.querySelector('#guiTimestamp')
-        .innerHTML = String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
+    guiTimestamp.innerHTML = String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
 }
 
 const clearAllIntervals = () => {
@@ -171,7 +169,7 @@ const setProperties = (node, fileURI) => {
 
 const spawnVideo = () => {
     const node = document.createElement('video');
-    return document.querySelector('div#playerContainer').appendChild(node);;
+    return playerContainer.appendChild(node);
 }
 
 module.exports.create = (fileURI) => {
