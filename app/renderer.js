@@ -3,11 +3,9 @@ const playerHandler = require("./playerHandler.js");
 const playerUI = require("./playerUI.js");
 
 const defineDropArea = () => {
-    const dropArea = dropContainer;
-
     const prevents = (e) => e.preventDefault();
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
-        dropArea.addEventListener(e, prevents);
+        dropContainer.addEventListener(e, prevents);
     });
 
     const handleDrop = (e) => {
@@ -15,14 +13,10 @@ const defineDropArea = () => {
         let filePaths = files.map(file => file['path']);
         playerHandler.replacePlayer(filePaths);
     }
-    dropArea.addEventListener("drop", handleDrop);
+    dropContainer.addEventListener("drop", handleDrop);
 }
 
 const initializeUI = () => {
-    titleBarMenuBtn.addEventListener('click', () => {
-        alert('insert menu here');
-    });
-
     minimizeBtn.addEventListener('click', () => {
         ipcRenderer.send('minimize-app');
     });

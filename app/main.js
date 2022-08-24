@@ -29,8 +29,10 @@ const createMainWindow = (args) => {
 
         icon: path.join(__dirname, 'static/icon.png'),
 
+        title: 'Kaleidoscope',
         frame: false,
-
+        show: false,
+        
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -39,9 +41,12 @@ const createMainWindow = (args) => {
     })
 
     // mainWindow.webContents.openDevTools();
-
+    
     mainWindow.setBackgroundColor('#111');
     mainWindow.loadFile('app/static/index.html');
+
+    // Fix default windows app frame appearing first
+    mainWindow.webContents.once("dom-ready", () => mainWindow.show());
 
     return mainWindow
 }

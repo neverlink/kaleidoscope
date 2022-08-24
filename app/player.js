@@ -118,10 +118,6 @@ const setEvents = (node) => {
         node.height = node.videoHeight;
     }, { once: true });
 
-    node.addEventListener('click', () => {
-        node.togglePause()
-    });
-
     node.addEventListener('dblclick', () => {
         if (document.fullscreenElement)
             document.exitFullscreen();

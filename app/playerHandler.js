@@ -78,6 +78,10 @@ const initialize = () => {
     updateWindowState();
     setIpcEvents();
     window.destroyedPlayers = [];
+
+    playerContainer.addEventListener('click', () => {
+        playerUtils.commandPlayers('togglePause');
+    });
 }
 
 module.exports = {

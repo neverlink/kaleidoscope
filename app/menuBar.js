@@ -32,14 +32,9 @@ const createMenu = (windowTarget) => {
                     }
                 },
                 {
-                    label: 'Open URL...',
-                },
-                { type: 'separator' },
-                {
                     label: 'Open File Location',
                     click: () => windowTarget.setAlwaysOnTop(!windowTarget.isAlwaysOnTop())
                 },
-                { type: 'separator' },
                 {
                     label: 'Exit',
                     role: 'Quit',
@@ -178,11 +173,6 @@ const createMenu = (windowTarget) => {
             label: 'Player',
             submenu: [
                 {
-                    label: 'Add Player',
-                    accelerator: process.platform == 'darwin' ? 'Command+T' : 'Ctrl+T',
-                    // click: () => 
-                },
-                {
                     label: 'Close Player',
                     accelerator: process.platform == 'darwin' ? 'Command+W' : 'Ctrl+W',
                     click: () => destroyPlayer()
@@ -199,27 +189,6 @@ const createMenu = (windowTarget) => {
                     accelerator: process.platform == 'darwin' ? 'Command+/' : 'Ctrl+/',
                     click: () => commandPlayers('togglePitchCorrection')
                 },
-                {
-                    // Open window with sliders for each filter
-                    label: 'Filters...',
-                    submenu: [
-                        {
-                            label: 'Invert'
-                        },
-                        {
-                            label: 'Greyscale'
-                        },
-                        {
-                            label: 'Hue Shift'
-                        },
-                        {
-                            label: 'Flip'
-                        },
-                        {
-                            label: 'Rotate'
-                        }
-                    ]
-                }
             ]
         },
         {

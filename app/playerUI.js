@@ -16,7 +16,7 @@ const resizeWindow = (activePlayers) => {
         return
 
     console.log(`Resizing to ${width} x ${height}`)
-    ipcRenderer.send('resize-window', width, height + 30)
+    ipcRenderer.send('resize-window', width, height)
 };
 
 const updateTitle = (activePlayers) => {
@@ -24,8 +24,7 @@ const updateTitle = (activePlayers) => {
     activePlayers.forEach((player) => {
         videoTitles.push(decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1)));
     });
-    document.title = 'Kaleidoscope';
-    titleBarTitle.innerHTML = videoTitles.join(' | ');
+    titleBarTitle.innerHTML = videoTitles.join(' - ');
 }
 
 const updateWindowState = () => {
