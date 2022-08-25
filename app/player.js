@@ -97,7 +97,7 @@ const setControls = () => {
 }
 
 const updatePlayerUI = (node) => {
-    guiProgressBar.value = Math.trunc(node.currentTime / node.duration * 100);
+    guiProgressBar.value = Math.trunc(node.currentTime / node.duration * 1000);
 
     let seconds = Math.round(node.currentTime % 60);
     let minutes = Math.trunc(node.currentTime / 60);

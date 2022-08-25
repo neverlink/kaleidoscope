@@ -51,7 +51,6 @@ body {
 #titleBarMiddle {
     width: 100%;
     height: 100%;
-
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -61,13 +60,15 @@ body {
     -webkit-app-region: drag;
 }
 
-#titleBarmiddle p {
-    text-align: center;
+#titleBarTitle {
+    max-width: calc(100vw - 275px);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin: 0;
 }
 
 #titleBarRight {
     width: 100px;
-    height: 100%;
     display: flex;
     gap: 10px;
     justify-content: space-between;

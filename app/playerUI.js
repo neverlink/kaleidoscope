@@ -15,7 +15,6 @@ const resizeWindow = (activePlayers) => {
     if (width == 0 || height == 0)
         return
 
-    console.log(`Resizing to ${width} x ${height}`)
     ipcRenderer.send('resize-window', width, height)
 };
 
@@ -58,7 +57,7 @@ const initialize = () => {
     });
 
     guiProgressBar.addEventListener('input', () => {
-        playerUtils.commandPlayers('seekToPercentage', guiProgressBar.valueAsNumber);
+        playerUtils.commandPlayers('seekToPercentage', guiProgressBar.valueAsNumber / 10);
     });
 
     guiVolumeIcon.addEventListener('click', () => {
@@ -66,7 +65,7 @@ const initialize = () => {
     });
 
     guiVolumeSlider.addEventListener('input', () => {
-        playerUtils.commandPlayers('replaceVolume', guiVolumeSlider.valueAsNumber);
+        playerUtils.commandPlayers('replaceVolume', guiVolumeSlider.valueAsNumber / 10);
     });
 
     guiToggleFullscreen.addEventListener('click', () => {
