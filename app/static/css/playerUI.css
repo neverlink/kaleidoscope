@@ -23,10 +23,10 @@
     transition: opacity .7s;
 }
 
-#playerControls * {
-    /* user-select: none;
-    -webkit-user-drag: none; */
-}
+/* #playerControls * {
+    user-select: none;
+    -webkit-user-drag: none;
+} */
 
 #playerControls:hover {
     opacity: 1 !important;

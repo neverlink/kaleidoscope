@@ -36,7 +36,7 @@ const toggleAspectRatio = () => {
         style = 'fill';
     else
         style = 'contain'
-        
+
     pageRoot.style.setProperty('--player-aspect-ratio', style);
 }
 
@@ -56,9 +56,16 @@ const createPlayers = (fileURIs) => {
     fileURIs.forEach((fileURI) =>
         newPlayer = mediaPlayer.create(fileURI));
 
+    newPlayer.addEventListener('error', () => {
+        alert('Unsupported codec supplied!')
+    }, { once: true });
+
     newPlayer.addEventListener('loadedmetadata', () => {
+        newPlayer.width = newPlayer.videoWidth;
+        newPlayer.height = newPlayer.videoHeight;
+        playerContainer.appendChild(newPlayer);
         updateWindowState();
-    });
+    }, { once: true });
 }
 
 const destroyPlayer = (player) => {
@@ -66,7 +73,7 @@ const destroyPlayer = (player) => {
 
     if (playerCount < 1)
         ipcRenderer.send('quit-app');
-        
+
     destroyedPlayers.push(player.unload());
     player.remove();
     updateWindowState();

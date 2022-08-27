@@ -79,6 +79,7 @@ const initialize = () => {
             playerContainer.requestFullscreen();
     });
 
+
     // document.addEventListener('mousemove', (e) => {
     //     let elements = document.elementsFromPoint(e.clientX, e.clientY);
     //     playerControls.classList.remove('hidden');

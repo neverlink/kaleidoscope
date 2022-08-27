@@ -109,11 +109,6 @@ const clearAllIntervals = () => {
 }
 
 const setEvents = (node) => {
-    node.addEventListener('loadedmetadata', () => {
-        node.width = node.videoWidth;
-        node.height = node.videoHeight;
-    }, { once: true });
-
     node.addEventListener('dblclick', () => {
         if (document.fullscreenElement)
             document.exitFullscreen();
@@ -160,8 +155,7 @@ const setProperties = (node, fileURI) => {
 }
 
 const spawnVideo = () => {
-    const node = document.createElement('video');
-    return playerContainer.appendChild(node);
+    return document.createElement('video');
 }
 
 module.exports.create = (fileURI) => {
@@ -176,11 +170,11 @@ module.exports.create = (fileURI) => {
     } else if (videoContainers.includes(fileExtension)) {
         node = spawnVideo(fileURI);
     } else {
-        alert('Unsupported filetype!')
+        alert('Unsupported file type!')
     }
 
     setProperties(node, fileURI);
     setEvents(node);
     setControls(node);
-    return node;
+    return node
 }
