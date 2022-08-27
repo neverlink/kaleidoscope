@@ -2,16 +2,20 @@ const { ipcRenderer } = require('electron');
 const playerUtils = require("./playerUtils.js");
 
 const resizeWindow = (activePlayers) => {
-    let width = 0; let height = 0;
+    let width = 0;
+    let height = 0;
 
     activePlayers.forEach((player) => {
         if (player.width > width && player.height > height)
-            width = player.width; height = player.height;
+            width = player.width;
+            height = player.height;
     });
 
-    if (width == 0 || height == 0)
-        width = 500; height = 500;
-
+    if (width == 0 || height == 0) {
+        width = 500;
+        height = 500;
+    }
+    
     ipcRenderer.send('resize-window', width, height)
 };
 
