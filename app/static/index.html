@@ -4,46 +4,62 @@
 <head>
   <meta charset="UTF-8">
   <title>Kaleidoscope</title>
-  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/titleBar.css">
+  <link rel="stylesheet" href="css/playerUI.css">
 </head>
 
 <body>
 
   <div id="titleBar">
+
     <div id="titleBarLeft">
       <button id="titleBarMenuBtn"></button>
     </div>
+
     <div id="titleBarMiddle">
         <p id="titleBarTitle">Kaleidoscope</p>
     </div>
+
     <div id="titleBarRight">
       <button id="minimizeBtn"></button>
       <button id="maximizeBtn"></button>
       <button id="closeBtn"></button>
     </div>
+
+    <div id="titleBarMenu" class="hidden">
+      <div class="titleBarMenuItem">Item 1</div>
+      <div class="titleBarMenuItem">Item 2</div>
+      <div class="titleBarMenuItem">Item 3</div>
+      <div class="titleBarMenuItem">Item 4</div>
+      <div class="titleBarMenuItem">Item 5</div>
+    </div>
+
   </div>
 
-  <div id="playerContainer">
+  <div id="content">
 
     <div id="splashContainer">
       <img id="splashLogo" src="icon.png">
       <p class="splashNotice">Drop your media files here!</p>
       <p class="splashNotice">Kaleidoscope v0.1</p>
     </div>
-    
-      <div id="playerControls" class="glass-component">
-        <img id="guiTogglePause" src="fontawesome/pause.svg">
-        <input id="guiProgressBar" type="range" value="0" max="1000" onkeydown="event.preventDefault()">
-        <div id="guiTimestamp">00:00</div>
-        <div id="guiVolumeControls">
-          <img id="guiVolumeIcon" src="fontawesome/volume-high.svg">
-          <div id="guiVolumeSliderContainer" class="glass-component">
-            <input id="guiVolumeSlider" type="range" value="50" min="0" max="100" onkeydown="event.preventDefault()">
-          </div>
+
+    <div id="playerContainer"></div>
+
+    <div id="playerControls" class="glass-component">
+      <img id="guiTogglePause" src="fontawesome/pause.svg">
+      <input id="guiProgressBar" type="range" value="0" max="1000" onkeydown="event.preventDefault()">
+      <div id="guiTimecode">00:00</div>
+      <div id="guiVolumeControls">
+        <img id="guiVolumeIcon" src="fontawesome/volume-high.svg">
+        <div id="guiVolumeSliderContainer" class="glass-component">
+          <input id="guiVolumeSlider" type="range" value="50" min="0" max="100" onkeydown="event.preventDefault()">
         </div>
-        <img id="guiToggleFullscreen" src="fontawesome/expand.svg">
       </div>
-    
+      <img id="guiToggleFullscreen" src="fontawesome/expand.svg">
+    </div>
+  
   </div>
 
 </body>

@@ -1,0 +1,84 @@
+.glass-component {
+    background-color: var(--player-background-color);
+    backdrop-filter: blur(var(--player-blur-amount));
+    border-radius: var(--player-roundness-amount);
+    box-shadow: 0px 0px 30px 0px var(--player-background-color);
+}
+
+#playerControls {
+    height: 50px;
+    max-width: 80vw;
+    box-sizing: border-box;
+    z-index: 2;
+
+    position: absolute;
+    bottom: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 20px;
+    
+    padding: 0px 25px;
+    transition: opacity .7s;
+}
+
+#playerControls * {
+    /* user-select: none;
+    -webkit-user-drag: none; */
+}
+
+#playerControls:hover {
+    opacity: 1 !important;
+    display: flex !important;
+}
+
+#playerControls img {
+    height: 22px;
+    width: 22px;
+    filter: invert(100%);
+}
+
+#playerControls input[type=range] {
+    accent-color: var(--player-accent-color);
+    outline: none;
+}
+
+#playerControls input[type=range]::-webkit-slider-thumb {
+    opacity: 0;
+}
+
+#guiProgressBar {
+    height: 30%;
+    width: 100vw;
+    min-width: 0;
+}
+
+#guiVolumeControls {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+}
+
+#guiVolumeSliderContainer {
+    width: 45px;
+    height: 150px;
+
+    position: absolute;
+    bottom: 60px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    transition: opacity .7s;
+}
+
+#guiVolumeSliderContainer:hover, #guiVolumeIcon:hover ~ #guiVolumeSliderContainer{
+    opacity: 1;
+}
+
+#guiVolumeSlider {
+    transform: rotate(-90deg);
+}

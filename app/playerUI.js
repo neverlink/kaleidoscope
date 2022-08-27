@@ -33,25 +33,29 @@ const updateWindowState = () => {
     updateTitle(activePlayers);
 
     if (activePlayers.length == 0) {
-        splashContainer.style.display = 'flex';
-        playerControls.style.display = 'none';
+        splashContainer.classList.remove('hidden');
+        playerControls.classList.add('hidden');
     } else {
-        splashContainer.style.display = 'none';
-        playerControls.style.display = 'flex';
+        splashContainer.classList.add('hidden');
+        playerControls.classList.remove('hidden');
     }
 
     if (activePlayers.length == 1) {
-        guiProgressBar.style.display = 'initial';
-        guiTimestamp.style.display = 'initial';
+        guiProgressBar.classList.remove('hidden');
+        guiTimecode.classList.remove('hidden');
     }
 
     if (activePlayers.length >= 2) {
-        guiProgressBar.style.display = 'none';
-        guiTimestamp.style.display = 'none';
+        guiProgressBar.classList.add('hidden');
+        guiTimecode.classList.add('hidden');
     }
 }
 
 const initialize = () => {
+    playerContainer.addEventListener('click', () => {
+        playerUtils.commandPlayers('togglePause');
+    });
+
     guiTogglePause.addEventListener('click', () => {
         playerUtils.commandPlayers('togglePause');
     });
@@ -65,7 +69,7 @@ const initialize = () => {
     });
 
     guiVolumeSlider.addEventListener('input', () => {
-        playerUtils.commandPlayers('replaceVolume', guiVolumeSlider.valueAsNumber / 10);
+        playerUtils.commandPlayers('replaceVolume', guiVolumeSlider.valueAsNumber);
     });
 
     guiToggleFullscreen.addEventListener('click', () => {
@@ -74,6 +78,17 @@ const initialize = () => {
         else
             playerContainer.requestFullscreen();
     });
+
+    // document.addEventListener('mousemove', (e) => {
+    //     let elements = document.elementsFromPoint(e.clientX, e.clientY);
+    //     playerControls.classList.remove('hidden');
+    //     playerControls.classList.remove('hidden1');
+    //     if (elements[0].id != 'playerControls') {
+    //         waitForFadeOut = setTimeout(() => {
+    //             playerControls.classList.add('hidden');
+    //         }, 1500);
+    //     }
+    // });
 }
 
 module.exports = {

@@ -81,8 +81,6 @@ const setControls = () => {
     }
 
     HTMLMediaElement.prototype.stepFrames = function (amount) {
-        console.log(amount);
-        console.log(1/this.frameRate);
         this.currentTime += amount * (1 / this.frameRate);
         updatePlayerUI(this);
     }
@@ -98,11 +96,9 @@ const setControls = () => {
 
 const updatePlayerUI = (node) => {
     guiProgressBar.value = Math.trunc(node.currentTime / node.duration * 1000);
-
     let seconds = Math.round(node.currentTime % 60);
     let minutes = Math.trunc(node.currentTime / 60);
-
-    guiTimestamp.innerHTML = String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
+    guiTimecode.innerHTML = String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
 }
 
 const clearAllIntervals = () => {
