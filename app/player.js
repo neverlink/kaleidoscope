@@ -1,3 +1,5 @@
+var WaveSurfer = require('wavesurfer.js');
+
 const setControls = () => {
     Object.defineProperty(HTMLMediaElement.prototype, 'isPlaying', {
         configurable: true,
@@ -94,11 +96,15 @@ const setControls = () => {
     }
 }
 
+const getTimeString = (time) => {
+    let seconds = Math.round(time % 60);
+    let minutes = Math.trunc(time / 60);
+    return String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
+}
+
 const updatePlayerUI = (node) => {
     guiProgressBar.value = Math.trunc(node.currentTime / node.duration * 1000);
-    let seconds = Math.round(node.currentTime % 60);
-    let minutes = Math.trunc(node.currentTime / 60);
-    guiTimecode.innerHTML = String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
+    guiTimeLeft.innerHTML = getTimeString(node.currentTime) + ' / ' + getTimeString(node.duration)
 }
 
 const clearAllIntervals = () => {
@@ -154,8 +160,43 @@ const setProperties = (node, fileURI) => {
     node.frameRate = 30;
 }
 
+const spawnSubtitles = (fileURI) => {
+    let subtitles = document.createElement('track');
+    let uri = fileURI.slice(0, -4) + '.vtt';
+    console.log(uri);
+    subtitles.src = uri;
+    subtitles.kind = 'subtitles';
+    subtitles.srclang = 'en';
+    subtitles.label = 'English'
+    return subtitles
+}
+
 const spawnVideo = () => {
     return document.createElement('video');
+}
+
+const spawnAudio = (fileURI) => {
+    // audioContainer = document.createElement('audio');
+    // audioContainer.setAttribute('width', '800px')
+    // audioContainer.setAttribute('height', '250px')
+    // playerContainer.appendChild(audioContainer);
+
+    wf = document.createElement('div');
+    wf.setAttribute('id', 'waveform');
+    playerContainer.appendChild(wf);
+
+    var wavesurfer = WaveSurfer.create({
+        container: '#waveform',
+        waveColor: 'violet',
+        progressColor: 'purple'
+    });
+
+    wavesurfer.on('ready', function () {
+        wavesurfer.play();
+    });
+
+    wavesurfer.load(fileURI);
+    return wf
 }
 
 module.exports.create = (fileURI) => {
@@ -167,8 +208,11 @@ module.exports.create = (fileURI) => {
 
     if (audioContainers.includes(fileExtension)) {
         alert('Audio is not supported yet!')
+        // node = spawnAudio(fileURI);
+        // console.log(node);
     } else if (videoContainers.includes(fileExtension)) {
-        node = spawnVideo(fileURI);
+        node = spawnVideo();
+        node.appendChild(spawnSubtitles(fileURI));
     } else {
         alert('Unsupported file type!')
     }

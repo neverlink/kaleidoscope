@@ -1,3 +1,8 @@
+#waveform {
+    width: 800px;
+    height: 250px;
+}
+
 .glass-component {
     background-color: var(--player-background-color);
     backdrop-filter: blur(var(--player-blur-amount));
@@ -52,6 +57,10 @@
     height: 30%;
     width: 100vw;
     min-width: 0;
+}
+
+#guiTimeLeft {
+    white-space: nowrap;
 }
 
 #guiVolumeControls {

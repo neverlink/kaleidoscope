@@ -42,12 +42,12 @@ const updateWindowState = () => {
 
     if (activePlayers.length == 1) {
         guiProgressBar.classList.remove('hidden');
-        guiTimecode.classList.remove('hidden');
+        guiTimeLeft.classList.remove('hidden');
     }
 
     if (activePlayers.length >= 2) {
         guiProgressBar.classList.add('hidden');
-        guiTimecode.classList.add('hidden');
+        guiTimeLeft.classList.add('hidden');
     }
 }
 
