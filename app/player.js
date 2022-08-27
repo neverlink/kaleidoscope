@@ -13,23 +13,10 @@ const setControls = () => {
 
     HTMLMediaElement.prototype.toggleMute = function () {
         this.muted = !this.muted;
-        if (this.muted) {
-            iconSrc = 'fontawesome/volume-xmark.svg';
-            guiVolumeSliderContainer.style.display = 'none';
-        } else {
-            iconSrc = 'fontawesome/volume-high.svg'
-            guiVolumeSliderContainer.style.display = 'inherit';
-        }
-        guiVolumeIcon.src = iconSrc;
     }
 
     HTMLMediaElement.prototype.togglePause = function () {
         this.isPlaying = !this.isPlaying;
-        if (this.isPlaying)
-            iconSrc = 'fontawesome/pause.svg';
-        else
-            iconSrc = 'fontawesome/play.svg';
-        guiTogglePause.src = iconSrc;
     }
 
     HTMLMediaElement.prototype.togglePitchCorrection = function () {
@@ -42,34 +29,21 @@ const setControls = () => {
         else
             newVolume = (Math.trunc(this.volume * 100) + amount) / 100;
 
-        if (newVolume < 0 || newVolume > 1)
-            return;
-        else
+        if (newVolume >= 0 && newVolume <= 1) {
             this.volume = newVolume;
-
-        if (newVolume >= 0.5)
-            iconSrc = 'fontawesome/volume-high.svg';
-        else if (newVolume > 0)
-            iconSrc = 'fontawesome/volume-low.svg';
-        else
-            iconSrc = 'fontawesome/volume-xmark.svg';
-
-        guiVolumeIcon.src = iconSrc;
-        guiVolumeSlider.value = newVolume * 100;
+            guiVolumeSlider.value = newVolume * 100;
+        }
     }
 
     HTMLMediaElement.prototype.adjustRate = function (amount) {
         let newRate = (this.playbackRate * 10 + amount) / 10;
         if (newRate > 0 && newRate <= 16)
             this.playbackRate = newRate
-        else
-            return
     }
 
     HTMLMediaElement.prototype.stop = function () {
         this.pause();
         this.currentTime = 0;
-        guiTogglePause.src = 'fontawesome/play.svg';
         updatePlayerUI(this);
     }
 
@@ -139,6 +113,7 @@ const setEvents = (node) => {
     }, { once: true });
 
     node.addEventListener('playing', () => {
+        guiTogglePause.src = 'fontawesome/pause.svg';
         setInterval(() => {
             if (node.currentTime >= node.duration - 0.10)
                 node.currentTime = 0;
@@ -147,7 +122,30 @@ const setEvents = (node) => {
     });
 
     node.addEventListener('pause', () => {
+        guiTogglePause.src = 'fontawesome/play.svg';
         clearAllIntervals();
+    });
+
+    node.addEventListener('volumechange', () => {
+        if (newVolume >= 0.5)
+            iconSrc = 'fontawesome/volume-high.svg';
+        else if (newVolume > 0)
+            iconSrc = 'fontawesome/volume-low.svg';
+        else
+            iconSrc = 'fontawesome/volume-xmark.svg';
+        guiVolumeIcon.src = iconSrc;
+    });
+
+    node.addEventListener('mute', () => {
+        iconSrc = 'fontawesome/volume-xmark.svg';
+        guiVolumeSliderContainer.style.display = 'none';
+        guiVolumeIcon.src = iconSrc;
+    });
+
+    node.addEventListener('unmute', () => {
+        iconSrc = 'fontawesome/volume-high.svg'
+        guiVolumeSliderContainer.style.display = 'inherit';
+        guiVolumeIcon.src = iconSrc;
     });
 }
 
