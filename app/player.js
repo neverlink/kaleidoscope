@@ -119,7 +119,7 @@ const setEvents = (node) => {
         if (document.fullscreenElement)
             document.exitFullscreen();
         else
-            playerContainer.requestFullscreen();
+            content.requestFullscreen();
     });
 
     node.addEventListener('wheel', function (e) {
