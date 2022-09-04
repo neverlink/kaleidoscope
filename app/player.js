@@ -44,7 +44,7 @@ const setControls = () => {
     HTMLMediaElement.prototype.stop = function () {
         this.pause();
         this.currentTime = 0;
-        updatePlayerUI(this);
+        updateTimeUI(this);
     }
 
     HTMLMediaElement.prototype.seek = function (amount) {
@@ -53,12 +53,12 @@ const setControls = () => {
             case -1: this.currentTime = this.duration - 0.1; this.pause(); break;
             default: this.currentTime = this.currentTime += amount;
         }
-        updatePlayerUI(this);
+        updateTimeUI(this);
     }
 
     HTMLMediaElement.prototype.stepFrames = function (amount) {
         this.currentTime += amount * (1 / this.frameRate);
-        updatePlayerUI(this);
+        updateTimeUI(this);
     }
 
     HTMLMediaElement.prototype.unload = function (amount) {
@@ -76,16 +76,15 @@ const getTimeString = (time) => {
     return String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
 }
 
-const updatePlayerUI = (node) => {
+const updateTimeUI = (node) => {
     guiProgressBar.value = Math.trunc(node.currentTime / node.duration * 1000);
-    guiTimeLeft.innerHTML = getTimeString(node.currentTime) + ' / ' + getTimeString(node.duration)
+    guiTimeLeft.innerHTML = getTimeString(node.currentTime) + ' / ' + getTimeString(node.duration);
 }
 
 const clearAllIntervals = () => {
     const lastIntervalId = window.setInterval(function () { }, Number.MAX_SAFE_INTEGER);
-    for (let i = 1; i <= lastIntervalId; i++) {
+    for (let i = 1; i <= lastIntervalId; i++)
         window.clearInterval(i);
-    }
 }
 
 const setEvents = (node) => {
@@ -117,7 +116,8 @@ const setEvents = (node) => {
         setInterval(() => {
             if (node.currentTime >= node.duration - 0.10)
                 node.currentTime = 0;
-            updatePlayerUI(node);
+            else
+                updateTimeUI(node);
         });
     });
 
@@ -127,9 +127,9 @@ const setEvents = (node) => {
     });
 
     node.addEventListener('volumechange', () => {
-        if (newVolume >= 0.5)
+        if (node.volume >= 0.5)
             iconSrc = 'fontawesome/volume-high.svg';
-        else if (newVolume > 0)
+        else if (node.volume > 0)
             iconSrc = 'fontawesome/volume-low.svg';
         else
             iconSrc = 'fontawesome/volume-xmark.svg';
@@ -143,7 +143,7 @@ const setEvents = (node) => {
     });
 
     node.addEventListener('unmute', () => {
-        iconSrc = 'fontawesome/volume-high.svg'
+        iconSrc = 'fontawesome/volume-high.svg';
         guiVolumeSliderContainer.style.display = 'inherit';
         guiVolumeIcon.src = iconSrc;
     });
@@ -156,28 +156,36 @@ const setProperties = (node, fileURI) => {
     node.autoplay = true;
     node.preservesPitch = false;
     node.frameRate = 30;
+    node.style.order = window.playerID++;
+}
+
+const addSubtitles = (node) => {
+    return
+    // let filename = node.src.slice(0, -4);
+    // filename += '.vtt';
+    // node.appendChild(spawnSubtitles(filename));
 }
 
 const spawnSubtitles = (fileURI) => {
     let subtitles = document.createElement('track');
-    let uri = fileURI.slice(0, -4) + '.vtt';
-    console.log(uri);
     subtitles.src = uri;
     subtitles.kind = 'subtitles';
-    subtitles.srclang = 'en';
     subtitles.label = 'English'
+    subtitles.srclang = 'en';
     return subtitles
 }
 
 const spawnVideo = () => {
-    return document.createElement('video');
+    let node = document.createElement('video');
+    addSubtitles(node);
+    return node
 }
 
 const spawnAudio = (fileURI) => {
-    // audioContainer = document.createElement('audio');
-    // audioContainer.setAttribute('width', '800px')
-    // audioContainer.setAttribute('height', '250px')
-    // playerContainer.appendChild(audioContainer);
+    audioContainer = document.createElement('audio');
+    audioContainer.style.width = '800px';
+    audioContainer.style.height = '250px';
+    playerContainer.appendChild(audioContainer);
 
     wf = document.createElement('div');
     wf.setAttribute('id', 'waveform');
@@ -202,21 +210,20 @@ module.exports.create = (fileURI) => {
     let audioContainers = ['mp3', 'ogg', 'wav', 'flac'];
     let videoContainers = ['mp4', 'mov', 'mkv', 'ogv', 'webm'];
 
-    let node = null;
+    let node;
 
     if (audioContainers.includes(fileExtension)) {
-        alert('Audio is not supported yet!')
+        alert('Audio is not supported yet!');
         // node = spawnAudio(fileURI);
-        // console.log(node);
     } else if (videoContainers.includes(fileExtension)) {
         node = spawnVideo();
-        node.appendChild(spawnSubtitles(fileURI));
     } else {
-        alert('Unsupported file type!')
+        alert('Unsupported file type!');
     }
 
     setProperties(node, fileURI);
     setEvents(node);
     setControls(node);
+    window.activePlayers.push(node);
     return node
 }

@@ -1,8 +1,3 @@
-const getActivePlayers = () => {
-    return Array
-        .from(document.querySelectorAll('audio, video'));
-}
-
 const getFocusedPlayer = () => {
     return Array
         .from(document.querySelectorAll(':hover'))
@@ -15,7 +10,7 @@ const commandPlayers = (action, amount) => {
         default: break;
     }
 
-    getActivePlayers().forEach((player) => {
+    activePlayers.forEach(player => {
         switch (action) {
             case 'toggleMute': player.toggleMute(); break;
             case 'togglePause': player.togglePause(); break;
@@ -33,7 +28,6 @@ const commandPlayers = (action, amount) => {
 }
 
 module.exports = {
-    getActivePlayers,
     getFocusedPlayer,
     commandPlayers
 }

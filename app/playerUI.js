@@ -5,10 +5,11 @@ const resizeWindow = (activePlayers) => {
     let width = 0;
     let height = 0;
 
-    activePlayers.forEach((player) => {
-        if (player.width > width && player.height > height)
+    window.activePlayers.forEach((player) => {
+        if (player.width > width && player.height > height) {
             width = player.width;
             height = player.height;
+        }
     });
 
     if (width == 0 || height == 0) {
@@ -20,15 +21,19 @@ const resizeWindow = (activePlayers) => {
 };
 
 const updateTitle = (activePlayers) => {
-    let videoTitles = [];
-    activePlayers.forEach((player) => {
-        videoTitles.push(decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1)));
-    });
-    titleBarTitle.innerHTML = videoTitles.join(' - ');
+    if (window.activePlayers.length) {
+        let videoTitles = [];
+        window.activePlayers.forEach((player) => {
+            videoTitles.push(decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1)));
+        });
+        titleBarTitle.innerHTML = videoTitles.join(' - ');
+    } else {
+        titleBarTitle.innerHTML = 'Kaleidoscope';
+    }
 }
 
 const updateWindowState = () => {
-    let activePlayers = playerUtils.getActivePlayers();
+    let x = window.activePlayers;
 
     resizeWindow(activePlayers);
     updateTitle(activePlayers);
