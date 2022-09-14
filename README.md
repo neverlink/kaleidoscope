@@ -25,6 +25,7 @@ Comma: Previous Frame
 Period: Next Frame
 
 Up/Down: Change Volume
+M: Toggle Mute
 
 Ctrl + Up/Down: Change Rate
 Ctrl + Slash: Toggle Pitch Correction
