@@ -1,5 +1,5 @@
 const { ipcRenderer } = require('electron');
-const playerHandler = require("./playerHandler.js");
+const playerHandler = require('./playerHandler.js');
 const playerUI = require("./playerUI.js");
 
 const defineDropArea = () => {
@@ -11,10 +11,9 @@ const defineDropArea = () => {
     const handleDrop = (e) => {
         let files = [...e.dataTransfer.files];
         let filePaths = files.map(file => file['path']);
-        playerHandler.destroyPlayers();
         playerHandler.createPlayers(filePaths);
     }
-    dropContainer.addEventListener("drop", handleDrop);
+    dropContainer.addEventListener('drop', handleDrop);
 }
 
 const initializeUI = () => {
@@ -38,4 +37,4 @@ const initApp = () => {
     playerUI.initialize();
 }
 
-document.addEventListener("DOMContentLoaded", initApp);
+document.addEventListener('DOMContentLoaded', initApp);

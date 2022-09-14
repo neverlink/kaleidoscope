@@ -1,7 +1,7 @@
 const { ipcRenderer } = require('electron');
-const playerUtils = require("./playerUtils.js");
+const playerUtils = require('./playerUtils.js');
 
-const resizeWindow = (activePlayers) => {
+const resizeWindow = () => {
     let width = 0;
     let height = 0;
 
@@ -20,7 +20,7 @@ const resizeWindow = (activePlayers) => {
     ipcRenderer.send('resize-window', width, height)
 };
 
-const updateTitle = (activePlayers) => {
+const updateTitle = () => {
     if (window.activePlayers.length) {
         let videoTitles = [];
         window.activePlayers.forEach((player) => {
@@ -33,12 +33,12 @@ const updateTitle = (activePlayers) => {
 }
 
 const updateWindowState = () => {
-    let x = window.activePlayers;
+    let playerCount = window.activePlayers.length;
 
-    resizeWindow(activePlayers);
-    updateTitle(activePlayers);
+    resizeWindow();
+    updateTitle();
 
-    if (activePlayers.length == 0) {
+    if (playerCount == 0) {
         splashContainer.classList.remove('hidden');
         playerControls.classList.add('hidden');
     } else {
@@ -46,20 +46,20 @@ const updateWindowState = () => {
         playerControls.classList.remove('hidden');
     }
 
-    if (activePlayers.length == 1) {
+    if (playerCount == 1) {
         guiProgressBar.classList.remove('hidden');
         guiTimeLeft.classList.remove('hidden');
     }
 
-    if (activePlayers.length >= 2) {
+    if (playerCount >= 2) {
         guiProgressBar.classList.add('hidden');
         guiTimeLeft.classList.add('hidden');
     }
 }
 
 const initialize = () => {
-    playerContainer.addEventListener('click', () => {
-        playerUtils.commandPlayers('togglePause');
+    playerContainer.addEventListener('dblclick', () => {
+        playerUtils.toggleFullscreen();
     });
 
     guiTogglePause.addEventListener('click', () => {
@@ -79,12 +79,8 @@ const initialize = () => {
     });
 
     guiToggleFullscreen.addEventListener('click', () => {
-        if (document.fullscreenElement)
-            document.exitFullscreen();
-        else
-            playerContainer.requestFullscreen();
+        playerUtils.toggleFullscreen();
     });
-
 
     // document.addEventListener('mousemove', (e) => {
     //     let elements = document.elementsFromPoint(e.clientX, e.clientY);

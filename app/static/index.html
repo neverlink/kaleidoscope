@@ -18,7 +18,7 @@
     </div>
 
     <div id="titleBarMiddle">
-        <p id="titleBarTitle"></p>
+      <p id="titleBarTitle"></p>
     </div>
 
     <div id="titleBarRight">
@@ -45,21 +45,21 @@
       <p class="splashNotice">Kaleidoscope v0.1</p>
     </div>
 
-    <div id="playerContainer"></div>
-
-    <div id="playerControls" class="glass-component">
-      <img id="guiTogglePause" src="fontawesome/pause.svg">
-      <input id="guiProgressBar" type="range" value="0" max="1000" onkeydown="event.preventDefault()">
-      <div id="guiTimeLeft">00:00 / 00:00</div>
-      <div id="guiVolumeControls">
-        <img id="guiVolumeIcon" src="fontawesome/volume-high.svg">
-        <div id="guiVolumeSliderContainer" class="glass-component">
-          <input id="guiVolumeSlider" type="range" value="50" min="0" max="100" onkeydown="event.preventDefault()">
+    <div id="playerContainer">
+      <div id="playerControls" class="glass-component">
+        <img id="guiTogglePause" src="fontawesome/pause.svg">
+        <input id="guiProgressBar" type="range" value="0" max="1000" onkeydown="event.preventDefault()">
+        <div id="guiTimeLeft">00:00 / 00:00</div>
+        <div id="guiVolumeControls">
+          <img id="guiVolumeIcon" src="fontawesome/volume-high.svg">
+          <div id="guiVolumeSliderContainer" class="glass-component">
+            <input id="guiVolumeSlider" type="range" value="50" min="0" max="100" onkeydown="event.preventDefault()">
+          </div>
         </div>
+        <img id="guiToggleFullscreen" src="fontawesome/expand.svg">
       </div>
-      <img id="guiToggleFullscreen" src="fontawesome/expand.svg">
     </div>
-  
+    
   </div>
 
 </body>

@@ -10,6 +10,18 @@
     box-shadow: 0px 0px 30px 0px var(--player-background-color);
 }
 
+@media screen and (max-width: 400px) {
+    #guiProgressBar {
+        display: none !important;
+    }
+}
+
+@media screen and (max-width: 340px) {
+    #playerControls {
+        display: none !important;
+    }
+}
+
 #playerControls {
     height: 50px;
     max-width: 80vw;

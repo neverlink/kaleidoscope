@@ -6,6 +6,7 @@ const createMenu = (windowTarget) => {
     const restorePlayer = (action) => windowTarget.webContents.send('restore-player', action);
     const commandPlayers = (action, value) => windowTarget.webContents.send('command-players', action, value);
     const toggleAspectRatio = (action) => windowTarget.webContents.send('toggle-aspect-ratio', action);
+    const toggleFullscreen = (action) => windowTarget.webContents.send('toggle-fullscreen', action);
 
     const menuTemplate = ([
         {
@@ -74,7 +75,7 @@ const createMenu = (windowTarget) => {
                     label: 'Fullscreen',
                     type: 'checkbox',
                     accelerator: 'F11',
-                    click: () => windowTarget.setFullScreen(!windowTarget.fullScreen)
+                    click: () => toggleFullscreen()
                 },
                 {
                     label: 'Developer Tools',

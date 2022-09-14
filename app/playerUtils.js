@@ -27,7 +27,29 @@ const commandPlayers = (action, amount) => {
     });
 }
 
+const toggleAspectRatio = () => {
+	let pageRoot = document.querySelector(':root');
+	let rootStyle = getComputedStyle(pageRoot);
+
+    let style;
+	if (rootStyle.getPropertyValue('--player-aspect-ratio') == 'contain')
+	    style = 'fill';
+	else
+        style = 'contain';
+
+	pageRoot.style.setProperty('--player-aspect-ratio', style);
+};
+
+const toggleFullscreen = () => {
+	if (document.fullscreenElement)
+		document.exitFullscreen();
+	else
+		playerContainer.requestFullscreen();
+};
+
 module.exports = {
+    commandPlayers,
     getFocusedPlayer,
-    commandPlayers
+    toggleFullscreen,
+    toggleAspectRatio
 }

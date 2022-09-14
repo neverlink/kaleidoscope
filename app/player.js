@@ -1,4 +1,5 @@
-var WaveSurfer = require('wavesurfer.js');
+const WaveSurfer = require('wavesurfer.js');
+const { toggleFullScreen } = require('./playerUtils.js')
 
 const setControls = () => {
     Object.defineProperty(HTMLMediaElement.prototype, 'isPlaying', {
@@ -88,14 +89,11 @@ const clearAllIntervals = () => {
 }
 
 const setEvents = (node) => {
-    node.addEventListener('dblclick', () => {
-        if (document.fullscreenElement)
-            document.exitFullscreen();
-        else
-            content.requestFullscreen();
+    node.addEventListener('click', () => {
+        node.togglePause();
     });
-
-    node.addEventListener('wheel', function (e) {
+    
+    node.addEventListener('wheel', (e) => {
         if (e.deltaY < 0 && node.volume < 1)
             node.adjustVolume(+5);
         else if (e.deltaY > 0 && node.volume > 0)
