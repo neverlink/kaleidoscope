@@ -40,14 +40,8 @@
     transition: opacity .7s;
 }
 
-/* #playerControls * {
-    user-select: none;
-    -webkit-user-drag: none;
-} */
-
 #playerControls:hover {
     opacity: 1 !important;
-    display: flex !important;
 }
 
 #playerControls img {
@@ -72,6 +66,7 @@
 }
 
 #guiTimeLeft {
+    user-select: none;
     white-space: nowrap;
 }
 

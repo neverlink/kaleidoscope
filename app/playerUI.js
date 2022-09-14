@@ -82,16 +82,16 @@ const initialize = () => {
         playerUtils.toggleFullscreen();
     });
 
-    // document.addEventListener('mousemove', (e) => {
-    //     let elements = document.elementsFromPoint(e.clientX, e.clientY);
-    //     playerControls.classList.remove('hidden');
-    //     playerControls.classList.remove('hidden1');
-    //     if (elements[0].id != 'playerControls') {
-    //         waitForFadeOut = setTimeout(() => {
-    //             playerControls.classList.add('hidden');
-    //         }, 1500);
-    //     }
-    // });
+    document.addEventListener('mousemove', (e) => {
+        if (document.elementFromPoint(e.clientX, e.clientY).nodeName == 'VIDEO') {
+            playerControls.classList.remove('transparent');
+            setTimeout(() => {
+                playerControls.classList.add('transparent');
+            }, 1500);
+        } else {
+            playerControls.classList.remove('transparent');
+        }
+    });
 }
 
 module.exports = {

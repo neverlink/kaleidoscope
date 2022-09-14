@@ -32,8 +32,11 @@ body {
     align-items: center;
 }
 
-.hidden {
+.transparent {
     opacity: 0 !important;
+}
+
+.hidden {
     display: none !important;
 }
 
