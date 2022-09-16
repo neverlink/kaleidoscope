@@ -3,7 +3,7 @@
   <p>Kaleidoscope<p>
 </h1>
 
-An electron-based video player. Highly WIP
+An electron-based video player.
 
 ### Features
 - Splitscreen
@@ -11,6 +11,12 @@ An electron-based video player. Highly WIP
 - Speed control
 - Frame by frame viewing
 - Pitch correction toggle
+
+<details>
+<summary style=>Screenshots</summary>
+<img alt="Single Player" src="https://i.imgur.com/tzfDhl0.png" style="display: inline; width: 100%;"/>
+<img alt="Splitscreen" src="https://i.imgur.com/h5hHqKD.png" style="display: inline; width: 100%"/>
+</details>
 
 ### Controls
 ```
