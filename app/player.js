@@ -33,6 +33,7 @@ const setControls = () => {
         if (newVolume >= 0 && newVolume <= 1) {
             this.volume = newVolume;
             guiVolumeSlider.value = newVolume * 100;
+            window.playerVolume = newVolume;
         }
     }
 
@@ -149,7 +150,7 @@ const setEvents = (node) => {
 
 const setProperties = (node, fileURI) => {
     node.src = fileURI;
-    node.volume = 0.5;
+    node.volume = window.playerVolume;
     node.loop = true;
     node.autoplay = true;
     node.preservesPitch = false;

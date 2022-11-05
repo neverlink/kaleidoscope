@@ -139,12 +139,12 @@ const createMenu = (windowTarget) => {
                 {
                     label: 'Peek Forwards',
                     accelerator: 'Right',
-                    click: () => commandPlayers('seek', +2.5)
+                    click: () => commandPlayers('seek', +5)
                 },
                 {
                     label: 'Peek Backwards',
                     accelerator: 'Left',
-                    click: () => commandPlayers('seek', -2.5)
+                    click: () => commandPlayers('seek', -5)
                 },
                 {
                     label: 'Next Frame',

@@ -90,6 +90,7 @@ const restorePlayer = () => {
 
 const initialize = () => {
 	window.playerID = 0;
+	window.playerVolume = 0.5;
 	window.activePlayers = [];
 	window.destroyedPlayers = [];
 

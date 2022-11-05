@@ -82,15 +82,18 @@ const initialize = () => {
         playerUtils.toggleFullscreen();
     });
 
-    document.addEventListener('mousemove', (e) => {
-        if (document.elementFromPoint(e.clientX, e.clientY).nodeName == 'VIDEO') {
-            playerControls.classList.remove('transparent');
-            setTimeout(() => {
-                playerControls.classList.add('transparent');
-            }, 1500);
-        } else {
-            playerControls.classList.remove('transparent');
-        }
+    // to-do: reveal controls on mousemove or keyboard press
+
+    // mouseover if not working as expected
+    playerControls.addEventListener('mouseenter', (e) => {
+        playerControls.style.setProperty('transition-delay', '0s');
+        playerControls.classList.remove('transparent');
+    });
+
+    // mouseout if no working as expected
+    playerControls.addEventListener('mouseleave', (e) => {
+        playerControls.style.setProperty('transition-delay', '0.7s');
+        playerControls.classList.add('transparent');
     });
 }
 
