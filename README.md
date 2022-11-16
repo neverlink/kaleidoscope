@@ -12,6 +12,14 @@ An electron-based video player.
 - Frame by frame viewing
 - Pitch correction toggle
 
+### Supported Formats
+ * Video
+     * Containers: mp4, mov, mkv, ogv, webm
+     * Codecs: H.264, H.265, VP8, VP9, AV1, Theora
+ * Audio (WIP)
+     * Containers: mp3, ogg, wav, flac
+     * Codecs: MP3, AAC, H.264, H.265, VP8, VP9, AV1, PCM, FLAC, Vorbis, Theora
+
 <details>
 <summary style=>Screenshots</summary>
 <img alt="Single Player" src="https://i.imgur.com/tzfDhl0.png" style="display: inline; width: 100%;"/>
@@ -19,6 +27,7 @@ An electron-based video player.
 </details>
 
 ### Controls
+
 ```
 Space: Play/Pause
 Backspace: Stop
