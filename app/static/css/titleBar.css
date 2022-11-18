@@ -36,7 +36,7 @@
     -webkit-app-region: drag;
 }
 
-#titleBarTitle {
+#titleBarText {
     max-width: calc(100vw - 275px);
     height: 100%;
     margin: 0;

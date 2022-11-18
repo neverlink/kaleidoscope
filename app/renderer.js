@@ -1,6 +1,6 @@
 const { ipcRenderer } = require('electron');
 const playerHandler = require('./playerHandler.js');
-const playerUI = require("./playerUI.js");
+const playerUI = require('./playerUI.js');
 
 const defineDropArea = () => {
     const prevents = (e) => e.preventDefault();
@@ -33,8 +33,8 @@ const initializeUI = () => {
 const initApp = () => {
     initializeUI();
     defineDropArea();
+    playerUI.setEvents();
     playerHandler.initialize();
-    playerUI.initialize();
 }
 
 document.addEventListener('DOMContentLoaded', initApp);

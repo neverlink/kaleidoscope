@@ -16,7 +16,7 @@ const resizeWindow = () => {
         width = 500;
         height = 500;
     }
-    
+
     ipcRenderer.send('resize-window', width, height)
 };
 
@@ -26,24 +26,24 @@ const updateTitle = () => {
         window.activePlayers.forEach((player) => {
             videoTitles.push(decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1)));
         });
-        titleBarTitle.innerHTML = videoTitles.join(' - ');
+        titleBarText.innerHTML = videoTitles.join(' - ');
     } else {
-        titleBarTitle.innerHTML = 'Kaleidoscope';
+        titleBarText.innerHTML = 'Kaleidoscope';
     }
 }
 
 const updateWindowState = () => {
-    let playerCount = window.activePlayers.length;
-
     resizeWindow();
     updateTitle();
 
+    let playerCount = window.activePlayers.length;
+
     if (playerCount == 0) {
-        splashContainer.classList.remove('hidden');
         playerControls.classList.add('hidden');
+        splashContainer.classList.remove('hidden');
     } else {
-        splashContainer.classList.add('hidden');
         playerControls.classList.remove('hidden');
+        splashContainer.classList.add('hidden');
     }
 
     if (playerCount == 1) {
@@ -57,7 +57,49 @@ const updateWindowState = () => {
     }
 }
 
-const initialize = () => {
+const updateTimecode = (player) => {
+    const parseTime = (time) => {
+        let seconds = Math.round(time % 60);
+        let minutes = Math.trunc(time / 60);
+        return String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
+    }
+    guiTimeLeft.innerHTML = parseTime(player.currentTime) + ' / ' + parseTime(player.duration);
+    guiProgressBar.value = Math.trunc(player.currentTime / player.duration * 1000);
+}
+
+const setEvents = () => {
+    let peekingControls = false;
+
+    const showControls = () => {
+        playerControls.classList.remove('transparent');
+    }
+
+    const hideControls = () => {
+        playerControls.classList.add('transparent');
+    }
+
+    const peekControls = async (delay) => {
+        peekingControls = true;
+        showControls()
+        await new Promise(r => setTimeout(r, delay));
+        hideControls()
+        peekingControls = false;
+    }
+
+    playerContainer.addEventListener('mousemove', async (e) => {
+        if (!peekingControls) {
+            await peekControls(delay = 1500)
+        }
+    });
+
+    playerControls.addEventListener('mouseenter', (e) => {
+        showControls();
+    });
+
+    playerControls.addEventListener('mouseleave', async (e) => {
+        await peekControls(delay = 1000);
+    });
+
     playerContainer.addEventListener('dblclick', () => {
         playerUtils.toggleFullscreen();
     });
@@ -81,23 +123,10 @@ const initialize = () => {
     guiToggleFullscreen.addEventListener('click', () => {
         playerUtils.toggleFullscreen();
     });
-
-    // to-do: reveal controls on mousemove or keyboard press
-
-    // mouseover if not working as expected
-    playerControls.addEventListener('mouseenter', (e) => {
-        playerControls.style.setProperty('transition-delay', '0s');
-        playerControls.classList.remove('transparent');
-    });
-
-    // mouseout if no working as expected
-    playerControls.addEventListener('mouseleave', (e) => {
-        playerControls.style.setProperty('transition-delay', '0.7s');
-        playerControls.classList.add('transparent');
-    });
 }
 
 module.exports = {
-    initialize,
+    setEvents,
+    updateTimecode,
     updateWindowState
 }

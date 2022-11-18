@@ -1,7 +1,7 @@
-const { ipcRenderer } = require('electron');
-const { updateWindowState } = require('./playerUI.js');
-const mediaPlayer = require('./player.js');
 const playerUtils = require('./playerUtils.js');
+const { spawnPlayer } = require('./player/player.js');
+const { updateWindowState } = require('./playerUI.js');
+const { ipcRenderer } = require('electron');
 
 const setIpcEvents = () => {
 	ipcRenderer.on('create-players', function (e, fileURIs) {
@@ -28,25 +28,17 @@ const setIpcEvents = () => {
 		playerUtils.toggleFullscreen();
 	});
 };
+
 const createPlayer = (fileURI) => {
-	if (fileURI == 'none' || fileURI == '.')
-		return;
-
-	let newPlayer = mediaPlayer.create(fileURI);
-
-	newPlayer.addEventListener('error', () => {
-		alert('Unsupported codec!');
-	});
-
-	newPlayer.addEventListener('loadedmetadata', () => {
-		newPlayer.width = newPlayer.videoWidth;
-		newPlayer.height = newPlayer.videoHeight;
-		playerContainer.appendChild(newPlayer);
-		updateWindowState();
-	});
-
-	return newPlayer;
-}
+	// get rid of 'none' string here & in main.js
+	if (typeof fileURI === "string" && fileURI != 'none' && fileURI != '.') {
+		let player = spawnPlayer(fileURI);
+		if (player !== undefined) {
+			playerContainer.appendChild(player);
+			window.activePlayers.push(player);
+		}
+	}
+};
 
 const createPlayers = (fileURIs) => {
 	destroyPlayers();
@@ -79,18 +71,18 @@ const destroyPlayers = () => {
 };
 
 const restorePlayer = () => {
-	if (destroyedPlayers) {
-		let oldPlayer = destroyedPlayers.pop();
+	if (window.destroyedPlayers) {
+		let oldPlayer = window.destroyedPlayers.pop();
 		createPlayer(oldPlayer[0]);
 		let newPlayer = window.activePlayers.at(-1);
 		newPlayer.style.order = oldPlayer[1];
 		playerUtils.commandPlayers('seek', 0);
 	}
-}
+};
 
 const initialize = () => {
 	window.playerID = 0;
-	window.playerVolume = 0.5;
+	window.playerVolume = 0.5; // load from cookeis
 	window.activePlayers = [];
 	window.destroyedPlayers = [];
 
