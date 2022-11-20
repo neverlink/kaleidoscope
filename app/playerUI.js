@@ -16,11 +16,12 @@ const resizeWindow = () => {
         width = 500;
         height = 500;
     }
+
     ipcRenderer.send('resize-window', width, height)
 };
 
 const updateTitle = () => {
-    if (window.activePlayers) {
+    if (window.activePlayers.length) {
         let videoTitles = [];
         window.activePlayers.forEach((player) => {
             videoTitles.push(decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1)));
@@ -29,6 +30,16 @@ const updateTitle = () => {
     } else {
         titleBarText.innerHTML = 'Kaleidoscope';
     }
+}
+
+const updateTimecode = (player) => {
+    const parseTime = (time) => {
+        let seconds = Math.round(time % 60);
+        let minutes = Math.trunc(time / 60);
+        return String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
+    }
+    guiTimeProgress.innerHTML = parseTime(player.currentTime) + ' / ' + parseTime(player.duration);
+    guiProgressBar.value = Math.trunc(player.currentTime / player.duration * 1000);
 }
 
 const updateState = () => {
@@ -66,46 +77,46 @@ const updateState = () => {
     }
 }
 
-const updateTimecode = (player) => {
-    const parseTime = (time) => {
-        let seconds = Math.round(time % 60);
-        let minutes = Math.trunc(time / 60);
-        return String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
-    }
-    guiTimeProgress.innerHTML = parseTime(player.currentTime) + ' / ' + parseTime(player.duration);
-    guiProgressBar.value = Math.trunc(player.currentTime / player.duration * 1000);
-}
-
 // Called when a player is created/destroyed
 const setPlayerEvents = (player) => {
-    player.node.addEventListener('playing', () => guiTogglePause.src = 'fontawesome/pause.svg');
-    player.node.addEventListener('pause', () => guiTogglePause.src = 'fontawesome/play.svg');
-    player.node.addEventListener('seeking', () => updateTimecode(player));
+    player.addEventListener('loadedmetadata', () => updateState());
 
-    player.node.addEventListener('volumechange', () => {
+    player.addEventListener('playing', () => {
+        guiTogglePause.src = 'fontawesome/pause.svg';
+        player.activeIntervals.push(setInterval(() => {
+            if (player.duration - player.currentTime <= 0.1)
+                player.currentTime = 0;
+            else if (window.activePlayers.length == 1)
+                updateTimecode(player);
+        }));
+    });
+    
+    player.addEventListener('seeking', () => updateTimecode(player));
+    
+    player.addEventListener('pause', () => guiTogglePause.src = 'fontawesome/play.svg');
+ 
+    player.addEventListener('mute', () => {
+        guiVolumeSliderContainer.style.display = 'none';
+        guiVolumeIcon.src = 'fontawesome/volume-xmark.svg';
+    });
+
+    player.addEventListener('unmute', () => {
+        guiVolumeSliderContainer.style.display = 'inherit';
+        guiVolumeIcon.src = 'fontawesome/volume-high.svg';
+    });
+    
+    player.addEventListener('volumechange', () => {
+        guiVolumeSlider.value = player.volume * 100;    
         if (player.volume >= 0.5)
             guiVolumeIcon.src = 'fontawesome/volume-high.svg';
         else if (player.volume > 0)
             guiVolumeIcon.src = 'fontawesome/volume-low.svg';
         else
             guiVolumeIcon.src = 'fontawesome/volume-xmark.svg';
-        guiVolumeSlider.value = player.volume * 100;    
-    });
-
-    player.node.addEventListener('mute', () => {
-        guiVolumeSliderContainer.style.display = 'none';
-        guiVolumeIcon.src = 'fontawesome/volume-xmark.svg';;
-    });
-
-    player.node.addEventListener('unmute', () => {
-        guiVolumeSliderContainer.style.display = 'inherit';
-        guiVolumeIcon.src = 'fontawesome/volume-high.svg';
     });
 }
 
 const initialize = () => {
-    updateState();
-
     const hideControls = () => playerControls.classList.add('transparent');
     const showControls = () => playerControls.classList.remove('transparent');
     
@@ -120,27 +131,19 @@ const initialize = () => {
     }
 
     playerContainer.addEventListener('mousemove', async () => !peekingControls ? await peekControls(delay=1500) : null);
-
     playerControls.addEventListener('mouseenter', () => showControls());
-
     playerControls.addEventListener('mouseleave', async () => await peekControls(delay = 1000));
-
     guiTogglePause.addEventListener('click', () => commandPlayers('togglePause'));
-    
-    playerContainer.addEventListener('dblclick', () => toggleFullscreen()); // change this
-
+    playerContainer.addEventListener('dblclick', () => toggleFullscreen());
     guiVolumeIcon.addEventListener('click', () => commandPlayers('toggleMute'));
-    
     guiVolumeSlider.addEventListener('input', () => commandPlayers('setVolume', guiVolumeSlider.valueAsNumber));
-    
     guiProgressBar.addEventListener('input', () => commandPlayers('seekToPercentage', guiProgressBar.valueAsNumber / 10));
-
     guiToggleFullscreen.addEventListener('click', () => toggleFullscreen());
 }
 
 module.exports = {
     initialize,
-    setPlayerEvents,
     updateState,
-    updateTimecode
+    updateTimecode,
+    setPlayerEvents
 }

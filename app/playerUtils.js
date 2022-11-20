@@ -35,9 +35,9 @@ const toggleAspectRatio = () => {
 
 const toggleFullscreen = () => {
 	if (document.fullscreenElement) 
-		document.exitFullscreen();
+        document.exitFullscreen();
 	else
-		playerContainer.requestFullscreen();
+        playerContainer.requestFullscreen();
 };
 
 module.exports = {
