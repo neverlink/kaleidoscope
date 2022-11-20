@@ -1,6 +1,6 @@
 const { ipcRenderer } = require('electron');
 const playerHandler = require('./playerHandler.js');
-const playerUI = require("./playerUI.js");
+const playerUI = require('./playerUI.js');
 
 const defineDropArea = () => {
     const prevents = (e) => e.preventDefault();
@@ -16,25 +16,17 @@ const defineDropArea = () => {
     dropContainer.addEventListener('drop', handleDrop);
 }
 
-const initializeUI = () => {
-    minimizeBtn.addEventListener('click', () => {
-        ipcRenderer.send('minimize-app');
-    });
-
-    maximizeBtn.addEventListener('click', () => {
-        ipcRenderer.send('maximize-app');
-    });
-
-    closeBtn.addEventListener('click', () => {
-        ipcRenderer.send('quit-app');
-    });
+const setBorderEvents = () => {
+    minimizeBtn.addEventListener('click', () =>  ipcRenderer.send('minimize-app'));
+    maximizeBtn.addEventListener('click', () => ipcRenderer.send('maximize-app'));
+    closeBtn.addEventListener('click', () => ipcRenderer.send('quit-app'));
 }
 
-const initApp = () => {
-    initializeUI();
+const initialize = () => {
+    setBorderEvents();
     defineDropArea();
     playerHandler.initialize();
     playerUI.initialize();
 }
 
-document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener('DOMContentLoaded', initialize);

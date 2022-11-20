@@ -1,7 +1,7 @@
-const { ipcRenderer } = require('electron');
-const { updateWindowState } = require('./playerUI.js');
-const mediaPlayer = require('./player.js');
+const Player = require('./player/Player.js');
+const playerUI = require('./playerUI.js');
 const playerUtils = require('./playerUtils.js');
+const { ipcRenderer } = require('electron');
 
 const setIpcEvents = () => {
 	ipcRenderer.on('create-players', function (e, fileURIs) {
@@ -28,75 +28,60 @@ const setIpcEvents = () => {
 		playerUtils.toggleFullscreen();
 	});
 };
+
 const createPlayer = (fileURI) => {
-	if (fileURI == 'none' || fileURI == '.')
+	// get rid of 'none' string here & in main.js
+	if (typeof fileURI != "string" || fileURI == 'none' || fileURI == '.')
 		return;
 
-	let newPlayer = mediaPlayer.create(fileURI);
+	let player = new Player(fileURI);
+	
+	playerContainer.appendChild(player.node);
+	window.activePlayers.push(player);
+	playerUI.setPlayerEvents(player);
 
-	newPlayer.addEventListener('error', () => {
-		alert('Unsupported codec!');
-	});
-
-	newPlayer.addEventListener('loadedmetadata', () => {
-		newPlayer.width = newPlayer.videoWidth;
-		newPlayer.height = newPlayer.videoHeight;
-		playerContainer.appendChild(newPlayer);
-		updateWindowState();
-	});
-
-	return newPlayer;
+	player.node.addEventListener('loadedmetadata', () => playerUI.updateState());
+	return player;
 }
+
+const destroyPlayers = () => window.activePlayers.forEach((p) => destroyPlayer(p));
 
 const createPlayers = (fileURIs) => {
 	destroyPlayers();
-
-	if (typeof fileURIs === 'string')
-		fileURIs = [fileURIs];
-
 	fileURIs.forEach((fileURI) => {
 		createPlayer(fileURI);
 	});
 };
 
 const destroyPlayer = (player) => {
-	let playerCount = activePlayers.length;
+	!activePlayers.length ? ipcRenderer.send('quit-app') : null;
+		
+	let playerInstance = window.activePlayers.find((p) => p.src == player.src);
 
-	if (playerCount < 1)
-		ipcRenderer.send('quit-app');
+	window.destroyedPlayers.push(playerInstance);
+	window.activePlayers = window.activePlayers.filter((p) => p.src != playerInstance.src);
 
-	window.destroyedPlayers.push([player.src, player.style.order]);
-	activePlayers = activePlayers.filter((p) => p.src !== player.src);
-	
-	player.unload();
-	player.remove();
-
-	updateWindowState();
-};
-
-const destroyPlayers = () => {
-	window.activePlayers.forEach((p) => destroyPlayer(p));
+	playerInstance.destroy();
+	playerUI.updateState();
 };
 
 const restorePlayer = () => {
-	if (destroyedPlayers) {
-		let oldPlayer = destroyedPlayers.pop();
-		createPlayer(oldPlayer[0]);
-		let newPlayer = window.activePlayers.at(-1);
-		newPlayer.style.order = oldPlayer[1];
+	if (window.destroyedPlayers.length) {
+		let oldPlayer = window.destroyedPlayers.pop();
+		let newPlayer = createPlayer(oldPlayer.src);
+		newPlayer.node.style.order = oldPlayer.node.style.order;
 		playerUtils.commandPlayers('seek', 0);
 	}
-}
+};
 
 const initialize = () => {
 	window.playerID = 0;
-	window.playerVolume = 0.5;
+	window.playerVolume = 0.5; // load from cookeis
 	window.activePlayers = [];
 	window.destroyedPlayers = [];
 
 	let startURI = process.argv.at(-2);
 	createPlayer(startURI);
-	updateWindowState();
 	setIpcEvents();
 };
 
