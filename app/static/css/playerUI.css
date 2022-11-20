@@ -65,7 +65,7 @@
     min-width: 0;
 }
 
-#guiTimeLeft {
+#guiTimeProgress {
     user-select: none;
     white-space: nowrap;
 }

@@ -16,25 +16,17 @@ const defineDropArea = () => {
     dropContainer.addEventListener('drop', handleDrop);
 }
 
-const initializeUI = () => {
-    minimizeBtn.addEventListener('click', () => {
-        ipcRenderer.send('minimize-app');
-    });
-
-    maximizeBtn.addEventListener('click', () => {
-        ipcRenderer.send('maximize-app');
-    });
-
-    closeBtn.addEventListener('click', () => {
-        ipcRenderer.send('quit-app');
-    });
+const setBorderEvents = () => {
+    minimizeBtn.addEventListener('click', () =>  ipcRenderer.send('minimize-app'));
+    maximizeBtn.addEventListener('click', () => ipcRenderer.send('maximize-app'));
+    closeBtn.addEventListener('click', () => ipcRenderer.send('quit-app'));
 }
 
-const initApp = () => {
-    initializeUI();
+const initialize = () => {
+    setBorderEvents();
     defineDropArea();
-    playerUI.setEvents();
     playerHandler.initialize();
+    playerUI.initialize();
 }
 
-document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener('DOMContentLoaded', initialize);

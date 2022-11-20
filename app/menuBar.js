@@ -222,4 +222,4 @@ const createMenu = (windowTarget) => {
     return Menu.buildFromTemplate(menuTemplate);
 }
 
-module.exports = createMenu
+module.exports = createMenu;

@@ -1,5 +1,5 @@
 const { ipcRenderer } = require('electron');
-const playerUtils = require('./playerUtils.js');
+const { commandPlayers, toggleFullscreen } = require('./playerUtils.js');
 
 const resizeWindow = () => {
     let width = 0;
@@ -16,12 +16,11 @@ const resizeWindow = () => {
         width = 500;
         height = 500;
     }
-
     ipcRenderer.send('resize-window', width, height)
 };
 
 const updateTitle = () => {
-    if (window.activePlayers.length) {
+    if (window.activePlayers) {
         let videoTitles = [];
         window.activePlayers.forEach((player) => {
             videoTitles.push(decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1)));
@@ -32,28 +31,38 @@ const updateTitle = () => {
     }
 }
 
-const updateWindowState = () => {
-    resizeWindow();
+const updateState = () => {
     updateTitle();
+    resizeWindow();
+
+    const showControls = () => playerControls.classList.remove('hidden');
+    const hideControls = () => playerControls.classList.add('hidden');
+
+    const showSplash = () => splashContainer.classList.remove('hidden');
+    const hideSplash = () => splashContainer.classList.add('hidden');
+
+    const showProgressBar = () => guiProgressBar.classList.remove('hidden');
+    const hideProgressBar = () => guiProgressBar.classList.add('hidden');
+    const showProgressTime = () => guiTimeProgress.classList.remove('hidden');
+    const hideProgressTime = () => guiTimeProgress.classList.add('hidden');
 
     let playerCount = window.activePlayers.length;
 
     if (playerCount == 0) {
-        playerControls.classList.add('hidden');
-        splashContainer.classList.remove('hidden');
-    } else {
-        playerControls.classList.remove('hidden');
-        splashContainer.classList.add('hidden');
+        showSplash();
+        hideControls();
+        return;
     }
+    
+    showControls();
+    hideSplash();
 
     if (playerCount == 1) {
-        guiProgressBar.classList.remove('hidden');
-        guiTimeLeft.classList.remove('hidden');
-    }
-
-    if (playerCount >= 2) {
-        guiProgressBar.classList.add('hidden');
-        guiTimeLeft.classList.add('hidden');
+        showProgressBar();
+        showProgressTime();
+    } else if (playerCount > 1) {
+        hideProgressBar();
+        hideProgressTime();
     }
 }
 
@@ -63,20 +72,44 @@ const updateTimecode = (player) => {
         let minutes = Math.trunc(time / 60);
         return String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
     }
-    guiTimeLeft.innerHTML = parseTime(player.currentTime) + ' / ' + parseTime(player.duration);
+    guiTimeProgress.innerHTML = parseTime(player.currentTime) + ' / ' + parseTime(player.duration);
     guiProgressBar.value = Math.trunc(player.currentTime / player.duration * 1000);
 }
 
-const setEvents = () => {
+// Called when a player is created/destroyed
+const setPlayerEvents = (player) => {
+    player.node.addEventListener('playing', () => guiTogglePause.src = 'fontawesome/pause.svg');
+    player.node.addEventListener('pause', () => guiTogglePause.src = 'fontawesome/play.svg');
+    player.node.addEventListener('seeking', () => updateTimecode(player));
+
+    player.node.addEventListener('volumechange', () => {
+        if (player.volume >= 0.5)
+            guiVolumeIcon.src = 'fontawesome/volume-high.svg';
+        else if (player.volume > 0)
+            guiVolumeIcon.src = 'fontawesome/volume-low.svg';
+        else
+            guiVolumeIcon.src = 'fontawesome/volume-xmark.svg';
+        guiVolumeSlider.value = player.volume * 100;    
+    });
+
+    player.node.addEventListener('mute', () => {
+        guiVolumeSliderContainer.style.display = 'none';
+        guiVolumeIcon.src = 'fontawesome/volume-xmark.svg';;
+    });
+
+    player.node.addEventListener('unmute', () => {
+        guiVolumeSliderContainer.style.display = 'inherit';
+        guiVolumeIcon.src = 'fontawesome/volume-high.svg';
+    });
+}
+
+const initialize = () => {
+    updateState();
+
+    const hideControls = () => playerControls.classList.add('transparent');
+    const showControls = () => playerControls.classList.remove('transparent');
+    
     let peekingControls = false;
-
-    const showControls = () => {
-        playerControls.classList.remove('transparent');
-    }
-
-    const hideControls = () => {
-        playerControls.classList.add('transparent');
-    }
 
     const peekControls = async (delay) => {
         peekingControls = true;
@@ -86,47 +119,28 @@ const setEvents = () => {
         peekingControls = false;
     }
 
-    playerContainer.addEventListener('mousemove', async (e) => {
-        if (!peekingControls) {
-            await peekControls(delay = 1500)
-        }
-    });
+    playerContainer.addEventListener('mousemove', async () => !peekingControls ? await peekControls(delay=1500) : null);
 
-    playerControls.addEventListener('mouseenter', (e) => {
-        showControls();
-    });
+    playerControls.addEventListener('mouseenter', () => showControls());
 
-    playerControls.addEventListener('mouseleave', async (e) => {
-        await peekControls(delay = 1000);
-    });
+    playerControls.addEventListener('mouseleave', async () => await peekControls(delay = 1000));
 
-    playerContainer.addEventListener('dblclick', () => {
-        playerUtils.toggleFullscreen();
-    });
+    guiTogglePause.addEventListener('click', () => commandPlayers('togglePause'));
+    
+    playerContainer.addEventListener('dblclick', () => toggleFullscreen()); // change this
 
-    guiTogglePause.addEventListener('click', () => {
-        playerUtils.commandPlayers('togglePause');
-    });
+    guiVolumeIcon.addEventListener('click', () => commandPlayers('toggleMute'));
+    
+    guiVolumeSlider.addEventListener('input', () => commandPlayers('setVolume', guiVolumeSlider.valueAsNumber));
+    
+    guiProgressBar.addEventListener('input', () => commandPlayers('seekToPercentage', guiProgressBar.valueAsNumber / 10));
 
-    guiProgressBar.addEventListener('input', () => {
-        playerUtils.commandPlayers('seekToPercentage', guiProgressBar.valueAsNumber / 10);
-    });
-
-    guiVolumeIcon.addEventListener('click', () => {
-        playerUtils.commandPlayers('toggleMute');
-    });
-
-    guiVolumeSlider.addEventListener('input', () => {
-        playerUtils.commandPlayers('replaceVolume', guiVolumeSlider.valueAsNumber);
-    });
-
-    guiToggleFullscreen.addEventListener('click', () => {
-        playerUtils.toggleFullscreen();
-    });
+    guiToggleFullscreen.addEventListener('click', () => toggleFullscreen());
 }
 
 module.exports = {
-    setEvents,
-    updateTimecode,
-    updateWindowState
+    initialize,
+    setPlayerEvents,
+    updateState,
+    updateTimecode
 }

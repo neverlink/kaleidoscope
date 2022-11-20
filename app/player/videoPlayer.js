@@ -1,14 +1,7 @@
-const { updateWindowState } = require('../playerUI.js');
+// class VideoPlayer extends Player
 
 const spawnVideo = () => {
     let node = document.createElement('video');
-
-    node.addEventListener('loadedmetadata', () => {
-        node.width = node.videoWidth;
-        node.height = node.videoHeight;
-        updateWindowState();
-    });
-
     return node
 }
 

@@ -14,10 +14,7 @@ const createTray = (mainWindow = undefined) => {
     tray.setToolTip('Kaleidoscope');
     tray.setTitle('Kaleidoscope');
 
-    tray.on('click', () => {
-        console.log('not implemented');
-        //mainWindow.show()
-    })
+    tray.on('click', () => mainWindow.show());
     return tray
 }
 

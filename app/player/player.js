@@ -1,105 +1,133 @@
-require('./overridePrototype.js');
-const { spawnAudio } = require('./audioPlayer.js');
-const { spawnVideo } = require('./videoPlayer.js');
+const { spawnAudio } = require('./AudioPlayer.js');
+const { spawnVideo } = require('./VideoPlayer.js');
 const { updateTimecode } = require('../playerUI.js');
 
-const spawnPlayer = (fileURI) => {
-    let fileExtension = fileURI.substring(fileURI.lastIndexOf('.') + 1);
-    let audioContainers = ['mp3', 'ogg', 'wav', 'flac'];
-    let videoContainers = ['mp4', 'mov', 'mkv', 'ogv', 'webm'];
+class Player {
+    constructor(fileURI) {
+        this.node = this.#create(fileURI);
+        this.#setNodeProperties(fileURI);
+        this.#setNodeEvents();
+        this.frameRate = 30;
+        this.activeIntervals = [];
+    }
 
-    let node;
+    #create = (fileURI) => {
+        let fileExtension = fileURI.substring(fileURI.lastIndexOf('.') + 1);
+        let audioContainers = ['mp3', 'ogg', 'wav', 'flac'];
+        let videoContainers = ['mp4', 'mov', 'mkv', 'ogv', 'webm'];
 
-    if (audioContainers.includes(fileExtension))
-        node = spawnAudio(fileURI);
-    else if (videoContainers.includes(fileExtension))
-        node = spawnVideo(fileURI);
-    else
-        return alert('Unsupported file type!');
-
-    setProperties(node, fileURI);
-    setEvents(node);
-    return node;
-};
-
-const setEvents = (node) => {
-    node.addEventListener('click', () => {
-        node.togglePause();
-    });
-    
-    node.addEventListener('wheel', (e) => {
-        if (e.deltaY < 0 && node.volume < 1)
-            node.adjustVolume(+5);
-        else if (e.deltaY > 0 && node.volume > 0)
-            node.adjustVolume(-5);
-    });
-
-    let fastInterval = null;
-
-    node.addEventListener('playing', () => {
-        guiTogglePause.src = 'fontawesome/pause.svg';
-        clearInterval(fastInterval)
-        fastInterval = setInterval(() => {
-            if (node.duration - node.currentTime <= 0.1){
-                node.currentTime = 0;
-            }
-            else if (window.activePlayers.length == 1) {
-                console.log('updating timecode');
-                updateTimecode(node);
-            }
-            else {
-                clearInterval(fastInterval)
-            }
-        });
-    });
-
-    node.addEventListener('ended', () => {
-        console.log('video ended lol');
-    });
-
-    // node.addEventListener('seeking', (e) => {
-    //     updateTimecode(node);
-    // });
-
-    // move these to playerUI hooked to the first element in activePlayers?
-    node.addEventListener('pause', () => {
-        clearInterval(fastInterval);
-        guiTogglePause.src = 'fontawesome/play.svg';
-    });
-
-    node.addEventListener('volumechange', () => {
-        if (node.volume >= 0.5)
-            iconSrc = 'fontawesome/volume-high.svg';
-        else if (node.volume > 0)
-            iconSrc = 'fontawesome/volume-low.svg';
+        if (audioContainers.includes(fileExtension))
+            return spawnAudio(fileURI);
+        else if (videoContainers.includes(fileExtension))
+            return spawnVideo(fileURI);
         else
-            iconSrc = 'fontawesome/volume-xmark.svg';
-        guiVolumeIcon.src = iconSrc;
-    });
+            alert('Unsupported file type!');
+    };
 
-    node.addEventListener('mute', () => {
-        iconSrc = 'fontawesome/volume-xmark.svg';
-        guiVolumeSliderContainer.style.display = 'none';
-        guiVolumeIcon.src = iconSrc;
-    });
+    destroy = () => {
+        this.#clearIntervals();
+        this.node.remove();
+    }
 
-    node.addEventListener('unmute', () => {
-        iconSrc = 'fontawesome/volume-high.svg';
-        guiVolumeSliderContainer.style.display = 'inherit';
-        guiVolumeIcon.src = iconSrc;
-    });
+    #setNodeProperties = (fileURI) => {
+        this.node.src = fileURI;
+        this.node.volume = window.playerVolume;
+        this.node.loop = true;
+        this.node.autoplay = true;
+        this.node.preservesPitch = false;
+        this.node.style.order = window.playerID++;
+    }
+
+    #clearIntervals = () => this.activeIntervals.forEach((x) => clearInterval(x));
+
+    #setNodeEvents = () => {
+        // move this to VideoPlayer class later
+        this.node.addEventListener('loadedmetadata', () => {
+            this.width = this.node.videoWidth;
+            this.height = this.node.videoHeight;
+        });
+
+        this.node.addEventListener('click', () => this.togglePause());
+    
+        this.node.addEventListener('wheel', (event) => {
+            if (event.deltaY < 0 && this.volume < 1)
+                this.adjustVolume(+5);
+            else if (event.deltaY > 0 && this.volume > 0)
+                this.adjustVolume(-5);
+        });
+    
+        this.node.addEventListener('playing', () => {
+            this.activeIntervals.push(setInterval(() => {
+                if (this.duration - this.currentTime <= 0.1)
+                    this.currentTime = 0;
+                else if (window.activePlayers.length == 1)
+                    updateTimecode(this.node);
+            }));
+        });
+    
+        this.node.addEventListener('seeking', () => this.#clearIntervals());
+    
+        this.node.addEventListener('pause', () => this.#clearIntervals());
+    }
+
+    get src() { return this.node.src; }
+    set src(value) { this.node.src = value }
+
+    get volume() { return this.node.volume; }
+    set volume(value) { this.node.volume = value; }
+
+    get duration() { return this.node.duration; };
+    set duration(value) {}
+
+    get currentTime() { return this.node.currentTime; }
+    set currentTime(value) { this.node.currentTime = value; }
+
+    get playbackRate() { return this.node.playbackRate; }
+    set playbackRate(value) { this.node.playbackRate = value; }
+
+    get isPlaying() { return this.node.currentTime > 0 && !this.node.paused && !this.node.ended && this.node.readyState > 2; }
+    set isPlaying(value) { value ? this.play() : this.pause(); }
+
+    stop = () => {
+        this.node.pause();
+        this.node.currentTime = 0;
+    }
+
+    play = () => this.node.play();
+
+    pause = () => this.node.pause();
+
+    togglePause = () => this.isPlaying ? this.pause() : this.play();
+
+    toggleMute = () => this.muted = !this.muted;
+
+    togglePitchCorrection = () => this.node.preservesPitch = !this.node.preservesPitch
+
+    adjustVolume = (amount, absolute=false) => {
+        let newVolume = absolute ? amount / 100 : (Math.trunc(this.volume * 100) + amount) / 100;
+
+        if (newVolume >= 0 && newVolume <= 1) {
+            this.node.volume = newVolume;
+            window.playerVolume = newVolume;
+        }
+    }
+
+    adjustRate = (amount) => {
+        let newRate = (this.playbackRate * 10 + amount) / 10;
+        if (newRate > 0 && newRate <= 16) {
+            this.node.playbackRate = newRate;
+        }
+    }
+
+    seek = (amount) => {
+        switch (amount) {
+            case 0: this.currentTime = 0; break;
+            case -1: this.currentTime = this.duration - 0.1; this.pause(); break;
+            default: this.currentTime = this.currentTime += amount;
+        }
+    }
+
+    stepFrames = (amount) => this.currentTime += amount * (1 / this.frameRate);
 }
 
-const setProperties = (node, fileURI) => {
-    node.src = fileURI;
-    node.volume = window.playerVolume;
-    node.loop = true;
-    node.autoplay = true;
-    node.preservesPitch = false;
-    node.frameRate = 30;
-    node.style.order = window.playerID++;
-}
-
-module.exports = {
-    spawnPlayer
-}
+module.exports = Player;

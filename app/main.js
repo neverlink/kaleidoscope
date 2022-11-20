@@ -41,11 +41,10 @@ const createMainWindow = (args) => {
     })
 
     // mainWindow.webContents.openDevTools();
-    
     mainWindow.setBackgroundColor('#111');
     mainWindow.loadFile('app/static/index.html');
 
-    // Fix default windows app frame appearing first
+    // Fixes default windows app frame appearing first
     mainWindow.webContents.once("dom-ready", () => mainWindow.show());
 
     return mainWindow
@@ -78,15 +77,10 @@ const setIpcEvents = () => {
 
     ipcMain.on('maximize-app', (event) => {
         currentWindow = BrowserWindow.getFocusedWindow();
-        if (currentWindow.isMaximized())
-            currentWindow.restore()
-        else
-            currentWindow.maximize();
+        currentWindow.isMaximized() ? currentWindow.restore() : currentWindow.maximize();
     });
 
-    ipcMain.on('quit-app', (event) => {
-        app.quit();
-    });
+    ipcMain.on('quit-app', (event) => app.quit());
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
@@ -100,6 +94,4 @@ const main = () => {
     setIpcEvents();
 }
 
-app.whenReady().then(() => {
-    main();
-});
+app.whenReady().then(() => main());
