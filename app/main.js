@@ -57,12 +57,9 @@ const setIpcEvents = () => {
         app.quit();
     } else {
         app.on('second-instance', (event, args) => {
-            fileURI = args.at(-1);
-            mainWindow.webContents.send('create-players', fileURI);
-            if (mainWindow.isMinimized()) {
-                mainWindow.restore();
-            }
-            mainWindow.focus();
+            src = [args.at(-1)];
+            mainWindow.webContents.send('create-players', src);
+            mainWindow.isMinimized() ? mainWindow.restore() : mainWindow.focus();
         });
     }
 

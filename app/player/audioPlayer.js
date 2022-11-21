@@ -31,5 +31,4 @@ class AudioPlayer extends Player {
     // }
 }
 
-
 module.exports = AudioPlayer;

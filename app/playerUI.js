@@ -54,6 +54,7 @@ const updateState = () => {
 
     const showProgressBar = () => guiProgressBar.classList.remove('hidden');
     const hideProgressBar = () => guiProgressBar.classList.add('hidden');
+    
     const showProgressTime = () => guiTimeProgress.classList.remove('hidden');
     const hideProgressTime = () => guiTimeProgress.classList.add('hidden');
 

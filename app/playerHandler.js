@@ -34,7 +34,7 @@ const createPlayer = (src) => {
 		
 	playerContainer.appendChild(player);
 	window.activePlayers.push(player);
-	playerUI.setPlayerEvents(player); // possibly move to playerUI.updateState()
+	playerUI.setPlayerEvents(player);
 
 	return player;
 }
