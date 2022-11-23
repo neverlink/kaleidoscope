@@ -129,6 +129,7 @@ const initialize = () => {
     playerControls.addEventListener('mouseenter', () => showControls());
     playerControls.addEventListener('mouseleave', async () => await peekControls(delay = 1000));
     playerContainer.addEventListener('mousemove', async () => !peekingControls ? await peekControls(delay=1500) : null);
+    document.addEventListener('keyup', async () => !peekingControls ? await peekControls(delay=1500) : null);
 
     // Controls button actions
     guiTogglePause.addEventListener('click', () => commandPlayers('togglePause'));

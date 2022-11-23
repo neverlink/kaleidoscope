@@ -32,6 +32,8 @@ const initialize = () => {
 
     splashContainer.addEventListener('click', () => fileSelector.click());
     
+
+    // Needs work
     fileSelector.multiple = true;
     fileSelector.accept = 'audio/*, video/*';
 

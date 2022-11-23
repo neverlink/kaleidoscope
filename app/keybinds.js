@@ -35,7 +35,7 @@ const initialize = () => {
             case e.shiftKey && e.key == 'ArrowRight': commandPlayers('seek', +15); break;
             case e.ctrlKey && e.key == 'ArrowLeft': commandPlayers('seekToPercentage', 0); break;
             case e.ctrlKey && e.key == 'ArrowRight': commandPlayers('seekToPercentage', -1); break;
-            case e.key >= 0 && e.key <= 9: commandPlayers('seekToPercentage', e.key * 10); break;
+            case e.key >= '0' && e.key <= '9': commandPlayers('seekToPercentage', e.key * 10); break;
             
             // Rate Control
             case e.ctrlKey && e.key == 'ArrowUp': commandPlayers('adjustRate', +1); break;
