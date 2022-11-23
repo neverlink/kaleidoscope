@@ -60,20 +60,23 @@ const updateState = () => {
 
     let playerCount = window.activePlayers.length;
 
-    if (playerCount == 0) {
+    if (!playerCount) {
         showSplash();
         hideControls();
-    } else {
-        hideSplash();
-        showControls();
-        if (playerCount == 1) {
-            showProgressBar();
-            showProgressTime();
-        } else {
-            hideProgressBar();
-            hideProgressTime();
-        }
+        return;
     }
+    
+    hideSplash();
+    showControls();
+
+    if (playerCount == 1) {
+        showProgressBar();
+        showProgressTime();
+        return
+    }
+
+    hideProgressBar();
+    hideProgressTime();
 }
 
 // Called when a player is created/destroyed
