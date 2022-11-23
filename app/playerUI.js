@@ -21,15 +21,15 @@ const resizeWindow = () => {
 };
 
 const updateTitle = () => {
-    if (window.activePlayers.length) {
-        let videoTitles = [];
-        window.activePlayers.forEach((player) => {
-            videoTitles.push(decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1)));
-        });
-        titleBarText.innerHTML = videoTitles.join(' - ');
-    } else {
+    if (!window.activePlayers.length) {
         titleBarText.innerHTML = 'Kaleidoscope';
+        return;
     }
+    let videoTitles = [];
+    window.activePlayers.forEach((player) => {
+        videoTitles.push(decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1)));
+    });
+    titleBarText.innerHTML = videoTitles.join(' - ');
 }
 
 const updateTimecode = (player) => {
@@ -63,18 +63,16 @@ const updateState = () => {
     if (playerCount == 0) {
         showSplash();
         hideControls();
-        return;
-    }
-    
-    showControls();
-    hideSplash();
-
-    if (playerCount == 1) {
-        showProgressBar();
-        showProgressTime();
-    } else if (playerCount > 1) {
-        hideProgressBar();
-        hideProgressTime();
+    } else {
+        hideSplash();
+        showControls();
+        if (playerCount == 1) {
+            showProgressBar();
+            showProgressTime();
+        } else {
+            hideProgressBar();
+            hideProgressTime();
+        }
     }
 }
 
@@ -95,25 +93,18 @@ const setPlayerEvents = (player) => {
     player.addEventListener('seeking', () => updateTimecode(player));
     
     player.addEventListener('pause', () => guiTogglePause.src = 'fontawesome/play.svg');
- 
-    player.addEventListener('mute', () => {
-        guiVolumeSliderContainer.style.display = 'none';
-        guiVolumeIcon.src = 'fontawesome/volume-xmark.svg';
-    });
 
-    player.addEventListener('unmute', () => {
-        guiVolumeSliderContainer.style.display = 'inherit';
-        guiVolumeIcon.src = 'fontawesome/volume-high.svg';
-    });
-    
     player.addEventListener('volumechange', () => {
-        guiVolumeSlider.value = player.volume * 100;    
-        if (player.volume >= 0.5)
-            guiVolumeIcon.src = 'fontawesome/volume-high.svg';
-        else if (player.volume > 0)
-            guiVolumeIcon.src = 'fontawesome/volume-low.svg';
-        else
+        if (player.muted) {
             guiVolumeIcon.src = 'fontawesome/volume-xmark.svg';
+            guiVolumeSliderContainer.style.display = 'none';
+            return;
+        }
+        guiVolumeSlider.value = player.volume * 100;
+        guiVolumeSliderContainer.style.display = 'flex';
+        if (player.volume >= 0.5) guiVolumeIcon.src = 'fontawesome/volume-high.svg';
+        else if (player.volume > 0) guiVolumeIcon.src = 'fontawesome/volume-low.svg';
+        else if (player.volume == 0) guiVolumeIcon.src = 'fontawesome/volume-xmark.svg';
     });
 }
 
@@ -131,14 +122,16 @@ const initialize = () => {
         peekingControls = false;
     }
 
-    playerContainer.addEventListener('mousemove', async () => !peekingControls ? await peekControls(delay=1500) : null);
+    // Display controls 
     playerControls.addEventListener('mouseenter', () => showControls());
     playerControls.addEventListener('mouseleave', async () => await peekControls(delay = 1000));
+    playerContainer.addEventListener('mousemove', async () => !peekingControls ? await peekControls(delay=1500) : null);
+
+    // Controls button actions
     guiTogglePause.addEventListener('click', () => commandPlayers('togglePause'));
-    playerContainer.addEventListener('dblclick', () => toggleFullscreen());
+    guiProgressBar.addEventListener('input', () => commandPlayers('seekToPercentage', guiProgressBar.valueAsNumber / 10));
     guiVolumeIcon.addEventListener('click', () => commandPlayers('toggleMute'));
     guiVolumeSlider.addEventListener('input', () => commandPlayers('setVolume', guiVolumeSlider.valueAsNumber));
-    guiProgressBar.addEventListener('input', () => commandPlayers('seekToPercentage', guiProgressBar.valueAsNumber / 10));
     guiToggleFullscreen.addEventListener('click', () => toggleFullscreen());
 }
 

@@ -4,19 +4,8 @@ const playerUI = require('./playerUI.js');
 const playerUtils = require('./playerUtils.js');
 const { ipcRenderer } = require('electron');
 
-
-const setIpcEvents = () => {
-	ipcRenderer.on('create-players', (e, fileURIs) => createPlayers(fileURIs));
-	ipcRenderer.on('destroy-player', () => destroyPlayer(playerUtils.getFocusedPlayer()));
-	ipcRenderer.on('restore-player', () => restorePlayer());
-	ipcRenderer.on('command-players', (e, action, value) => playerUtils.commandPlayers(action, value));
-	ipcRenderer.on('toggle-fullscreen', () => playerUtils.toggleFullscreen());
-	ipcRenderer.on('toggle-aspect-ratio', () => playerUtils.toggleAspectRatio());
-};
-
 const createPlayer = (src) => {
-	// get rid of 'none' string here & in main.js
-	if (typeof src != "string" || src == 'none' || src == '.')
+	if (src == null || src == '.')
 		return;
 
 	let fileExtension = src.substring(src.lastIndexOf('.') + 1);
@@ -39,31 +28,31 @@ const createPlayer = (src) => {
 	return player;
 }
 
-const destroyPlayers = () => window.activePlayers.forEach((p) => destroyPlayer(p));
-
-const createPlayers = (fileURIs) => {
-	destroyPlayers();
-	fileURIs.forEach((src) => createPlayer(src));
-};
-
 const destroyPlayer = (player) => {
-	!activePlayers.length ? ipcRenderer.send('quit-app') : null;
-		
+	window.activePlayers.length ? null : ipcRenderer.send('quit-app');
+	
 	let playerInstance = window.activePlayers.find((p) => p.src == player.src);
 	window.destroyedPlayers.push(playerInstance);
 	window.activePlayers = window.activePlayers.filter((p) => p.src != playerInstance.src);
-
+	
 	playerInstance.destroy();
 	playerUI.updateState();
 };
 
+const destroyPlayers = () => window.activePlayers.forEach((p) => destroyPlayer(p));
+
+const replacePlayers = (fileURIs) => {
+	destroyPlayers();
+	fileURIs.forEach((src) => createPlayer(src));
+};
+
 const restorePlayer = () => {
-	if (window.destroyedPlayers.length) {
-		let oldPlayer = window.destroyedPlayers.pop();
-		let newPlayer = createPlayer(oldPlayer.src);
-		newPlayer.node.style.order = oldPlayer.node.style.order;
-		playerUtils.commandPlayers('seek', 0);
-	}
+	if (!window.destroyedPlayers.length)
+		return;
+	let oldPlayer = window.destroyedPlayers.pop();
+	let newPlayer = createPlayer(oldPlayer.src);
+	newPlayer.node.style.order = oldPlayer.node.style.order;
+	playerUtils.commandPlayers('seek', 0);
 };
 
 const initialize = () => {
@@ -77,13 +66,13 @@ const initialize = () => {
 
 	let startURI = process.argv.at(-2);
 	createPlayer(startURI);
-	setIpcEvents();
 };
 
 module.exports = {
 	initialize,
 	createPlayer,
-	createPlayers,
 	destroyPlayer,
-	destroyPlayers
+	restorePlayer,
+	destroyPlayers,
+	replacePlayers
 };

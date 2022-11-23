@@ -1,7 +1,7 @@
 const { dialog, Menu, BrowserWindow } = require('electron');
 
 const createMenu = (windowTarget) => {
-    const createPlayers = (action, fileURI) => windowTarget.webContents.send('create-players', action, fileURI);
+    const replacePlayers = (action, fileURI) => windowTarget.webContents.send('create-players', action, fileURI);
     const destroyPlayer = (action) => windowTarget.webContents.send('destroy-player', action);
     const restorePlayer = (action) => windowTarget.webContents.send('restore-player', action);
     const commandPlayers = (action, value) => windowTarget.webContents.send('command-players', action, value);
@@ -27,7 +27,7 @@ const createMenu = (windowTarget) => {
                             ]
                         }).then(result => {
                             if (!result['canceled']) {
-                                createPlayers(result['filePaths']);
+                                replacePlayers(result['filePaths']);
                             }
                         });
                     }

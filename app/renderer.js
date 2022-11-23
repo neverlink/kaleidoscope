@@ -1,6 +1,7 @@
 const { ipcRenderer } = require('electron');
 const playerHandler = require('./playerHandler.js');
 const playerUI = require('./playerUI.js');
+const keybinds = require('./keybinds.js');
 
 const defineDropArea = () => {
     const prevents = (e) => e.preventDefault();
@@ -8,12 +9,12 @@ const defineDropArea = () => {
         dropContainer.addEventListener(e, prevents);
     });
 
-    const handleDrop = (e) => {
+    const handleFiles = (e) => {
         let files = [...e.dataTransfer.files];
-        let filePaths = files.map(file => file['path']);
-        playerHandler.createPlayers(filePaths);
+        let filePaths = files.map(fileObj => fileObj['path']);
+        playerHandler.replacePlayers(filePaths);
     }
-    dropContainer.addEventListener('drop', handleDrop);
+    dropContainer.addEventListener('drop', handleFiles);
 }
 
 const setBorderEvents = () => {
@@ -25,8 +26,19 @@ const setBorderEvents = () => {
 const initialize = () => {
     setBorderEvents();
     defineDropArea();
-    playerHandler.initialize();
     playerUI.initialize();
+    keybinds.initialize();
+    playerHandler.initialize();
+
+    splashContainer.addEventListener('click', () => fileSelector.click());
+    
+    fileSelector.multiple = true;
+    fileSelector.accept = 'audio/*, video/*';
+
+    fileSelector.addEventListener('change', () => {
+        let filePaths = Object.values(fileSelector.files).map(fileObj => fileObj['path']);
+        playerHandler.replacePlayers(filePaths)
+    });
 }
 
 document.addEventListener('DOMContentLoaded', initialize);

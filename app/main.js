@@ -1,11 +1,10 @@
-const { app, BrowserWindow, Menu, ipcMain } = require('electron');
-const createMenu = require('./menuBar.js');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
 const constructArgs = () => {
     let preferences = JSON.parse(fs.readFileSync(path.join(__dirname, 'static/preferences.json')));
-    filePath = process.argv.length == 2 ? process.argv.at(-1) : "none";
+    filePath = process.argv.length == 2 ? process.argv.at(-1) : null;
     return [preferences, filePath]
 }
 
@@ -36,16 +35,18 @@ const createMainWindow = (args) => {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
+            enableRemoteModule: true,
             additionalArguments: [JSON.stringify(preferences), filePath]
         }
     })
 
     // mainWindow.webContents.openDevTools();
+
     mainWindow.setBackgroundColor('#111');
     mainWindow.loadFile('app/static/index.html');
 
     // Fixes default windows app frame appearing first
-    mainWindow.webContents.once("dom-ready", () => mainWindow.show());
+    mainWindow.webContents.once('dom-ready', () => mainWindow.show());
 
     return mainWindow
 }
@@ -80,14 +81,15 @@ const setIpcEvents = () => {
     ipcMain.on('quit-app', (event) => app.quit());
 
     app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
+        if (BrowserWindow.getAllWindows().length === 0)
+            createMainWindow();
     });
 }
 
 const main = () => {
     const args = constructArgs();
-    createMainWindow(args);
-    Menu.setApplicationMenu(createMenu(mainWindow));
+    mainWindow = createMainWindow(args);
+    mainWindow.setMenu(null);
     setIpcEvents();
 }
 
