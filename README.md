@@ -35,6 +35,7 @@ Backspace: Stop
 Left/Right: Seek 3s
 Shift + Left/Right Arrow: Seek 15s
 Ctrl + Left/Right Arrow: Seek to Start/End
+Number row 1-9: Seek to percentage (e.g 10%, 50%)
 
 Comma: Previous Frame
 Period: Next Frame
