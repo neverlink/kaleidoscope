@@ -29,7 +29,7 @@ const updateTitle = () => {
     window.activePlayers.forEach((player) => {
         videoTitles.push(decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1)));
     });
-    titleBarText.innerHTML = videoTitles.join(' - ');
+    titleBarText.innerHTML = videoTitles.join(' - ');;
 }
 
 const updateTimecode = (player) => {

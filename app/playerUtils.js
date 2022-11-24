@@ -24,19 +24,19 @@ const commandPlayers = (action, amount) => {
 }
 
 const toggleAspectRatio = () => {
-	let pageRoot = document.querySelector(':root');
-	let rootStyle = getComputedStyle(pageRoot);
+    let pageRoot = document.querySelector(':root');
+    let rootStyle = getComputedStyle(pageRoot);
 
-	if (rootStyle.getPropertyValue('--player-aspect-ratio') == 'contain')
-	    pageRoot.style.setProperty('--player-aspect-ratio', 'fill');
-	else
+    if (rootStyle.getPropertyValue('--player-aspect-ratio') == 'contain')
+        pageRoot.style.setProperty('--player-aspect-ratio', 'fill');
+    else
         pageRoot.style.setProperty('--player-aspect-ratio', 'contain');
 };
 
 const toggleFullscreen = () => {
-	if (document.fullscreenElement) 
+    if (document.fullscreenElement) 
         document.exitFullscreen();
-	else
+    else
         playerContainer.requestFullscreen();
 };
 
