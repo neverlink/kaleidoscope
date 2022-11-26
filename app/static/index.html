@@ -15,7 +15,7 @@
   <div id="titleBar">
 
     <div id="titleBarLeft">
-      <button id="titleBarMenuBtn" onclick="sidebar.getAttribute('active') == 'false' ? sidebar.setAttribute('active', 'true') : sidebar.setAttribute('active', 'false')"></button>
+      <button id="titleBarMenuBtn" tabindex="-1"></button>
     </div>
 
     <div id="titleBarMiddle">
@@ -23,27 +23,28 @@
     </div>
 
     <div id="titleBarRight">
-      <button id="minimizeBtn"></button>
-      <button id="maximizeBtn"></button>
-      <button id="closeBtn"></button>
+      <button id="minimizeBtn" tabindex="-1"></button>
+      <button id="maximizeBtn" tabindex="-1"></button>
+      <button id="closeBtn" tabindex="-1"></button>
     </div>
 
+  </div>
+
+  <div id="sidebar" active="false">
+    <p>Options</p>
+    <p onclick="alert('Open');">Open file(s)...</p>
+    <p onclick="alert('Effects');">Effects</p>
+    <p onclick="alert('Preferences');">Preferences</p>
+    <hr>
+    <p onclick="alert('Help');">Help...</p>
+    <p onclick="alert('About');">About...</p>
+    <p>Kaleidoscope v0.1</p>
   </div>
 
   <div id="content">
 
     <input type="file" name="fileSelector" id="fileSelector" class="hidden">
 
-    <div id="sidebar" active="false">
-      <p onclick="alert('Open');">Open file(s)...</p>
-      <p onclick="alert('Effects');">Effects</p>
-      <p onclick="alert('Preferences');">Preferences</p>
-      <tr></tr>
-      <p onclick="alert('Help');">Help...</p>
-      <p onclick="alert('About');">About...</p>
-      <p>Kaleidoscope v0.1</p>
-    </div>
-    
     <div id="popup" class="transparent glass-component"></div>
 
     <div id="splashContainer">

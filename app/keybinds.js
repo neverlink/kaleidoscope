@@ -5,6 +5,9 @@ const initialize = () => {
     // Actions called once per keypress
     document.addEventListener('keyup', (e) => {
         switch (true) {
+            // Open sidebar
+            case e.key == 'Tab': window.toggleSidebar(); break;
+
             // Quit
             case e.ctrlKey && e.key == 'q':  window.activePlayers = []; destroyPlayer(null); break;
 

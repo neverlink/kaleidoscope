@@ -40,6 +40,14 @@ const initialize = () => {
         let filePaths = Object.values(fileSelector.files).map(fileObj => fileObj['path']);
         playerHandler.replacePlayers(filePaths)
     });
+
+    // Sidebar control
+    window.openSidebar = () => sidebar.setAttribute('active', 'true');
+    window.closeSidebar = () => sidebar.setAttribute('active', 'false');
+    window.toggleSidebar = () => sidebar.getAttribute('active') == 'false' ? openSidebar() : closeSidebar();
+
+    titleBarMenuBtn.addEventListener('click', window.toggleSidebar);
+    content.addEventListener('click', window.closeSidebar);
 }
 
 document.addEventListener('DOMContentLoaded', initialize);

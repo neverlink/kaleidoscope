@@ -1,7 +1,7 @@
 :root {
     --titleBar-color: rgb(45,45,45);
     --titleBar-height: 30px;
-    --background-color: rgba(0, 0, 0, 0.5);
+    --background-color: rgba(13, 13, 13, 0.5);
     --controls-blur-amount: 10px;
     --controls-roundness-amount: 20px;
     --controls-accent-color: powderblue;
