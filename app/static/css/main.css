@@ -1,11 +1,14 @@
 :root {
-    --player-background-color: rgba(0, 0, 0, 0.5);
-    --player-roundness-amount: 20px;
-    --player-blur-amount: 10px;
-    --player-accent-color: powderblue;
+    --titleBar-color: rgb(45,45,45);
+    --titleBar-height: 30px;
+    --background-color: rgba(0, 0, 0, 0.5);
+    --controls-blur-amount: 10px;
+    --controls-roundness-amount: 20px;
+    --controls-accent-color: powderblue;
 }
 
 * {
+    user-select: none;
     font-family: "ubuntu", "Arial";
     color: white;
 }
@@ -19,12 +22,12 @@ body {
     margin: 0;
     height: 100vh;
     overflow: hidden;
-    background-color: #111;
+    background-color: var(--background-color);
 }
 
 #content {
     width: 100%;
-    height: 100%;
+    height: calc(100% - var(--titleBar-height));
     z-index: -1;
 
     display: flex;
@@ -70,6 +73,7 @@ body {
 
 .splashNotice {
     font-family: "ubuntu", "Arial";
+    text-align: center;
     color: rgb(190, 190, 190);
 }
 
@@ -83,9 +87,25 @@ body {
     align-items: center;
 }
 
+#popup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 150px;
+    height: 40px;
+    
+    position: absolute;
+    bottom: 100px;
+    left: 0px;
+
+    border-radius: 10px !important;
+    z-index: 2;
+}
+
 audio, video {
     min-width: 0%;
     width: 100%;
     height: 100%;
-    object-fit: var(--player-aspect-ratio);
+    object-fit: var(--controls-aspect-ratio);
 }

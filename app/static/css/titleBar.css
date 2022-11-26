@@ -1,12 +1,15 @@
 #titleBar {
-    height: 30px;
+    height: var(--titleBar-height);
 
     display: flex;
     justify-content: space-between;
     align-items: center;
     
-    background: rgb(45,45,45);
+    background: var(--titleBar-color);
     padding: 0px 10px;
+
+    position: relative;
+    z-index: 999;
 }
 
 #titleBar button {
@@ -20,7 +23,7 @@
     width: 100px;
 }
 
-#titleBarLeft > button#titleBarMenuBtn {
+#titleBarLeft > #titleBarMenuBtn {
     background: url('../fontawesome/align-justify.svg') center no-repeat;
 }
 
@@ -31,7 +34,6 @@
     justify-content: space-around;
     align-items: center;
 
-    user-select: none;
     pointer-events: none;
     -webkit-app-region: drag;
 }
@@ -65,24 +67,4 @@
 
 #titleBarRight button#closeBtn {
     background: url('../fontawesome/square-xmark.svg') center no-repeat;
-}
-
-#titleBarMenu {
-    width: 300px;
-    height: 600px;
-
-    position: absolute;
-    left: 0;
-    top: 30px;
-
-    display: flex;
-    align-items: baseline;
-    align-content: space-between;
-
-    background-color: rgb(45,45,45);
-    border: 1px solid white;
-}
-
-.titleBarMenuItem {
-    margin: 30px 15px;
 }
