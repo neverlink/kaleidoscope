@@ -6,6 +6,7 @@
   <title>Kaleidoscope</title>
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/titleBar.css">
+  <link rel="stylesheet" href="css/sidebar.css">
   <link rel="stylesheet" href="css/playerUI.css">
 </head>
 
@@ -14,7 +15,7 @@
   <div id="titleBar">
 
     <div id="titleBarLeft">
-      <button id="titleBarMenuBtn"></button>
+      <button id="titleBarMenuBtn" onclick="sidebar.getAttribute('active') == 'false' ? sidebar.setAttribute('active', 'true') : sidebar.setAttribute('active', 'false')"></button>
     </div>
 
     <div id="titleBarMiddle">
@@ -27,26 +28,29 @@
       <button id="closeBtn"></button>
     </div>
 
-    <div id="titleBarMenu" class="hidden">
-      <div class="titleBarMenuItem">Item 1</div>
-      <div class="titleBarMenuItem">Item 2</div>
-      <div class="titleBarMenuItem">Item 3</div>
-      <div class="titleBarMenuItem">Item 4</div>
-      <div class="titleBarMenuItem">Item 5</div>
-    </div>
-
   </div>
 
   <div id="content">
 
     <input type="file" name="fileSelector" id="fileSelector" class="hidden">
 
+    <div id="sidebar" active="false">
+      <p onclick="alert('Open');">Open file(s)...</p>
+      <p onclick="alert('Effects');">Effects</p>
+      <p onclick="alert('Preferences');">Preferences</p>
+      <tr></tr>
+      <p onclick="alert('Help');">Help...</p>
+      <p onclick="alert('About');">About...</p>
+      <p>Kaleidoscope v0.1</p>
+    </div>
+    
+    <div id="popup" class="transparent glass-component"></div>
+
     <div id="splashContainer">
       <img id="splashLogo" src="icon.png">
-      <p class="splashNotice">Drop your media files here!</p>
-      <p class="splashNotice">Kaleidoscope v0.1</p>
+      <p class="splashNotice">Click to browse files <br> or <br> Drag media here!</p>
     </div>
-
+    
     <div id="playerContainer">
       <div id="playerControls" class="hidden transparent glass-component">
         <img id="guiTogglePause" src="fontawesome/pause.svg">

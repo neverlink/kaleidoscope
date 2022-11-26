@@ -1,8 +1,10 @@
-const VideoPlayer = require('./player/VideoPlayer.js');
-const AudioPlayer = require('./player/AudioPlayer.js');
+const { ipcRenderer } = require('electron');
 const playerUI = require('./playerUI.js');
 const playerUtils = require('./playerUtils.js');
-const { ipcRenderer } = require('electron');
+const VideoPlayer = require('./player/VideoPlayer.js');
+const AudioPlayer = require('./player/AudioPlayer.js');
+
+ipcRenderer.on('create-players', (e, fileURIs) => replacePlayers(fileURIs));
 
 const createPlayer = (src) => {
     if (src == null || src == '.')
@@ -55,7 +57,7 @@ const restorePlayer = () => {
     playerUtils.commandPlayers('seek', 0);
 };
 
-const initialize = () => {
+const initialize = (startURI) => {
     window.playerID = 0;
     window.playerVolume = 0.5; // load from cookeis
     window.activePlayers = [];
@@ -64,7 +66,6 @@ const initialize = () => {
     customElements.define("audio-player", AudioPlayer, { extends: "video" });
     customElements.define("video-player", VideoPlayer, { extends: "video" });
 
-    let startURI = process.argv.at(-2);
     createPlayer(startURI);
 };
 

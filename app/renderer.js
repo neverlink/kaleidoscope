@@ -28,10 +28,9 @@ const initialize = () => {
     defineDropArea();
     playerUI.initialize();
     keybinds.initialize();
-    playerHandler.initialize();
+    playerHandler.initialize(process.argv.at(-2));
 
     splashContainer.addEventListener('click', () => fileSelector.click());
-    
 
     // Needs work
     fileSelector.multiple = true;

@@ -8,7 +8,7 @@ const resizeWindow = () => {
     window.activePlayers.forEach((player) => {
         if (player.width > width && player.height > height) {
             width = player.width;
-            height = player.height;
+            height = player.height + titleBar.offsetHeight;
         }
     });
 
@@ -21,10 +21,8 @@ const resizeWindow = () => {
 };
 
 const updateTitle = () => {
-    if (!window.activePlayers.length) {
-        titleBarText.innerHTML = 'Kaleidoscope';
+    if (!window.activePlayers.length)
         return;
-    }
     let videoTitles = [];
     window.activePlayers.forEach((player) => {
         videoTitles.push(decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1)));
@@ -79,6 +77,13 @@ const updateState = () => {
     hideProgressTime();
 }
 
+const notify = async (message) => {
+    popup.innerHTML = message;
+    popup.classList.remove('transparent');
+    await new Promise(r => setTimeout(r, delay));
+    popup.classList.add('transparent');
+}
+
 // Called when a player is created/destroyed
 const setPlayerEvents = (player) => {
     player.addEventListener('loadedmetadata', () => updateState());
@@ -97,10 +102,11 @@ const setPlayerEvents = (player) => {
     
     player.addEventListener('pause', () => guiTogglePause.src = 'fontawesome/play.svg');
 
-    player.addEventListener('volumechange', () => {
+    player.addEventListener('volumechange', async () => {
         if (player.muted) {
             guiVolumeIcon.src = 'fontawesome/volume-xmark.svg';
             guiVolumeSliderContainer.style.display = 'none';
+            await notify('Toggled Mute');
             return;
         }
         guiVolumeSlider.value = player.volume * 100;

@@ -40,7 +40,7 @@ const createMainWindow = (args) => {
         }
     })
 
-    // mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
 
     mainWindow.setBackgroundColor('#111');
     mainWindow.loadFile('app/static/index.html');
