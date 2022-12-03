@@ -11,8 +11,8 @@ const createPlayer = (src) => {
         return;
 
     let fileExtension = src.substring(src.lastIndexOf('.') + 1);
-    let audioContainers = ['mp3', 'ogg', 'wav', 'flac'];
-    let videoContainers = ['mp4', 'mov', 'mkv', 'ogv', 'webm'];
+    const audioContainers = ['mp3', 'ogg', 'wav', 'flac'];
+    const videoContainers = ['mp4', 'mov', 'mkv', 'ogv', 'webm'];
 
     let player;
 
@@ -21,7 +21,7 @@ const createPlayer = (src) => {
     else if (videoContainers.includes(fileExtension))
         player = new VideoPlayer(src);
     else
-        return alert('Unsupported file type!');
+        return alert(`Unsupported file type: ${fileExtension}!`);
         
     playerContainer.appendChild(player);
     window.activePlayers.push(player);

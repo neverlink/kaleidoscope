@@ -49,7 +49,7 @@ class Player extends HTMLVideoElement {
 
     togglePitchCorrection = () => this.preservesPitch = !this.preservesPitch;
 
-    adjustVolume = (amount, absolute=false) => {
+    adjustVolume = (amount, absolute = false) => {
         let newVolume = absolute ? amount / 100 : (Math.trunc(this.volume * 100) + amount) / 100;
 
         if (newVolume >= 0 && newVolume <= 1) {
