@@ -30,7 +30,7 @@ const createPlayer = (src) => {
     return player;
 }
 
-const destroyPlayer = (player) => {
+const destroyPlayer = (player=null) => {
     window.activePlayers.length ? null : ipcRenderer.send('quit-app');
     
     let playerInstance = window.activePlayers.find((p) => p.src == player.src);
@@ -59,7 +59,7 @@ const restorePlayer = () => {
 
 const initialize = (startURI) => {
     window.playerID = 0;
-    window.playerVolume = 0.5; // load from cookeis
+    window.playerVolume = 0.5; // To-do: Load from cookeis
     window.activePlayers = [];
     window.destroyedPlayers = [];
 

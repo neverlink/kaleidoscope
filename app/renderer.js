@@ -26,28 +26,24 @@ const setBorderEvents = () => {
 const initialize = () => {
     setBorderEvents();
     defineDropArea();
+
     playerUI.initialize();
     keybinds.initialize();
     playerHandler.initialize(process.argv.at(-2));
 
-    splashContainer.addEventListener('click', () => fileSelector.click());
-
     // Needs work
     fileSelector.multiple = true;
     fileSelector.accept = 'audio/*, video/*';
+
+    splashContainer.addEventListener('click', () => fileSelector.click());
 
     fileSelector.addEventListener('change', () => {
         let filePaths = Object.values(fileSelector.files).map(fileObj => fileObj['path']);
         playerHandler.replacePlayers(filePaths)
     });
 
-    // Sidebar control
-    window.openSidebar = () => sidebar.setAttribute('active', 'true');
-    window.closeSidebar = () => sidebar.setAttribute('active', 'false');
-    window.toggleSidebar = () => sidebar.getAttribute('active') == 'false' ? openSidebar() : closeSidebar();
-
-    titleBarMenuBtn.addEventListener('click', window.toggleSidebar);
-    content.addEventListener('click', window.closeSidebar);
+    titleBarMenuBtn.addEventListener('click', playerUI.toggleSidebar);
+    content.addEventListener('click', playerUI.closeSidebar);
 }
 
 document.addEventListener('DOMContentLoaded', initialize);

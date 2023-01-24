@@ -8,7 +8,7 @@ class Player extends HTMLVideoElement {
         this.activeIntervals = [];
         this.#setProperties();
         this.#setEvents();
-    }
+    }   
 
     clearIntervals = () => this.activeIntervals.forEach((x) => clearInterval(x));
 
@@ -18,7 +18,7 @@ class Player extends HTMLVideoElement {
     }
 
     #setProperties = () => {
-        this.frameRate = 30;
+        this.frameRate = 30; // Default
         this.volume = window.playerVolume;
         this.preservesPitch = false;
         this.style.order = window.playerID++;

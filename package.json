@@ -5,7 +5,6 @@
   "main": "app/main.js",
   "scripts": {
     "start": "electron-forge start",
-    "swag": "electron . C:\\Users\\chance\\Downloads\\j9HDYqoVc0tkJZ6p.mp4",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },

@@ -1,6 +1,10 @@
 const { ipcRenderer } = require('electron');
 const { commandPlayers, toggleFullscreen } = require('./playerUtils.js');
 
+const openSidebar = () => sidebar.setAttribute('active', 'true');
+const closeSidebar = () => sidebar.setAttribute('active', 'false');
+const toggleSidebar = () => sidebar.getAttribute('active') == 'false' ? openSidebar() : closeSidebar();
+
 const resizeWindow = () => {
     let width = 0;
     let height = 0;
@@ -23,10 +27,13 @@ const resizeWindow = () => {
 const updateTitle = () => {
     if (!window.activePlayers.length)
         return titleBarText.innerHTML = 'Kaleidoscope';
+
     let videoTitles = [];
     window.activePlayers.forEach((player) => {
-        videoTitles.push(decodeURI(player.src.substring(player.src.lastIndexOf('/') + 1)));
+        let filename = player.src.substring(player.src.lastIndexOf('/') + 1);
+        videoTitles.push(decodeURI(filename));
     });
+
     titleBarText.innerHTML = videoTitles.join(' - ');
 }
 
@@ -77,6 +84,7 @@ const updateState = () => {
     hideProgressTime();
 }
 
+// WIP
 const notify = async (message) => {
     popup.innerHTML = message;
     popup.classList.remove('transparent');
@@ -84,7 +92,7 @@ const notify = async (message) => {
     popup.classList.add('transparent');
 }
 
-// Called when a player is created/destroyed
+// Called when a player is created
 const setPlayerEvents = (player) => {
     player.addEventListener('loadedmetadata', () => updateState());
 
@@ -126,7 +134,7 @@ const initialize = () => {
     const peekControls = async (delay) => {
         peekingControls = true;
         showControls()
-        await new Promise(r => setTimeout(r, delay));
+        await new Promise(r => setTimeout(r, delay)); // Shouldn't delay be populated?
         hideControls()
         peekingControls = false;
     }
@@ -137,7 +145,7 @@ const initialize = () => {
     playerContainer.addEventListener('mousemove', async () => !peekingControls ? await peekControls(delay=1500) : null);
     document.addEventListener('keyup', async () => !peekingControls ? await peekControls(delay=1500) : null);
 
-    // Controls button actions
+    // Player controls
     guiTogglePause.addEventListener('click', () => commandPlayers('togglePause'));
     guiProgressBar.addEventListener('input', () => commandPlayers('seekToPercentage', guiProgressBar.valueAsNumber / 10));
     guiVolumeIcon.addEventListener('click', () => commandPlayers('toggleMute'));
@@ -149,5 +157,7 @@ module.exports = {
     initialize,
     updateState,
     updateTimecode,
-    setPlayerEvents
+    setPlayerEvents,
+    toggleSidebar,
+    closeSidebar
 }

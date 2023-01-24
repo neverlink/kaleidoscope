@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, globalShortcut, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -40,14 +40,12 @@ const createMainWindow = (args) => {
         }
     })
 
-    mainWindow.webContents.openDevTools();
-
     mainWindow.setBackgroundColor('#111');
     mainWindow.loadFile('app/static/index.html');
 
     // Fixes default windows app frame appearing first
     mainWindow.webContents.once('dom-ready', () => mainWindow.show());
-
+    
     return mainWindow
 }
 
@@ -81,8 +79,7 @@ const setIpcEvents = () => {
     ipcMain.on('quit-app', (event) => app.quit());
 
     app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0)
-            createMainWindow();
+        BrowserWindow.getAllWindows().length ? createMainWindow() : null;
     });
 }
 
@@ -90,6 +87,11 @@ const main = () => {
     const args = constructArgs();
     mainWindow = createMainWindow(args);
     mainWindow.setMenu(null);
+    globalShortcut.register('CommandOrControl+Shift+I', () => {
+        if (mainWindow.isFocused()) {
+            mainWindow.webContents.toggleDevTools()
+        }
+    });
     setIpcEvents();
 }
 
