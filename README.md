@@ -5,6 +5,8 @@
 
 An electron-based video player.
 
+[![CodeFactor](https://www.codefactor.io/repository/github/neverlink/kaleidoscope/badge)](https://www.codefactor.io/repository/github/neverlink/kaleidoscope)
+
 <details>
 <summary style=>Screenshots</summary>
 <img alt="Single Player" src="https://i.imgur.com/tzfDhl0.png" style="display: inline; width: 100%;"/>
