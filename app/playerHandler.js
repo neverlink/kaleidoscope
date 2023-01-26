@@ -10,7 +10,7 @@ const createPlayer = (src) => {
     if (src == null || src == '.')
         return;
 
-    let fileExtension = src.substring(src.lastIndexOf('.') + 1);
+    let fileExtension = src.substring(src.lastIndexOf('.') + 1).toLowerCase();
     const audioContainers = ['mp3', 'ogg', 'wav', 'flac'];
     const videoContainers = ['mp4', 'mov', 'mkv', 'ogv', 'webm'];
 

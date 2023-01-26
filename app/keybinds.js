@@ -1,6 +1,6 @@
 const initialize = () => {
     const { toggleSidebar } = require('./playerUI.js')
-    const { destroyPlayer, destroyPlayers, restorePlayer } = require('./playerHandler.js');
+    const { destroyPlayer, restorePlayer } = require('./playerHandler.js');
     const { commandPlayers, getFocusedPlayer, toggleAspectRatio, toggleFullscreen } = require('./playerUtils.js');
 
     // Actions called once per keypress
@@ -10,7 +10,7 @@ const initialize = () => {
             case e.key == '`': toggleSidebar(); break;
 
             // Quit
-            case e.ctrlKey && e.key == 'q':  window.activePLayers = []; destroyPlayer(); break;
+            case e.ctrlKey && e.key == 'q':  window.activePLayers = []; destroyPlayer(null); break;
 
             // Open file
             case e.ctrlKey && e.key == 'o': fileSelector.click(); break;
