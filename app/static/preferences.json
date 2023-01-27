@@ -1,23 +1,13 @@
 {
-    "allowOnlyOneInstance":   "false",
+    "allowOnlyOneInstance": "false",
 
     "initialWidth": 500,
     "initialHeight": 500,
-
-    "minWidth": 500,
-    "minHeight": 500,
-
-    "maxWidth": 3000,
-    "maxHeight": 3000,
 
     "centerWindowOnLaunch": false,
     "hideMenuBar": false,
     "alwaysOnTop": false,
 
-    "autoSplitScreen": false,
-    "keepProportions": true,
-    "loopContent": true,
-    
     "hotkeys": {
         "playPause": "Space",
         "mute": "KeyM"

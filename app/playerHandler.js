@@ -24,13 +24,13 @@ const createPlayer = (src) => {
         return alert(`Unsupported file type: ${fileExtension}!`);
         
     playerContainer.appendChild(player);
-    window.activePlayers.push(player);
     playerUI.setPlayerEvents(player);
+    window.activePlayers.push(player);
 
     return player;
 }
 
-const destroyPlayer = (player=null) => {
+const destroyPlayer = (player = null) => {
     window.activePlayers.length ? null : ipcRenderer.send('quit-app');
     
     let playerInstance = window.activePlayers.find((p) => p.src == player.src);

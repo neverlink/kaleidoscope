@@ -31,7 +31,6 @@ const initialize = () => {
 
     // Actions repeatedly called while key is held
     document.addEventListener('keydown', (e) => {
-        console.log('Ctrl:', e.ctrlKey, 'Shift:', e.shiftKey, e.key);
         switch (true) {
             // Seeking
             case e.ctrlKey && e.key == 'ArrowLeft' || e.key == 'Home': commandPlayers('seek', 0); break;

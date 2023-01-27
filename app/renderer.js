@@ -32,14 +32,14 @@ const initialize = () => {
     playerHandler.initialize(process.argv.at(-2));
 
     // Needs work
-    fileSelector.multiple = true;
+    fileSelector.multiple = true;    
     fileSelector.accept = 'audio/*, video/*';
 
     splashContainer.addEventListener('click', () => fileSelector.click());
 
     fileSelector.addEventListener('change', () => {
         let filePaths = Object.values(fileSelector.files).map(fileObj => fileObj['path']);
-        playerHandler.replacePlayers(filePaths)
+        playerHandler.replacePlayers(filePaths);
     });
 
     titleBarMenuBtn.addEventListener('click', playerUI.toggleSidebar);

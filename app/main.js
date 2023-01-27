@@ -16,20 +16,17 @@ const createMainWindow = (args) => {
         width: preferences['initialWidth'],
         height: preferences['initialHeight'],
 
-        // minWidth: preferences['minWidth'],
-        // minHeight: preferences['minHeight'],
-
-        maxWidth: preferences['maxWidth'],
-        maxHeight: preferences['maxHeight'],
-
         center: preferences['centerWindowOnLaunch'],
         autoHideMenuBar: preferences['hideMenuBar'],
         alwaysOnTop: preferences['alwaysOnTop'],
 
         icon: path.join(__dirname, 'static/icon.png'),
-
         title: 'Kaleidoscope',
-        frame: false,
+        
+        // Hide default title bar only on Windows
+        frame: process.platform !== 'win32',
+
+        // Prevent default windows app frame from appearing first
         show: false,
         
         webPreferences: {
@@ -43,9 +40,9 @@ const createMainWindow = (args) => {
     mainWindow.setBackgroundColor('#111');
     mainWindow.loadFile('app/static/index.html');
 
-    // Fixes default windows app frame appearing first
+    // Prevent default Windows app frame from appearing first
     mainWindow.webContents.once('dom-ready', () => mainWindow.show());
-    
+
     return mainWindow
 }
 
@@ -88,9 +85,7 @@ const main = () => {
     mainWindow = createMainWindow(args);
     mainWindow.setMenu(null);
     globalShortcut.register('CommandOrControl+Shift+I', () => {
-        if (mainWindow.isFocused()) {
-            mainWindow.webContents.toggleDevTools()
-        }
+        mainWindow.isFocused() ? mainWindow.webContents.toggleDevTools() : null;
     });
     setIpcEvents();
 }
