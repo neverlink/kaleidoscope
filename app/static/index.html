@@ -14,30 +14,24 @@
 
   <div id="titleBar">
 
-    <div id="titleBarLeft">
-      <button id="titleBarMenuBtn" tabindex="-1"></button>
-    </div>
+    <button id="titleBarMenuBtn" tabindex="-1"></button>
 
-    <div id="titleBarMiddle">
-      <p id="titleBarText"></p>
-    </div>
+    <p id="titleBarTitle"></p>
 
-    <div id="titleBarRight">
-      <button id="minimizeBtn" tabindex="-1"></button>
-      <button id="maximizeBtn" tabindex="-1"></button>
-      <button id="closeBtn" tabindex="-1"></button>
-    </div>
+    <button id="minimizeBtn" tabindex="-1"></button>
+    <button id="maximizeBtn" tabindex="-1"></button>
+    <button id="closeBtn" tabindex="-1"></button>
 
   </div>
 
   <div id="sidebar" active="false">
     <p>Options</p>
-    <p onclick="alert('Open');">Open file(s)...</p>
-    <p onclick="alert('Effects');">Effects</p>
-    <p onclick="alert('Preferences');">Preferences</p>
+    <p id="sidebarOpenFile">Open file(s)...</p>
+    <p id="sidebarEffects">Effects</p>
+    <p id="sidebarPreferences">Preferences</p>
     <hr>
-    <p onclick="alert('Help');">Help...</p>
-    <p onclick="alert('About');">About...</p>
+    <p id="sidebarHelp">Help...</p>
+    <p id="sidebarAbout">About...</p>
     <p>Kaleidoscope v0.1</p>
   </div>
 

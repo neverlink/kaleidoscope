@@ -26,7 +26,7 @@ const resizeWindow = () => {
 
 const updateTitle = () => {
     if (!window.activePlayers.length)
-        return titleBarText.innerHTML = 'Kaleidoscope';
+        return titleBarTitle.innerHTML = 'Kaleidoscope';
 
     let videoTitles = [];
     window.activePlayers.forEach((player) => {
@@ -34,7 +34,7 @@ const updateTitle = () => {
         videoTitles.push(decodeURI(filename));
     });
 
-    titleBarText.innerHTML = videoTitles.join(' - ');
+    titleBarTitle.innerHTML = videoTitles.join(' - ');
 }
 
 const updateTimecode = (player) => {

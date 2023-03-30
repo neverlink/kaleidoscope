@@ -2,6 +2,7 @@ const { ipcRenderer } = require('electron');
 const playerHandler = require('./playerHandler.js');
 const playerUI = require('./playerUI.js');
 const keybinds = require('./keybinds.js');
+const sidebar = require('./sidebar.js')
 
 const defineDropArea = () => {
     const prevents = (e) => e.preventDefault();
@@ -24,12 +25,14 @@ const setBorderEvents = () => {
 }
 
 const initialize = () => {
+    titleBar.style.display = process.platform === 'win32' ? 'flex' : none;
+
     setBorderEvents();
     defineDropArea();
 
+    playerHandler.initialize(process.argv.at(-2));
     playerUI.initialize();
     keybinds.initialize();
-    playerHandler.initialize(process.argv.at(-2));
 
     // Needs work
     fileSelector.multiple = true;    

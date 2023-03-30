@@ -5,14 +5,14 @@ div#sidebar {
     top: var(--titleBar-height);
     left: 0;
     
-    box-sizing: border-box;
-    padding: 20px 20px;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
+    
+    box-sizing: border-box;
+    padding: 20px 20px;
+    
     background-color: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(var(--controls-blur-amount));
     z-index: 2;

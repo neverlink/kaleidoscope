@@ -1,0 +1,15 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 30 30"
+  width="100%"
+  height="100%"
+  fill="none"
+  stroke="lightgrey"
+  stroke-width="1"
+  stroke-linecap="butt"
+  stroke-linejoin="butt"
+>
+  <line x1="7" y1="8" x2="23" y2="8" />
+  <line x1="7" y1="15" x2="23" y2="15" />
+  <line x1="7" y1="22" x2="23" y2="22" />
+</svg>
