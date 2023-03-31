@@ -8,7 +8,6 @@
     align-items: center;
     
     background: var(--titleBar-color);
-    padding: 0px 10px;
 
     position: relative;
     z-index: 999;

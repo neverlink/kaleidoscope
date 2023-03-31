@@ -97,7 +97,7 @@ const setPlayerEvents = (player) => {
     player.addEventListener('loadedmetadata', () => updateState());
 
     player.addEventListener('playing', () => {
-        guiTogglePause.src = 'fontawesome/pause.svg';
+        guiTogglePause.src = 'fontawesome-icons/pause.svg';
         player.activeIntervals.push(setInterval(() => {
             if (player.duration - player.currentTime <= 0.1)
                 player.currentTime = 0;
@@ -108,20 +108,20 @@ const setPlayerEvents = (player) => {
     
     player.addEventListener('seeking', () => updateTimecode(player));
     
-    player.addEventListener('pause', () => guiTogglePause.src = 'fontawesome/play.svg');
+    player.addEventListener('pause', () => guiTogglePause.src = 'fontawesome-icons/play.svg');
 
     player.addEventListener('volumechange', async () => {
         if (player.muted) {
-            guiVolumeIcon.src = 'fontawesome/volume-xmark.svg';
+            guiVolumeIcon.src = 'fontawesome-icons/volume-xmark.svg';
             guiVolumeSliderContainer.style.display = 'none';
             await notify('Toggled Mute');
             return;
         }
         guiVolumeSlider.value = player.volume * 100;
         guiVolumeSliderContainer.style.display = 'flex';
-        if (player.volume >= 0.5) guiVolumeIcon.src = 'fontawesome/volume-high.svg';
-        else if (player.volume > 0) guiVolumeIcon.src = 'fontawesome/volume-low.svg';
-        else if (player.volume == 0) guiVolumeIcon.src = 'fontawesome/volume-xmark.svg';
+        if (player.volume >= 0.5) guiVolumeIcon.src = 'fontawesome-icons/volume-high.svg';
+        else if (player.volume > 0) guiVolumeIcon.src = 'fontawesome-icons/volume-low.svg';
+        else if (player.volume == 0) guiVolumeIcon.src = 'fontawesome-icons/volume-xmark.svg';
     });
 }
 

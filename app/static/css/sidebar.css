@@ -28,7 +28,7 @@ div#sidebar[active="false"] {
 }
 
 div#sidebar[active="true"] {
-    width: 50%;
+    width: 500px;
     opacity: 1;
     visibility: visible;
 }
