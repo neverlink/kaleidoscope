@@ -12,7 +12,7 @@ const resizeWindow = () => {
     window.activePlayers.forEach((player) => {
         if (player.width > width && player.height > height) {
             width = player.width;
-            height = player.height + titleBar.offsetHeight;
+            height = player.height + titlebar.offsetHeight;
         }
     });
 
@@ -26,7 +26,7 @@ const resizeWindow = () => {
 
 const updateTitle = () => {
     if (!window.activePlayers.length)
-        return titleBarTitle.innerHTML = 'Kaleidoscope';
+        return windowTitle.innerHTML = 'Kaleidoscope';
 
     let videoTitles = [];
     window.activePlayers.forEach((player) => {
@@ -34,7 +34,7 @@ const updateTitle = () => {
         videoTitles.push(decodeURI(filename));
     });
 
-    titleBarTitle.innerHTML = videoTitles.join(' - ');
+    windowTitle.innerHTML = videoTitles.join(' - ');
 }
 
 const updateTimecode = (player) => {

@@ -1,21 +1,21 @@
 :root {
-    --titleBar-color: rgb(45,45,45);
-    --titleBar-height: 30px;
+    --titlebar-color: rgb(45,45,45);
+    --titlebar-height: 30px;
     --background-color: rgba(13, 13, 13, 0.5);
     --controls-blur-amount: 10px;
     --controls-roundness-amount: 20px;
     --controls-accent-color: powderblue;
 }
 
+@font-face {
+    font-family: "ubuntu";
+    src: url("../ubuntu-font/Ubuntu-R.ttf");
+}
+
 * {
     user-select: none;
     font-family: "ubuntu", "Arial";
     color: white;
-}
-
-@font-face {
-    font-family: "ubuntu";
-    src: url("../ubuntu-font/Ubuntu-R.ttf");
 }
 
 body {
@@ -27,7 +27,7 @@ body {
 
 #content {
     width: 100%;
-    height: calc(100% - var(--titleBar-height));
+    height: calc(100% - var(--titlebar-height));
     z-index: -1;
 
     display: flex;

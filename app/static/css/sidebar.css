@@ -1,8 +1,8 @@
 div#sidebar {
-    height: calc(100% - var(--titleBar-height));
+    height: calc(100% - var(--titlebar-height));
 
     position: absolute;
-    top: var(--titleBar-height);
+    top: var(--titlebar-height);
     left: 0;
     
     display: flex;

@@ -25,7 +25,8 @@ const setBorderEvents = () => {
 }
 
 const initialize = () => {
-    titleBar.style.display = process.platform === 'win32' ? 'flex' : none;
+    if (process.platform !== 'win32')
+        titlebar.style.display = 'None'
 
     setBorderEvents();
     defineDropArea();
@@ -45,7 +46,7 @@ const initialize = () => {
         playerHandler.replacePlayers(filePaths);
     });
 
-    titleBarMenuBtn.addEventListener('click', playerUI.toggleSidebar);
+    sidebarBtn.addEventListener('click', playerUI.toggleSidebar);
     content.addEventListener('click', playerUI.closeSidebar);
 }
 

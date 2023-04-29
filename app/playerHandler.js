@@ -1,8 +1,8 @@
 const { ipcRenderer } = require('electron');
 const playerUI = require('./playerUI.js');
 const playerUtils = require('./playerUtils.js');
+// const VideoPlayer = require('./player/AudioPlayer.js');
 const VideoPlayer = require('./player/VideoPlayer.js');
-const AudioPlayer = require('./player/AudioPlayer.js');
 
 ipcRenderer.on('create-players', (e, fileURIs) => replacePlayers(fileURIs));
 
@@ -17,7 +17,7 @@ const createPlayer = (src) => {
     let player;
 
     if (audioContainers.includes(fileExtension))
-        player = new AudioPlayer(src);
+        player = new VideoPlayer(src); // not supported but won't crash
     else if (videoContainers.includes(fileExtension))
         player = new VideoPlayer(src);
     else
@@ -63,7 +63,7 @@ const initialize = (startURI) => {
     window.activePlayers = [];
     window.destroyedPlayers = [];
 
-    customElements.define("audio-player", AudioPlayer, { extends: "video" });
+    // customElements.define("audio-player", AudioPlayer, { extends: "video" });
     customElements.define("video-player", VideoPlayer, { extends: "video" });
 
     createPlayer(startURI);

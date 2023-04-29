@@ -1,4 +1,4 @@
-const Player = require('./Player');
+const Player = require('../player/Player');
 
 class AudioPlayer extends Player {
     constructor(src) {
