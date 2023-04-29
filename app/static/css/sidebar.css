@@ -1,10 +1,9 @@
-div#sidebar {
-    height: calc(100% - var(--titlebar-height));
-
+#sidebar {
     position: absolute;
     top: var(--titlebar-height);
     left: 0;
-    
+
+    height: calc(100% - var(--titlebar-height));
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -21,19 +20,19 @@ div#sidebar {
     transition-timing-function: ease-out;
 }
 
-div#sidebar[active="false"] {
+#sidebar[active="false"] {
     width: 0;
     opacity: 0;
     visibility: hidden;
 }
 
-div#sidebar[active="true"] {
+#sidebar[active="true"] {
     width: 500px;
     opacity: 1;
     visibility: visible;
 }
 
-div#sidebar p {
+#sidebar p {
     width: 100%;
     
     margin: 0;
@@ -45,33 +44,32 @@ div#sidebar p {
     transition-timing-function: ease;
 }
 
-div#sidebar[active="false"] p {
+#sidebar[active="false"] {
     opacity: 0;
 }
-div#sidebar[active="true"] p {
+#sidebar[active="true"] {
     opacity: 1;
 }
 
-div#sidebar p:first-child {
+#sidebar p:first-child {
     font-size: xx-large;
     justify-self: flex-start;
 }
 
 /* first selector doesn't work? lol */
-div#sidebar p:not(:last-child):hover {
+#sidebar p:not(:first-child):not(:last-child):hover {
     color: black;
     background-color: white;
     transition: all 0.5s;
 }
 
-div#sidebar p:nth-last-child(2) {
+#sidebar p:nth-last-child(2) {
     justify-self: flex-end;
     color: red;
 }
 
-div#sidebar p:last-child {
+#sidebar p:last-child {
     color: grey;
-    justify-self: flex-end;
 }
 
 hr {

@@ -17,15 +17,14 @@
     transition: background-color 0.2s;
 }
 
-button#sidebarBtn {
+#sidebarBtn {
     background: url('../custom-icons/menu.svg') center center no-repeat;
 }
 
-p#windowTitle {
+#windowTitle {
     margin: 0;
     width: 100%;
-    padding-left: 90px;
-    padding-right: 10px;
+    padding-left: 80px;
 
     overflow: hidden;
     text-overflow: ellipsis;
@@ -37,14 +36,14 @@ p#windowTitle {
     -webkit-app-region: drag;
 }
 
-button#minimizeBtn {
+#minimizeBtn {
     background: url('../custom-icons/minimize.svg') center center no-repeat;
 }
 
-button#maximizeBtn {
+#maximizeBtn {
     background: url('../custom-icons/maximize.svg') center center no-repeat;
 }
 
-button#closeBtn {
+#closeBtn {
     background: url('../custom-icons/close.svg') center center no-repeat;
 }
