@@ -23,11 +23,8 @@ const createMainWindow = (args) => {
         icon: path.join(__dirname, 'static/icon.png'),
         title: 'Kaleidoscope',
         
-        // Hide default title bar only on Windows
-        frame: process.platform !== 'win32',
-
-        // Prevent default windows app frame from appearing first
-        show: false,
+        frame: process.platform !== 'win32', // Hide default title bar only on Windows
+        show: false, // Prevent old Windows app frame from showing first
         
         webPreferences: {
             nodeIntegration: true,

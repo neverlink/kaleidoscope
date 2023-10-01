@@ -30,8 +30,9 @@ const updateTitle = () => {
 
     let videoTitles = [];
     window.activePlayers.forEach((player) => {
-        let filename = player.src.substring(player.src.lastIndexOf('/') + 1);
-        videoTitles.push(decodeURI(filename));
+        let filepath = player.src.split('/').at(-1)
+        let filename = decodeURIComponent(filepath)
+        videoTitles.push(filename);
     });
 
     windowTitle.innerHTML = videoTitles.join(' - ');
@@ -60,28 +61,26 @@ const updateState = () => {
     const showProgressBar = () => guiProgressBar.classList.remove('hidden');
     const hideProgressBar = () => guiProgressBar.classList.add('hidden');
     
-    const showProgressTime = () => guiTimeProgress.classList.remove('hidden');
+    const showTimecode = () => guiTimeProgress.classList.remove('hidden');
     const hideProgressTime = () => guiTimeProgress.classList.add('hidden');
 
     let playerCount = window.activePlayers.length;
 
-    if (!playerCount) {
+    if (playerCount === 0) {
         showSplash();
         hideControls();
-        return;
+    } else if (playerCount >= 1) {
+        hideSplash();
+        showControls();
     }
-    
-    hideSplash();
-    showControls();
 
-    if (playerCount == 1) {
+    if (playerCount === 1) {
         showProgressBar();
-        showProgressTime();
-        return
+        showTimecode();
+    } else if (playerCount > 1) {
+        hideProgressBar();
+        hideProgressTime();
     }
-
-    hideProgressBar();
-    hideProgressTime();
 }
 
 // WIP
@@ -126,16 +125,16 @@ const setPlayerEvents = (player) => {
 }
 
 const initialize = () => {
+    updateState();
     const hideControls = () => playerControls.classList.add('transparent');
     const showControls = () => playerControls.classList.remove('transparent');
     
     let peekingControls = false;
-
     const peekControls = async (delay) => {
         peekingControls = true;
-        showControls()
+        showControls();
         await new Promise(r => setTimeout(r, delay)); // Shouldn't delay be populated?
-        hideControls()
+        hideControls();
         peekingControls = false;
     }
 

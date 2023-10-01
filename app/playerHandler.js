@@ -1,25 +1,26 @@
 const { ipcRenderer } = require('electron');
 const playerUI = require('./playerUI.js');
 const playerUtils = require('./playerUtils.js');
-// const VideoPlayer = require('./player/AudioPlayer.js');
+// const AudioPlayer = require('./player/AudioPlayer.js');
 const VideoPlayer = require('./player/VideoPlayer.js');
 
 ipcRenderer.on('create-players', (e, fileURIs) => replacePlayers(fileURIs));
 
-const createPlayer = (src) => {
-    if (src == null || src == '.')
-        return;
+const createPlayer = (srcPath) => {
+    if (srcPath == null || srcPath == '.') {
+        return
+    }
 
-    let fileExtension = src.substring(src.lastIndexOf('.') + 1).toLowerCase();
+    let fileExtension = srcPath.substring(srcPath.lastIndexOf('.') + 1).toLowerCase();
     const audioContainers = ['mp3', 'ogg', 'wav', 'flac'];
     const videoContainers = ['mp4', 'mov', 'mkv', 'ogv', 'webm'];
 
     let player;
 
     if (audioContainers.includes(fileExtension))
-        player = new VideoPlayer(src); // not supported but won't crash
+        player = new VideoPlayer(srcPath); // not supported but won't crash
     else if (videoContainers.includes(fileExtension))
-        player = new VideoPlayer(src);
+        player = new VideoPlayer(srcPath);
     else
         return alert(`Unsupported file type: ${fileExtension}!`);
         
@@ -49,17 +50,15 @@ const replacePlayers = (fileURIs) => {
 };
 
 const restorePlayer = () => {
-    if (!window.destroyedPlayers.length)
-        return;
+    if (window.destroyedPlayers.length === 0) return;
     let oldPlayer = window.destroyedPlayers.pop();
     let newPlayer = createPlayer(oldPlayer.src);
     newPlayer.node.style.order = oldPlayer.node.style.order;
-    playerUtils.commandPlayers('seek', 0);
+    playerUtils.commandPlayers('seekToStart');
 };
 
 const initialize = (startURI) => {
     window.playerID = 0;
-    window.playerVolume = 0.5; // To-do: Load from cookeis
     window.activePlayers = [];
     window.destroyedPlayers = [];
 

@@ -119,12 +119,12 @@ const createMenu = (windowTarget) => {
                 {
                     label: 'Jump to Start',
                     accelerator: process.platform == 'darwin' ? 'Command+Left' : 'Ctrl+Left',
-                    click: () => commandPlayers('seek', 0)
+                    click: () => commandPlayers('seekToStart')
                 },
                 {
                     label: 'Jump to End',
                     accelerator: process.platform == 'darwin' ? 'Command+Right' : 'Ctrl+Right',
-                    click: () => commandPlayers('seek', -1)
+                    click: () => commandPlayers('seekToEnd')
                 },
                 {
                     label: 'Seek Forwards',
@@ -134,7 +134,7 @@ const createMenu = (windowTarget) => {
                 {
                     label: 'Seek Backwards',
                     accelerator: 'Shift+Left',
-                    click: () => commandPlayers('seek', -15)
+                    click: () => commandPlayers('seekToEnd'5)
                 },
                 {
                     label: 'Peek Forwards',

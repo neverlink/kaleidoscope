@@ -1,14 +1,20 @@
 class Player extends HTMLVideoElement {
-    constructor(src) {
+    constructor(filePath) {
         super();
-        this.src = src;
+        this.src = this.sanitizeFilename(filePath);
         this.loop = true;
         this.autoplay = true;
         this.controls = false;
         this.activeIntervals = [];
         this.#setProperties();
         this.#setEvents();
-    }   
+    }
+
+    sanitizeFilename = (filePath) => {
+        let pathComponents = filePath.split(/[/\\]+/)
+        let filename = pathComponents.at(-1)
+        return filePath.replace(filename, encodeURIComponent(filename))
+    }
 
     clearIntervals = () => this.activeIntervals.forEach((x) => clearInterval(x));
 
@@ -19,8 +25,8 @@ class Player extends HTMLVideoElement {
 
     #setProperties = () => {
         this.frameRate = 30; // Default
-        this.volume = window.playerVolume;
-        this.preservesPitch = false;
+        this.volume = localStorage.getItem('playerVolume');
+        this.preservesPitch = localStorage.getItem('preservePitch');
         this.style.order = window.playerID++;
     }
 
@@ -31,9 +37,9 @@ class Player extends HTMLVideoElement {
 
         this.addEventListener('wheel', (event) => {
             if (event.deltaY < 0 && this.volume < 1)
-                this.adjustVolume(+5);
+                this.adjustVolume(+0.05);
             else if (event.deltaY > 0 && this.volume > 0)
-                this.adjustVolume(-5);
+                this.adjustVolume(-0.05);
         });
     }
     
@@ -49,12 +55,12 @@ class Player extends HTMLVideoElement {
 
     togglePitchCorrection = () => this.preservesPitch = !this.preservesPitch;
 
-    adjustVolume = (amount, absolute = false) => {
-        let newVolume = absolute ? amount / 100 : (Math.trunc(this.volume * 100) + amount) / 100;
+    adjustVolume = (amount, absolute=false) => {
+        let newVolume = absolute ? amount / 100 : (this.volume + amount).toFixed(2);
 
         if (newVolume >= 0 && newVolume <= 1) {
             this.volume = newVolume;
-            window.playerVolume = newVolume;
+            localStorage.setItem('playerVolume', newVolume);
         }
     }
 
@@ -65,15 +71,9 @@ class Player extends HTMLVideoElement {
         }
     }
 
-    seek = (amount) => {
-        switch (amount) {
-            case 0: this.currentTime = 0; break;
-            case -1: this.currentTime = this.duration - 0.1; this.pause(); break;
-            default: this.currentTime = this.currentTime += amount;
-        }
-    }
+    seek = (seconds) => { this.currentTime = this.currentTime += seconds; }
 
-    stepFrames = (amount) => this.currentTime += amount * (1 / this.frameRate);
+    stepFrames = (count) => this.currentTime += count * (1 / this.frameRate);
 }
 
 module.exports = Player;

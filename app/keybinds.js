@@ -33,9 +33,9 @@ const initialize = () => {
     document.addEventListener('keydown', (e) => {
         switch (true) {
             // Seeking
-            case e.ctrlKey && e.key == 'ArrowLeft' || e.key == 'Home': commandPlayers('seek', 0); break;
-            case e.ctrlKey && e.key == 'ArrowRight' || e.key == 'End': commandPlayers('seek', -1); break;
-            case e.shiftKey && e.key == 'ArrowLeft': commandPlayers('seek', -15); break;
+            case e.ctrlKey && e.key == 'ArrowLeft' || e.key == 'Home': commandPlayers('seekToStart'); break;
+            case e.ctrlKey && e.key == 'ArrowRight' || e.key == 'End': commandPlayers('seekToEnd'); break;
+            case e.shiftKey && e.key == 'ArrowLeft': commandPlayers('seek', 5); break;
             case e.shiftKey && e.key == 'ArrowRight': commandPlayers('seek', +15); break;
             case e.key == 'ArrowLeft': commandPlayers('seek', -5); break;
             case e.key == 'ArrowRight': commandPlayers('seek', +5); break;
@@ -56,8 +56,8 @@ const initialize = () => {
 
             // Volume
             case e.key == 'm': commandPlayers('toggleMute'); break;
-            case e.key == 'ArrowUp': commandPlayers('adjustVolume', +5); break;
-            case e.key == 'ArrowDown': commandPlayers('adjustVolume', -5); break;
+            case e.key == 'ArrowUp': commandPlayers('adjustVolume', +0.05); break;
+            case e.key == 'ArrowDown': commandPlayers('adjustVolume', -0.05); break;
 
             default: break;
         }

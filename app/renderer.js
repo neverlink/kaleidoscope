@@ -2,7 +2,12 @@ const { ipcRenderer } = require('electron');
 const playerHandler = require('./playerHandler.js');
 const playerUI = require('./playerUI.js');
 const keybinds = require('./keybinds.js');
-const sidebar = require('./sidebar.js')
+
+const setBorderEvents = () => {
+    minimizeBtn.addEventListener('click', () =>  ipcRenderer.send('minimize-app'));
+    maximizeBtn.addEventListener('click', () => ipcRenderer.send('maximize-app'));
+    closeBtn.addEventListener('click', () => ipcRenderer.send('quit-app'));
+}
 
 const defineDropArea = () => {
     const prevents = (e) => e.preventDefault();
@@ -18,20 +23,28 @@ const defineDropArea = () => {
     dropContainer.addEventListener('drop', handleFiles);
 }
 
-const setBorderEvents = () => {
-    minimizeBtn.addEventListener('click', () =>  ipcRenderer.send('minimize-app'));
-    maximizeBtn.addEventListener('click', () => ipcRenderer.send('maximize-app'));
-    closeBtn.addEventListener('click', () => ipcRenderer.send('quit-app'));
+const loadPreferences = () => {
+    if (localStorage.length === 0) {
+        localStorage.setItem('playerVolume', 0.5);
+        localStorage.setItem('preservePitch', false);
+        localStorage.setItem('preserveAspectRatio', true);
+    }
+    for (const [key, value] of Object.entries(localStorage)) {
+        window.key = value;
+    }
 }
 
 const initialize = () => {
-    if (process.platform !== 'win32')
+    if (process.platform !== 'win32') {
         titlebar.style.display = 'None'
+    }
 
     setBorderEvents();
     defineDropArea();
+    loadPreferences();
 
-    playerHandler.initialize(process.argv.at(-2));
+    let initialFilepath = process.argv.at(-2);
+    playerHandler.initialize(initialFilepath);
     playerUI.initialize();
     keybinds.initialize();
 
