@@ -13,8 +13,10 @@ const createMainWindow = (args) => {
     filePath = args[1];
 
     mainWindow = new BrowserWindow({
-        width: preferences['initialWidth'],
-        height: preferences['initialHeight'],
+        // Window size in reality is 1px larger
+        // Likely a Windows issue
+        width: preferences['initialWidth'] - 1,
+        height: preferences['initialHeight'] - 1,
 
         center: preferences['centerWindowOnLaunch'],
         autoHideMenuBar: preferences['hideMenuBar'],
@@ -56,7 +58,11 @@ const setIpcEvents = () => {
         });
     }
 
+    // The window.setSize method moves the window by 1px and adds 1-2px to the provided dimensions
+    // due to the underlying setContentSize() call which without x/y coordinates shifts the window by 1px.
+    // The 1-2px variable resizing issue remains, which could break the old-new window size comparison.
     ipcMain.on('resize-window', (event, newWidth, newHeight) => {
+        // try with the other methods to see if the window moves
         mainWindow.setSize(newWidth, newHeight);
         mainWindow.center();
     });

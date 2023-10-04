@@ -6,22 +6,31 @@ const closeSidebar = () => sidebar.setAttribute('active', 'false');
 const toggleSidebar = () => sidebar.getAttribute('active') == 'false' ? openSidebar() : closeSidebar();
 
 const resizeWindow = () => {
-    let width = 0;
-    let height = 0;
+    let windowWidth = 0;
+    let windowHeight = 0;
 
+    // Get dimensions of largest player
     window.activePlayers.forEach((player) => {
-        if (player.width > width && player.height > height) {
-            width = player.width;
-            height = player.height + titlebar.offsetHeight;
+        if (player.width > windowWidth && player.height > windowHeight) {
+            windowWidth = player.width;
+            windowHeight = player.height + titlebar.offsetHeight;
         }
     });
 
-    if (width == 0 || height == 0) {
-        width = 500;
-        height = 500;
+    if (windowWidth === 0 || windowHeight === 0) {
+        windowWidth = 500;
+        windowHeight = 500;
     }
 
-    ipcRenderer.send('resize-window', width, height)
+    console.log(`Old: ${window.currentWidth}x${window.currentHeight}`);
+    console.log(`New: ${windowWidth}x${windowHeight}`);
+
+    if (windowWidth !== window.currentWidth && windowHeight !== window.currentHeight) {
+        console.log('Resizing window');
+        window.currentWidth = windowWidth;
+        window.currentHeight = windowHeight;
+        ipcRenderer.send('resize-window', windowWidth, windowHeight)
+    }
 };
 
 const updateTitle = () => {
@@ -48,7 +57,7 @@ const updateTimecode = (player) => {
     guiProgressBar.value = Math.trunc(player.currentTime / player.duration * 1000);
 }
 
-const updateState = () => {
+const refreshState = () => {
     updateTitle();
     resizeWindow();
 
@@ -93,7 +102,7 @@ const notify = async (message) => {
 
 // Called when a player is created
 const setPlayerEvents = (player) => {
-    player.addEventListener('loadedmetadata', () => updateState());
+    player.addEventListener('loadedmetadata', () => refreshState());
 
     player.addEventListener('playing', () => {
         guiTogglePause.src = 'fontawesome-icons/pause.svg';
@@ -121,11 +130,13 @@ const setPlayerEvents = (player) => {
         if (player.volume >= 0.5) guiVolumeIcon.src = 'fontawesome-icons/volume-high.svg';
         else if (player.volume > 0) guiVolumeIcon.src = 'fontawesome-icons/volume-low.svg';
         else if (player.volume == 0) guiVolumeIcon.src = 'fontawesome-icons/volume-xmark.svg';
+        else alert(`Unhandled: Player volume is negative: ${player.volume}!`)
     });
 }
 
 const initialize = () => {
-    updateState();
+    refreshState();
+
     const hideControls = () => playerControls.classList.add('transparent');
     const showControls = () => playerControls.classList.remove('transparent');
     
@@ -154,7 +165,7 @@ const initialize = () => {
 
 module.exports = {
     initialize,
-    updateState,
+    refreshState,
     updateTimecode,
     setPlayerEvents,
     toggleSidebar,
