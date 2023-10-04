@@ -26,7 +26,7 @@ const createPlayer = (srcPath) => {
     playerContainer.appendChild(player);
     playerUI.setPlayerEvents(player);
     window.activePlayers.push(player);
-
+    
     return player;
 }
 
@@ -49,9 +49,8 @@ const replacePlayers = (fileURIs) => {
 const restorePlayer = () => {
     if (window.destroyedPlayers.length === 0) return;
     let oldPlayer = window.destroyedPlayers.pop();
-    console.log(oldPlayer.src);
     let newPlayer = createPlayer(oldPlayer.src);
-    newPlayer.node.style.order = oldPlayer.node.style.order;
+    newPlayer.style.order = oldPlayer.style.order;
     playerUtils.commandPlayers('seekToStart');
 };
 

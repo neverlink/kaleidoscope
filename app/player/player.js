@@ -1,19 +1,13 @@
 class Player extends HTMLVideoElement {
     constructor(filePath) {
         super();
-        this.src = this.sanitizeFilename(filePath);
+        this.src = filePath;
         this.loop = true;
         this.autoplay = true;
         this.controls = false;
         this.activeIntervals = [];
         this.#setProperties();
         this.#setEvents();
-    }
-
-    sanitizeFilename = (filePath) => {
-        let pathComponents = filePath.split(/[/\\]+/)
-        let filename = pathComponents.at(-1)
-        return filePath.replace(filename, encodeURIComponent(filename))
     }
 
     clearIntervals = () => this.activeIntervals.forEach((x) => clearInterval(x));

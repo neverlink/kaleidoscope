@@ -22,14 +22,10 @@ const resizeWindow = () => {
         windowHeight = 500;
     }
 
-    console.log(`Old: ${window.currentWidth}x${window.currentHeight}`);
-    console.log(`New: ${windowWidth}x${windowHeight}`);
-
     if (windowWidth !== window.currentWidth && windowHeight !== window.currentHeight) {
-        console.log('Resizing window');
+        ipcRenderer.send('resize-window', windowWidth, windowHeight)
         window.currentWidth = windowWidth;
         window.currentHeight = windowHeight;
-        ipcRenderer.send('resize-window', windowWidth, windowHeight)
     }
 };
 
