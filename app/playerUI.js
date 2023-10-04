@@ -46,8 +46,14 @@ const updateTitle = () => {
 const updateTimecode = (player) => {
     const parseTime = (time) => {
         let seconds = Math.round(time % 60);
-        let minutes = Math.trunc(time / 60);
-        return String(minutes).padStart(2, 0) + ':' + String(seconds).padStart(2, 0);
+        let minutes = Math.floor(time / 60);
+        const padNumber = (number) => number.toString().padStart(2, 0)
+        if (minutes >= 60) {
+            let hours = Math.floor(minutes / 60);
+            minutes = Math.floor((time / 60) % 60);
+            return [hours, padNumber(minutes), padNumber(seconds)].join(':')
+        }
+        return [padNumber(minutes), padNumber(seconds)].join(':')
     }
     guiTimeProgress.innerHTML = parseTime(player.currentTime) + ' / ' + parseTime(player.duration);
     guiProgressBar.value = Math.trunc(player.currentTime / player.duration * 1000);
