@@ -6,20 +6,20 @@ const VideoPlayer = require('./player/VideoPlayer.js');
 
 ipcRenderer.on('create-players', (e, fileURIs) => replacePlayers(fileURIs));
 
-const createPlayer = (srcPath) => {
-    if (srcPath == null || srcPath == '.')
+const createPlayer = (filePath) => {
+    if (filePath == null || filePath == '.')
         return;
 
-    let fileExtension = srcPath.substring(srcPath.lastIndexOf('.') + 1).toLowerCase();
+    let fileExtension = filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase();
     const audioContainers = ['mp3', 'ogg', 'wav', 'flac'];
     const videoContainers = ['mp4', 'mov', 'mkv', 'ogv', 'webm'];
 
-    let player;
+    let player = null;
 
     if (audioContainers.includes(fileExtension))
-        player = new VideoPlayer(srcPath); // unsupported
+        player = new VideoPlayer(filePath); // unsupported
     else if (videoContainers.includes(fileExtension))
-        player = new VideoPlayer(srcPath);
+        player = new VideoPlayer(filePath);
     else
         return alert(`Unsupported file type: ${fileExtension}!`);
         

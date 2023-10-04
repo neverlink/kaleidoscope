@@ -17,12 +17,7 @@ const defineDropArea = () => {
 
     const handleFiles = (e) => {
         let files = [...e.dataTransfer.files];
-        sanitizeFilename = (filePath) => {
-            let pathComponents = filePath.split(/[/\\]+/)
-            let filename = pathComponents.at(-1)
-            return filePath.replace(filename, encodeURIComponent(filename))
-        }
-        let filePaths = files.map(fileObj => sanitizeFilename(fileObj['path']));
+        let filePaths = files.map(fileObj => fileObj['path']);
         playerHandler.replacePlayers(filePaths);
     }
     dropContainer.addEventListener('drop', handleFiles);
