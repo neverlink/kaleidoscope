@@ -13,8 +13,7 @@ const createMainWindow = (args) => {
     filePath = args[1];
 
     mainWindow = new BrowserWindow({
-        // Window size in reality is 1px larger
-        // Likely a Windows issue
+        // Window is actually 1px larger, likely a Windows issue
         width: preferences['initialWidth'] - 1,
         height: preferences['initialHeight'] - 1,
 
