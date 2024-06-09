@@ -1,16 +1,18 @@
-<h1 align="center">
+<div align="center">
   <img width="100px" height="100px" src="https://raw.githubusercontent.com/neverlink/kaleidoscope/main/app/static/icon.png"></img>
-  <p>Kaleidoscope<p>
-</h1>
+  <h3>Kaleidoscope</h3>
+  <p>An electron-based video player.</p>
+  <a href="https://www.codefactor.io/repository/github/neverlink/kaleidoscope">
+    <img src="https://www.codefactor.io/repository/github/neverlink/kaleidoscope/badge">
+  </a>
+</div>
 
-An electron-based video player.
-
-[![CodeFactor](https://www.codefactor.io/repository/github/neverlink/kaleidoscope/badge)](https://www.codefactor.io/repository/github/neverlink/kaleidoscope)
+<p></p>
+<img alt="Single Player" src="https://i.imgur.com/tzfDhl0.png" style="display: inline; width: 100%;"/>
 
 <details>
-<summary style=>Screenshots</summary>
-<img alt="Single Player" src="https://i.imgur.com/tzfDhl0.png" style="display: inline; width: 100%;"/>
-<img alt="Splitscreen" src="https://i.imgur.com/h5hHqKD.png" style="display: inline; width: 100%"/>
+  <summary style=>More Screenshots</summary>
+  <img alt="Splitscreen" src="https://i.imgur.com/h5hHqKD.png" style="display: inline; width: 100%"/>
 </details>
 
 ### Features
