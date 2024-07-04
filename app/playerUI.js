@@ -22,6 +22,16 @@ const resizeWindow = () => {
         windowHeight = 500;
     }
 
+    // Resizes videos with either dimension larger than the screen's
+    // Slightly aggressive, tends to downscale videos which can fit
+    let largestWindowDim = Math.max(windowWidth, windowHeight);
+    let smallestScreenDim = Math.min(window.screen.width, window.screen.height);
+    if (largestWindowDim > smallestScreenDim) {
+        let downscaleFactor = smallestScreenDim / largestWindowDim;
+        windowWidth = Math.round(windowWidth * downscaleFactor);
+        windowHeight = Math.round(windowHeight * downscaleFactor);
+    }
+
     if (windowWidth !== window.currentWidth || windowHeight !== window.currentHeight) {
         ipcRenderer.send('resize-window', windowWidth, windowHeight)
         window.currentWidth = windowWidth;

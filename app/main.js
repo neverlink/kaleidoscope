@@ -21,7 +21,7 @@ const createMainWindow = (args) => {
         autoHideMenuBar: preferences['hideMenuBar'],
         alwaysOnTop: preferences['alwaysOnTop'],
 
-        icon: path.join(__dirname, 'static/icon.png'),
+        icon: path.join(__dirname, 'static/logo.png'),
         title: 'Kaleidoscope',
         
         frame: process.platform !== 'win32', // Hide default title bar only on Windows
